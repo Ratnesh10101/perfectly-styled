@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import type { UserMeta } from "@/types";
+import { Button } from "@/components/ui/button"; // Added import
 
 export default function SignupPage() {
   const router = useRouter();
