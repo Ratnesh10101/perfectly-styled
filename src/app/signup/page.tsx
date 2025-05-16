@@ -1,3 +1,4 @@
+
 "use client";
 
 import AuthForm from "@/components/AuthForm";
@@ -8,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import type { UserMeta } from "@/types";
-import { Button } from "@/components/ui/button"; // Added import
+import { Button } from "@/components/ui/button";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -32,10 +33,36 @@ export default function SignupPage() {
       toast({ title: "Signup Successful", description: "Welcome to Perfectly Styled!" });
       router.push("/questionnaire"); // Redirect to questionnaire after signup
     } catch (error: any) {
-      let errorMessage = "Failed to sign up. Please try again.";
-      if (error.code === "auth/email-already-in-use") {
-        errorMessage = "This email is already in use. Try logging in.";
+      console.error("Signup error:", error); // Log the full error for debugging
+      let errorMessage = "An unexpected error occurred during sign up. Please try again.";
+      
+      if (error && typeof error.code === 'string') {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            errorMessage = "This email address is already in use. Please try logging in or use a different email.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "The email address you entered is not valid. Please check and try again.";
+            break;
+          case "auth/operation-not-allowed":
+            errorMessage = "Email/password sign-up is not enabled for this project. Please contact support.";
+            break;
+          case "auth/weak-password":
+            errorMessage = "The password is too weak. Please choose a stronger password (at least 6 characters).";
+            break;
+          default:
+            if (error.message) {
+                 errorMessage = `Signup failed: ${error.message}`;
+            }
+            // Check if it might be a Firestore error after successful auth
+            if (error.message && error.message.toLowerCase().includes("firestore")) {
+                 errorMessage = "Account created, but failed to save user profile information. Please try logging in or contact support.";
+            }
+        }
+      } else if (error instanceof Error && error.message) {
+        errorMessage = error.message;
       }
+
       toast({ title: "Signup Failed", description: errorMessage, variant: "destructive" });
       throw new Error(errorMessage); // Propagate error to AuthForm
     }
