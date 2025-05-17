@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,7 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import ReportDisplay from "@/components/ReportDisplay";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/hooks/useAuth";
-import { db } from "@/config/firebase";
+import { db } from "@/config/firebase"; // db can be null if init fails
 import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import type { UserReport, UserMeta } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +27,13 @@ export default function ReportPage() {
   useEffect(() => {
     const fetchReport = async () => {
       if (!currentUser || !userMeta) {
+        setIsLoadingReport(false);
+        return;
+      }
+
+      if (!db) {
+        console.error("ReportPage: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment.");
+        setError("Firebase database service is not available. Please check application configuration.");
         setIsLoadingReport(false);
         return;
       }
@@ -83,7 +91,7 @@ export default function ReportPage() {
     return <LoadingSpinner fullPage />;
   }
   
-  if (!userMeta?.hasGeneratedReport && !error) {
+  if (!userMeta?.hasGeneratedReport && !error && !isLoadingReport) { // Added !isLoadingReport
      return (
         <ProtectedRoute checkMeta={reportCheck} redirectPath="/questionnaire">
             <div className="flex items-center justify-center py-12">
@@ -137,7 +145,19 @@ export default function ReportPage() {
           <ReportDisplay report={report} />
         ) : (
           // This case should ideally be covered by error or loading states
-          <p>No report available.</p>
+           <div className="flex items-center justify-center py-12">
+             <Card className="w-full max-w-md text-center">
+               <CardHeader>
+                 <CardTitle>Report Unavailable</CardTitle>
+                 <CardDescription>Your report could not be loaded at this time. It might still be generating or an error occurred.</CardDescription>
+               </CardHeader>
+               <CardContent>
+                 <Button asChild>
+                   <Link href="/">Return to Homepage</Link>
+                 </Button>
+               </CardContent>
+             </Card>
+           </div>
         )}
       </div>
     </ProtectedRoute>
