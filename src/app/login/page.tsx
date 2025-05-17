@@ -32,7 +32,6 @@ const ClientLoginPage = dynamic(() => import('@/components/AuthForm').then(mod =
               variant: "destructive",
             });
             throw new Error("Firebase auth service not available.");
-          }
           try {
             const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
             const user = userCredential.user as User; // Cast to Firebase User
@@ -119,70 +118,6 @@ export default function LoginPage() { // Keep the default export for the page
     </Suspense>
   );
 }
-      toast({
-        title: "Login Failed",
-        description: "Firebase Auth is not configured correctly. Please contact support.",
-        variant: "destructive",
-      });
-      throw new Error("Firebase auth service not available.");
-    }
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user as User; // Cast to Firebase User
-      toast({ title: "Login Successful", description: "Welcome back!" });
-
-      // Check for pending questionnaire data
-      const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
-      if (pendingDataString) {
-        try {
-          const questionnaireData = JSON.parse(pendingDataString) as QuestionnaireData;
-          const saveResult = await saveQuestionnaireData(user.uid, questionnaireData);
-          if (saveResult.success) {
-            toast({ title: "Questionnaire Saved!", description: "Your style profile is updated." });
-            localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
-            // If questionnaire saved and user intended to go to payment (e.g., from signup flow)
-            if (searchParams.get("fromQuestionnaire") === "true" || searchParams.get("redirectToPayment") === "true") {
-              router.push("/payment"); 
-            } else {
-              router.push("/"); // Default to homepage or profile page later
-            }
-            return;
-          } else {
-            toast({ title: "Error Saving Questionnaire", description: saveResult.message, variant: "destructive" });
-            // Fall through to standard redirect even if questionnaire save fails, error is shown
-          }
-        } catch (e) {
-          console.error("Error processing pending questionnaire data:", e);
-          toast({ title: "Error", description: "Could not process saved questionnaire data.", variant: "destructive" });
-        }
-      }
-      
-      // Standard redirect logic if no pending questionnaire data or after handling it
-      // Check if user was trying to access payment or report page before login
-      const fromQuestionnaire = searchParams.get("fromQuestionnaire") === "true";
-      const redirectToPayment = searchParams.get("redirectToPayment") === "true";
-
-      if (redirectToPayment || fromQuestionnaire) {
-         router.push("/payment");
-      } else {
-         router.push("/"); // Default redirect
-      }
-
-    } catch (error: any) {
-      let errorMessage = "Failed to login. Please check your credentials.";
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
-        errorMessage = "Invalid email or password.";
-      } else if (error.message && error.message.includes("auth/configuration-not-found")) {
-        errorMessage = "Firebase configuration error. Please contact support.";
-      } else if (error.message && error.message.includes("Firebase: Error (auth/network-request-failed).")) {
-         errorMessage = "Network error. Please check your internet connection and try again.";
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      toast({ title: "Login Failed", description: errorMessage, variant: "destructive" });
-      throw new Error(errorMessage); // Rethrow to be caught by AuthForm
-    }
-  };
 
   // Render the content inside Suspense
   const LoginContent = () => (
