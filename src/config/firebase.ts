@@ -10,14 +10,14 @@ function sanitizeString(value: string | undefined): string {
 }
 
 // Original config values from process.env
-const rawFirebaseConfigValues = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+const firebaseConfig = {
+  apiKey: "AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk",
+  authDomain: "perfectly-styled.firebaseapp.com",
+  projectId: "perfectly-styled",
+  storageBucket: "perfectly-styled.firebasestorage.app",
+  messagingSenderId: "377334244117",
+  appId: "1:377334244117:web:3fff766d728fd838a83f1c",
+  measurementId: "G-LLZ1XNNXET"
 };
 
 let app: FirebaseApp | null = null;
@@ -92,7 +92,7 @@ function initializeFirebase() {
       } catch (serviceError: any) {
         firebaseInitError = `Firebase: Error obtaining Auth/Firestore services after app init: ${serviceError.message || serviceError}`;
         console.error(firebaseInitError, serviceError);
-        auth = null; 
+        auth = null;
         db = null;
       }
 
@@ -100,9 +100,9 @@ function initializeFirebase() {
         isAnalyticsSupported().then(supported => {
           if (supported) {
             try {
-              analytics = getAnalytics(app!); 
+              analytics = getAnalytics(app!);
               console.log("Firebase Analytics initialized.");
-            } catch (analyticsError: any){
+            } catch (analyticsError: any) {
               console.error(`Firebase: Error initializing Analytics service: ${analyticsError.message || analyticsError}`, analyticsError);
               analytics = null;
             }
@@ -113,9 +113,9 @@ function initializeFirebase() {
         }).catch(err => console.error("Error checking analytics support:", err));
       }
     } else {
-        firebaseInitError = "Firebase app object is null after initialization attempt. Firebase services (Auth, Firestore) will not be available.";
-        console.error(firebaseInitError);
-        auth = null; db = null; analytics = null;
+      firebaseInitError = "Firebase app object is null after initialization attempt. Firebase services (Auth, Firestore) will not be available.";
+      console.error(firebaseInitError);
+      auth = null; db = null; analytics = null;
     }
   } catch (error: any) {
     firebaseInitError = `Firebase initializeApp critical error: ${error.message || error}`;
