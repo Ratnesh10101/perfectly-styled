@@ -25,6 +25,7 @@ let auth: Auth | null = null;
 let db: Firestore | null = null;
 let analytics: Analytics | null = null;
 let firebaseInitialized = false;
+let firebaseInitError: string | null = null;
 
 // This function will now only run once
 function initializeFirebase() {
@@ -48,11 +49,13 @@ function initializeFirebase() {
   if (!apiKey) missingVars.push("NEXT_PUBLIC_FIREBASE_API_KEY");
   if (!authDomain) missingVars.push("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN");
   if (!projectId) missingVars.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
+  // Add other critical vars here if needed, e.g., appId
 
   if (missingVars.length > 0) {
-    const errorMessage = `Firebase Initialization Error: The following critical environment variables are missing or empty: ${missingVars.join(", ")}. These MUST be set in your build/deployment environment. Firebase will not be initialized.`;
-    console.error(errorMessage);
-    firebaseInitialized = true; // Mark as initialized (attempted) to prevent re-runs
+    firebaseInitError = `CRITICAL Firebase Initialization Error: The following environment variables are MISSING or EMPTY: ${missingVars.join(", ")}. These MUST be set in your application's build AND runtime/server environment (e.g., Firebase Hosting/Functions config, .env file for local dev). Firebase will NOT be initialized, impacting both client and server-side functionality.`;
+    console.error(firebaseInitError);
+    firebaseInitialized = true; // Mark as initialization attempted
+    app = null; auth = null; db = null; analytics = null;
     return; // Do not proceed with initialization
   }
 
@@ -69,15 +72,16 @@ function initializeFirebase() {
   if (typeof window !== 'undefined') {
     console.log("Firebase config object being used by client:", firebaseConfig);
   }
+  console.log("Attempting Firebase initialization with config:", firebaseConfig);
+
 
   try {
     if (!getApps().length) {
-      console.log("Attempting Firebase initialization with config:", firebaseConfig);
       app = initializeApp(firebaseConfig);
       console.log("Firebase app initialized successfully.");
     } else {
       app = getApps()[0];
-      console.log("Firebase app already initialized.");
+      console.log("Firebase app already initialized (reused existing instance).");
     }
 
     if (app) {
@@ -85,40 +89,42 @@ function initializeFirebase() {
         auth = getAuth(app);
         db = getFirestore(app);
         console.log("Firebase Auth and Firestore services obtained successfully.");
-      } catch (serviceError) {
-        console.error("Firebase: Error obtaining Auth/Firestore services after app init:", serviceError);
-        auth = null; // Ensure auth is null if service acquisition fails
-        db = null;   // Ensure db is null
+      } catch (serviceError: any) {
+        firebaseInitError = `Firebase: Error obtaining Auth/Firestore services after app init: ${serviceError.message || serviceError}`;
+        console.error(firebaseInitError, serviceError);
+        auth = null; 
+        db = null;
       }
 
-      if (typeof window !== 'undefined' && app) { // Check app again in case serviceError made it null
+      if (typeof window !== 'undefined' && app && measurementId) { // Only init analytics if app exists and measurementId is provided
         isAnalyticsSupported().then(supported => {
           if (supported) {
             try {
-              analytics = getAnalytics(app!); // app should be non-null here
+              analytics = getAnalytics(app!); 
               console.log("Firebase Analytics initialized.");
-            } catch (analyticsError){
-              console.error("Firebase: Error initializing Analytics service:", analyticsError);
+            } catch (analyticsError: any){
+              console.error(`Firebase: Error initializing Analytics service: ${analyticsError.message || analyticsError}`, analyticsError);
               analytics = null;
             }
           } else {
-            console.log("Firebase Analytics is not supported in this environment.");
+            // This is not an error, just an info message.
+            // console.log("Firebase Analytics is not supported in this environment.");
           }
         }).catch(err => console.error("Error checking analytics support:", err));
       }
     } else {
-        console.error("Firebase app object is null after initialization attempt. Firebase services (Auth, Firestore) will not be available.");
+        firebaseInitError = "Firebase app object is null after initialization attempt. Firebase services (Auth, Firestore) will not be available.";
+        console.error(firebaseInitError);
+        auth = null; db = null; analytics = null;
     }
-  } catch (error) {
-    console.error("Firebase initializeApp error:", error);
-    app = null;
-    auth = null;
-    db = null;
-    analytics = null;
+  } catch (error: any) {
+    firebaseInitError = `Firebase initializeApp critical error: ${error.message || error}`;
+    console.error(firebaseInitError, error);
+    app = null; auth = null; db = null; analytics = null;
   }
-  firebaseInitialized = true; // Mark as initialized (attempted)
+  firebaseInitialized = true; // Mark as initialization attempted
 }
 
 initializeFirebase();
 
-export { app, auth, db, analytics, rawFirebaseConfigValues as currentFirebaseConfigValues };
+export { app, auth, db, analytics, firebaseInitialized, firebaseInitError, rawFirebaseConfigValues as currentFirebaseConfigValues };

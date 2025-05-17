@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -6,9 +7,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Header = () => {
-  const { currentUser, userMeta, logout } = useAuth();
+  const { currentUser, userMeta, logout, loading } = useAuth(); // Added loading
   const router = useRouter();
   const { toast } = useToast();
 
@@ -21,6 +23,25 @@ const Header = () => {
       toast({ title: "Logout failed", description: (error as Error).message, variant: "destructive" });
     }
   };
+
+  // Render a loading state for the header if auth is still loading on the client
+  // This helps prevent hydration mismatches and UI flickering.
+  if (loading && typeof window !== 'undefined') {
+    return (
+      <header className="bg-card shadow-md">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary hover:opacity-80 transition-opacity">
+            <Shirt className="h-8 w-8" />
+            <span>Perfectly Styled</span>
+          </Link>
+          <nav className="flex items-center gap-2 sm:gap-4">
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-28" />
+          </nav>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="bg-card shadow-md">
@@ -46,11 +67,13 @@ const Header = () => {
                   </Link>
                 </Button>
               ) : (
-                 <Button variant="ghost" asChild>
-                    <Link href="/questionnaire">
-                      <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
-                    </Link>
-                  </Button>
+                 !userMeta?.questionnaireComplete && ( // Only show questionnaire if not complete
+                    <Button variant="ghost" asChild>
+                        <Link href="/questionnaire">
+                        <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
+                        </Link>
+                    </Button>
+                 )
               )}
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" /> Logout
