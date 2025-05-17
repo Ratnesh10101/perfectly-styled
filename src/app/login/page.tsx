@@ -24,7 +24,6 @@ const ClientLoginPage = dynamic(() => import('@/components/AuthForm').then(mod =
 
         // Your existing handleLogin logic goes here
         const handleLogin = async (values: { email: string; password: string }) => {
-  const router = useRouter();
           if (!auth) {
             toast({
               title: "Login Failed",
