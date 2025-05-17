@@ -145,4 +145,3 @@ export async function processPaymentAndGenerateReport(
     return { success: false, message: "Failed to generate report after payment due to a server error." };
   }
 }
-
