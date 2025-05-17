@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -15,101 +15,183 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
-import type { QuestionnaireData } from "@/types";
+import type { QuestionnaireData, LineAnswer, ScaleAnswer } from "@/types";
 import LoadingSpinner from "./LoadingSpinner";
-import { useAuth } from "@/hooks/useAuth"; // Import useAuth
+import { useAuth } from "@/hooks/useAuth";
+import Image from "next/image";
 
+// Schemas for individual form fields
+const lineAnswerSchema = z.string().min(1, "Please select an option.");
+const scaleAnswerSchema = z.string().min(1, "Please select an option.");
+const bodyShapeSchema = z.string().min(1, "Please select your body shape.");
+const preferencesSchema = z.string().min(10, "Min 10 characters.").max(500, "Max 500 characters.");
+
+// Schemas for each step
 const stepSchemas = [
-  z.object({ dominantLine: z.string().min(1, "Please select your dominant line.") }),
-  z.object({ bodyShape: z.string().min(1, "Please select your body shape.") }),
-  z.object({ scale: z.string().min(1, "Please select your scale.") }),
-  z.object({ preferences: z.string().min(10, "Please describe your preferences (min 10 characters).").max(500, "Preferences cannot exceed 500 characters.") }),
+  z.object({ // Step 1: Line - Shoulders, Waist, Hips
+    shoulders_answer: lineAnswerSchema,
+    waist_answer: lineAnswerSchema,
+    hips_answer: lineAnswerSchema,
+  }),
+  z.object({ // Step 2: Line - Face, Jawline
+    face_answer: lineAnswerSchema,
+    jawline_answer: lineAnswerSchema,
+  }),
+  z.object({ // Step 3: Scale - Wrist, Height, Shoe Size
+    wrist_answer: scaleAnswerSchema,
+    height_answer: scaleAnswerSchema,
+    shoeSize_answer: scaleAnswerSchema,
+  }),
+  z.object({ // Step 4: Body Shape
+    bodyShape: bodyShapeSchema,
+  }),
+  z.object({ // Step 5: Preferences
+    preferences: preferencesSchema,
+  }),
 ];
 
+// Combined schema for the entire form, used for defaultValues and final data structure
 const combinedSchema = z.object({
-  dominantLine: z.string().min(1, "Please select your dominant line."),
-  bodyShape: z.string().min(1, "Please select your body shape."),
-  scale: z.string().min(1, "Please select your scale."),
-  preferences: z.string().min(10, "Please describe your preferences (min 10 characters).").max(500, "Preferences cannot exceed 500 characters."),
+  shoulders_answer: lineAnswerSchema,
+  waist_answer: lineAnswerSchema,
+  hips_answer: lineAnswerSchema,
+  face_answer: lineAnswerSchema,
+  jawline_answer: lineAnswerSchema,
+  wrist_answer: scaleAnswerSchema,
+  height_answer: scaleAnswerSchema,
+  shoeSize_answer: scaleAnswerSchema,
+  bodyShape: bodyShapeSchema.or(z.literal("")), // Allow empty for initial state
+  preferences: preferencesSchema,
 });
-
 
 type QuestionnaireFormValues = z.infer<typeof combinedSchema>;
 
 interface QuestionnaireFormProps {
   onSubmit: (data: QuestionnaireData) => Promise<void>;
-  initialData?: Partial<QuestionnaireData>;
+  initialData?: Partial<QuestionnaireData>; // Might need adjustment if initialData structure changes
 }
 
-const dominantLines = ["Straight", "Curved", "Balanced"];
-const bodyShapes = ["Hourglass", "Pear", "Apple", "Rectangle", "Inverted Triangle"];
-const scales = ["Small", "Medium", "Large"];
+const lineOptions = {
+  shoulders: [
+    { value: "straight", label: "Straight", classification: "straight" },
+    { value: "sloping", label: "Sloping", classification: "curved" },
+  ],
+  waist: [
+    { value: "defined", label: "Defined", classification: "curved" },
+    { value: "undefined", label: "Undefined", classification: "straight" },
+  ],
+  hips: [
+    { value: "flared", label: "Flared", classification: "curved" },
+    { value: "straight", label: "Straight", classification: "straight" },
+  ],
+  face: [
+    { value: "straight/thin lips", label: "Straight/thin lips", classification: "straight" },
+    { value: "curved/full lips", label: "Curved/full lips", classification: "curved" },
+  ],
+  jawline: [
+    { value: "curved", label: "Curved", classification: "curved" },
+    { value: "angular", label: "Angular", classification: "straight" },
+  ],
+};
+
+const scaleOptions = {
+  wrist: [
+    { value: "Small - 5.5” (14cm) or less", label: "Small - 5.5” (14cm) or less" },
+    { value: "Medium - 5.5 – 6.5” (14-16cm)", label: "Medium - 5.5 – 6.5” (14-16cm)" },
+    { value: "Large 6.5 (16.5cm) or more", label: "Large 6.5 (16.5cm) or more" },
+  ],
+  height: [
+    { value: "Small - Under 5’3” (1.6m)", label: "Small - Under 5’3” (1.6m)" },
+    { value: "Medium - 5’3” – 5’8” (1.6-1.72m)", label: "Medium - 5’3” – 5’8” (1.6-1.72m)" },
+    { value: "Large – 5’8” (1.72m) and over", label: "Large – 5’8” (1.72m) and over" },
+  ],
+  shoeSize: [
+    { value: "Small – 35 – 37", label: "Small – 35 – 37" },
+    { value: "Medium – 38 - 39", label: "Medium – 38 - 39" },
+    { value: "Large – 40+", label: "Large – 40+" },
+  ],
+};
+
+const bodyShapeOptions = [
+  { name: "Pear Shape", description: "Smaller upper body, often with narrow shoulders and/or a petite bust. The waist is defined, leading to broader hips. This shape often includes full thighs and a more prominent lower body.", dataAiHint: "fashion illustration" },
+  { name: "Inverted Triangle", description: "Shoulders are wider than the hips, often accompanied by a fuller bust. Typically, this shape also features a shorter waist.", dataAiHint: "fashion sketch" },
+  { name: "Straight", description: "Hips and shoulders are aligned with little to no waist definition, creating an overall straight silhouette. Often gives a boxy or column-like appearance.", dataAiHint: "mannequin outline" },
+  { name: "Round/Apple", description: "A rounded figure with fullness throughout. The waist is less defined, creating a naturally curvy outline.", dataAiHint: "body shape" },
+  { name: "Hourglass", description: "Balanced proportions between shoulders and hips, with a well-defined waist that is typically 8-10 inches smaller than the hips. Curves are evenly distributed, with straight shoulders and a rounded lower body.", dataAiHint: "classic silhouette" },
+];
+
 
 const stepTitles = [
-  "Dominant Line",
-  "Body Shape",
-  "Scale",
+  "Line Analysis (Part 1)",
+  "Line Analysis (Part 2)",
+  "Scale Assessment",
+  "Horizontal Proportion (Body Shape)",
   "Style Preferences"
 ];
 
 const stepDescriptions = [
-  "Understanding your dominant line (overall silhouette) helps in choosing clothes that echo your natural form.",
-  "Your body shape guides choices for flattering cuts and proportions.",
-  "Scale refers to your bone structure and overall frame, influencing print sizes and accessory choices.",
+  "Let's analyze the lines of your body structure (Shoulders, Waist, Hips).",
+  "Continuing our line analysis (Face, Jawline).",
+  "Let's determine your scale based on measurements.",
+  "Try holding a meter stick against your shoulders (or ask a friend to help) and let it hang straight down. Observe where it aligns with your hips to get a better idea of your body shape.",
   "Tell us about your style goals, favorite pieces, or any specific advice you're seeking."
 ];
 
-const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData";
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; // New key for new structure
 
 export default function QuestionnaireForm({ onSubmit, initialData }: QuestionnaireFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const { currentUser, loading: authLoading } = useAuth(); // Get currentUser for conditional logic
+  const { currentUser, loading: authLoading } = useAuth();
 
+  // Helper to transform initialData to form values
+  const transformInitialDataToFormValues = (data?: Partial<QuestionnaireData>): Partial<QuestionnaireFormValues> => {
+    if (!data) return {};
+    const formValues: Partial<QuestionnaireFormValues> = { preferences: data.preferences, bodyShape: data.bodyShape as QuestionnaireFormValues['bodyShape'] };
+    data.lineAnswers?.forEach(la => {
+      if (la.bodyPart === 'Shoulders') formValues.shoulders_answer = la.answer;
+      if (la.bodyPart === 'Waist') formValues.waist_answer = la.answer;
+      if (la.bodyPart === 'Hips') formValues.hips_answer = la.answer;
+      if (la.bodyPart === 'Face') formValues.face_answer = la.answer;
+      if (la.bodyPart === 'Jawline') formValues.jawline_answer = la.answer;
+    });
+    data.scaleAnswers?.forEach(sa => {
+      if (sa.category === 'Wrist Circumference') formValues.wrist_answer = sa.answer;
+      if (sa.category === 'Height') formValues.height_answer = sa.answer;
+      if (sa.category === 'Shoe Size') formValues.shoeSize_answer = sa.answer;
+    });
+    return formValues;
+  };
+  
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(stepSchemas[currentStep]), 
+    resolver: zodResolver(stepSchemas[currentStep]),
     defaultValues: {
-      dominantLine: initialData?.dominantLine || "",
-      bodyShape: initialData?.bodyShape || "",
-      scale: initialData?.scale || "",
-      preferences: initialData?.preferences || "",
+      shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || "",
+      waist_answer: transformInitialDataToFormValues(initialData).waist_answer || "",
+      hips_answer: transformInitialDataToFormValues(initialData).hips_answer || "",
+      face_answer: transformInitialDataToFormValues(initialData).face_answer || "",
+      jawline_answer: transformInitialDataToFormValues(initialData).jawline_answer || "",
+      wrist_answer: transformInitialDataToFormValues(initialData).wrist_answer || "",
+      height_answer: transformInitialDataToFormValues(initialData).height_answer || "",
+      shoeSize_answer: transformInitialDataToFormValues(initialData).shoeSize_answer || "",
+      bodyShape: transformInitialDataToFormValues(initialData).bodyShape || "",
+      preferences: transformInitialDataToFormValues(initialData).preferences || "",
     },
-    mode: "onChange", 
+    mode: "onChange",
   });
 
-  // Effect to load pending data from localStorage if user is not logged in and form is empty
   useEffect(() => {
-    if (!currentUser && !authLoading) { // Only for anonymous users
+    if (!currentUser && !authLoading) {
       const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
       if (pendingDataString) {
         try {
           const pendingData = JSON.parse(pendingDataString) as QuestionnaireData;
-          // Check if form is still at default values before resetting
-          const currentValues = form.getValues();
-          if (
-            !currentValues.dominantLine &&
-            !currentValues.bodyShape &&
-            !currentValues.scale &&
-            !currentValues.preferences
-          ) {
-             form.reset({
-                dominantLine: pendingData.dominantLine || "",
-                bodyShape: pendingData.bodyShape || "",
-                scale: pendingData.scale || "",
-                preferences: pendingData.preferences || "",
-            });
-          }
+          form.reset(transformInitialDataToFormValues(pendingData));
         } catch (e) {
           console.error("Error parsing pending questionnaire data from localStorage:", e);
         }
@@ -117,9 +199,38 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     }
   }, [currentUser, authLoading, form]);
 
+  const getClassification = (bodyPartKey: keyof typeof lineOptions, answer: string): 'straight' | 'curved' => {
+    const option = lineOptions[bodyPartKey].find(opt => opt.value === answer);
+    return option ? option.classification as 'straight' | 'curved' : 'straight'; // Default, though should always find
+  };
+
+  const onFinalSubmit = async (data: QuestionnaireFormValues) => {
+    setIsLoading(true);
+    const lineAnswers: LineAnswer[] = [
+      { bodyPart: 'Shoulders', answer: data.shoulders_answer, classification: getClassification('shoulders', data.shoulders_answer) },
+      { bodyPart: 'Waist', answer: data.waist_answer, classification: getClassification('waist', data.waist_answer) },
+      { bodyPart: 'Hips', answer: data.hips_answer, classification: getClassification('hips', data.hips_answer) },
+      { bodyPart: 'Face', answer: data.face_answer, classification: getClassification('face', data.face_answer) },
+      { bodyPart: 'Jawline', answer: data.jawline_answer, classification: getClassification('jawline', data.jawline_answer) },
+    ];
+    const scaleAnswers: ScaleAnswer[] = [
+      { category: 'Wrist Circumference', answer: data.wrist_answer },
+      { category: 'Height', answer: data.height_answer },
+      { category: 'Shoe Size', answer: data.shoeSize_answer },
+    ];
+
+    const fullData: QuestionnaireData = {
+      lineAnswers,
+      scaleAnswers,
+      bodyShape: data.bodyShape as QuestionnaireData['bodyShape'],
+      preferences: data.preferences,
+    };
+    await onSubmit(fullData);
+    setIsLoading(false);
+  };
 
   const handleNext = async () => {
-    const fieldsToValidate: (keyof QuestionnaireFormValues)[] = Object.keys(stepSchemas[currentStep].shape) as (keyof QuestionnaireFormValues)[];
+    const fieldsToValidate = Object.keys(stepSchemas[currentStep].shape) as (keyof QuestionnaireFormValues)[];
     const isValid = await form.trigger(fieldsToValidate);
     if (isValid) {
       if (currentStep < stepSchemas.length - 1) {
@@ -135,20 +246,39 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       setCurrentStep((prev) => prev - 1);
     }
   };
-  
-  const onFinalSubmit = async (data: QuestionnaireFormValues) => {
-    setIsLoading(true);
-    const fullData: QuestionnaireData = {
-      dominantLine: data.dominantLine,
-      bodyShape: data.bodyShape,
-      scale: data.scale,
-      preferences: data.preferences,
-    };
-    await onSubmit(fullData); // onSubmit is now passed from QuestionnairePage and handles logic
-    setIsLoading(false);
-  };
 
   const progressValue = ((currentStep + 1) / stepSchemas.length) * 100;
+
+  const renderRadioGroup = (fieldName: keyof QuestionnaireFormValues, label: string, options: { value: string, label: string }[]) => (
+    <FormField
+      control={form.control}
+      name={fieldName}
+      render={({ field }) => (
+        <FormItem className="space-y-3">
+          <FormLabel className="text-base font-semibold">{label}</FormLabel>
+          <FormControl>
+            <RadioGroup
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              className="flex flex-col space-y-2"
+            >
+              {options.map((option) => (
+                <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
+                  <FormControl>
+                    <RadioGroupItem value={option.value} />
+                  </FormControl>
+                  <FormLabel className="font-normal text-sm">
+                    {option.label}
+                  </FormLabel>
+                </FormItem>
+              ))}
+            </RadioGroup>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-xl">
@@ -162,93 +292,75 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onFinalSubmit)} className="space-y-8">
             {currentStep === 0 && (
-              <FormField
-                control={form.control}
-                name="dominantLine"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>What is your dominant line?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your dominant line" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {dominantLines.map((line) => (
-                          <SelectItem key={line} value={line}>{line}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      E.g., Straight lines for angular features, Curved for softer features.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <>
+                {renderRadioGroup("shoulders_answer", "Shoulders:", lineOptions.shoulders)}
+                {renderRadioGroup("waist_answer", "Waist:", lineOptions.waist)}
+                {renderRadioGroup("hips_answer", "Hips:", lineOptions.hips)}
+              </>
             )}
             {currentStep === 1 && (
+              <>
+                {renderRadioGroup("face_answer", "Face (Lips):", lineOptions.face)}
+                {renderRadioGroup("jawline_answer", "Jawline:", lineOptions.jawline)}
+              </>
+            )}
+            {currentStep === 2 && (
+              <>
+                {renderRadioGroup("wrist_answer", "Circumference of wrist:", scaleOptions.wrist)}
+                {renderRadioGroup("height_answer", "Height:", scaleOptions.height)}
+                {renderRadioGroup("shoeSize_answer", "Shoe size:", scaleOptions.shoeSize)}
+              </>
+            )}
+            {currentStep === 3 && (
               <FormField
                 control={form.control}
                 name="bodyShape"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>What is your body shape?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your body shape" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {bodyShapes.map((shape) => (
-                          <SelectItem key={shape} value={shape}>{shape}</SelectItem>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-base font-semibold">Select Your Body Shape:</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="space-y-4"
+                      >
+                        {bodyShapeOptions.map((option) => (
+                          <FormItem key={option.name} className="border p-4 rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-start space-x-3">
+                               <FormControl>
+                                <RadioGroupItem value={option.name} id={option.name.replace(/\s+/g, '')} />
+                               </FormControl>
+                              <div className="flex-1">
+                                <FormLabel htmlFor={option.name.replace(/\s+/g, '')} className="font-semibold text-md cursor-pointer">
+                                  {option.name}
+                                </FormLabel>
+                                <Image 
+                                  src={`https://placehold.co/200x300.png`} 
+                                  alt={option.name} 
+                                  data-ai-hint={option.dataAiHint}
+                                  width={100} 
+                                  height={150} 
+                                  className="my-2 rounded-md float-right ml-4 aspect-[2/3] object-cover" 
+                                />
+                                <p className="text-sm text-muted-foreground mt-1 pr-2">{option.description}</p>
+                              </div>
+                            </div>
+                          </FormItem>
                         ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Common shapes include Hourglass, Pear, Apple, etc.
-                    </FormDescription>
+                      </RadioGroup>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             )}
-            {currentStep === 2 && (
-              <FormField
-                control={form.control}
-                name="scale"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>What is your scale?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your scale" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {scales.map((sc) => (
-                          <SelectItem key={sc} value={sc}>{sc}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      This refers to your bone structure (e.g., Small for delicate, Large for broader).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-            {currentStep === 3 && (
+            {currentStep === 4 && (
               <FormField
                 control={form.control}
                 name="preferences"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Style Preferences & Notes</FormLabel>
+                    <FormLabel className="text-base font-semibold">Style Preferences & Notes</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Describe your style goals, preferred colors, types of clothing you like or dislike, occasions you typically dress for, etc."
@@ -264,7 +376,8 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-            {currentStep === stepSchemas.length -1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
+             {/* Hidden submit button for implicit submission on last step's "Next" */}
+            {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
           </form>
         </Form>
       </CardContent>
@@ -277,7 +390,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         ) : (
-          <Button type="button" onClick={handleNext} disabled={isLoading || authLoading}> {/* Disable if auth is loading too */}
+          <Button type="button" onClick={handleNext} disabled={isLoading || authLoading}>
             {isLoading ? <LoadingSpinner size={20} className="mr-2"/> : <Send className="mr-2 h-4 w-4" />}
             {currentUser ? "Save & Proceed to Payment" : "Save & Proceed to Sign Up"}
           </Button>
@@ -286,4 +399,3 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     </Card>
   );
 }
-

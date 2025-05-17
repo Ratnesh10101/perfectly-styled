@@ -11,7 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData";
+// New key for localStorage to avoid conflicts with old structure if any
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; 
 
 export default function QuestionnairePage() {
   const { currentUser, userMeta, loading: authLoading } = useAuth();
@@ -24,26 +25,27 @@ export default function QuestionnairePage() {
         const result = await saveQuestionnaireData(currentUser.uid, data);
         if (result.success) {
           toast({ title: "Questionnaire Saved!", description: "Proceed to payment to get your report." });
+          localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY); // Clear any pending anonymous data
           router.push("/payment");
         } else {
-          toast({ title: "Error", description: result.message, variant: "destructive" });
+          toast({ title: "Error Saving Questionnaire", description: result.message, variant: "destructive" });
         }
       } catch (error) {
         toast({ title: "Submission Error", description: "Could not save questionnaire.", variant: "destructive" });
       }
-    } else { // User is not logged in
+    } else { // User is not logged in (anonymous)
       try {
         localStorage.setItem(PENDING_QUESTIONNAIRE_KEY, JSON.stringify(data));
         toast({ title: "Answers Recorded!", description: "Please sign up or log in to save your progress and get your report." });
-        router.push("/signup?fromQuestionnaire=true"); // Redirect to signup, can also offer login
+        router.push("/signup?fromQuestionnaire=true"); 
       } catch (error) {
-        toast({ title: "Error", description: "Could not temporarily save your answers. Please try again.", variant: "destructive" });
+        toast({ title: "Error Temporarily Saving Answers", description: "Could not save your answers locally. Please try again.", variant: "destructive" });
         console.error("Error saving questionnaire to localStorage:", error);
       }
     }
   };
 
-  // Still show "already completed" if a logged-in user comes back and has already done it.
+  // If logged in and questionnaire is complete but report not generated, redirect to payment.
   if (!authLoading && currentUser && userMeta?.questionnaireComplete && !userMeta?.hasGeneratedReport) {
     return (
         <div className="max-w-4xl mx-auto py-8">
@@ -63,6 +65,7 @@ export default function QuestionnairePage() {
     );
   }
   
+  // If logged in and report is already generated, redirect to report.
   if (!authLoading && currentUser && userMeta?.hasGeneratedReport) {
      return (
         <div className="max-w-4xl mx-auto py-8">
@@ -83,7 +86,7 @@ export default function QuestionnairePage() {
 
   // For logged-out users, or logged-in users who haven't completed it yet.
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-2xl mx-auto py-8"> {/* Adjusted max-width to match new form */}
       <QuestionnaireForm onSubmit={handleSubmit} />
     </div>
   );

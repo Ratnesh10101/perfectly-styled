@@ -4,17 +4,18 @@
 import AuthForm from "@/components/AuthForm";
 import { auth } from "@/config/firebase";
 import { signInWithEmailAndPassword, type User } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // Added useSearchParams
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { saveQuestionnaireData } from "@/actions/questionnaireActions";
 import type { QuestionnaireData } from "@/types";
 
-const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData";
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; // Ensure this matches
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams(); // To check if redirected from questionnaire
   const { toast } = useToast();
 
   const handleLogin = async (values: { email: string; password: string }) => {
@@ -28,7 +29,7 @@ export default function LoginPage() {
     }
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user as User;
+      const user = userCredential.user as User; // Cast to Firebase User
       toast({ title: "Login Successful", description: "Welcome back!" });
 
       // Check for pending questionnaire data
@@ -40,10 +41,16 @@ export default function LoginPage() {
           if (saveResult.success) {
             toast({ title: "Questionnaire Saved!", description: "Your style profile is updated." });
             localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
-            router.push("/payment"); // Go to payment after saving questionnaire
+            // If questionnaire saved and user intended to go to payment (e.g., from signup flow)
+            if (searchParams.get("fromQuestionnaire") === "true" || searchParams.get("redirectToPayment") === "true") {
+              router.push("/payment"); 
+            } else {
+              router.push("/"); // Default to homepage or profile page later
+            }
             return;
           } else {
             toast({ title: "Error Saving Questionnaire", description: saveResult.message, variant: "destructive" });
+            // Fall through to standard redirect even if questionnaire save fails, error is shown
           }
         } catch (e) {
           console.error("Error processing pending questionnaire data:", e);
@@ -51,8 +58,16 @@ export default function LoginPage() {
         }
       }
       
-      // Standard redirect if no pending questionnaire data
-      router.push("/"); 
+      // Standard redirect logic if no pending questionnaire data or after handling it
+      // Check if user was trying to access payment or report page before login
+      const fromQuestionnaire = searchParams.get("fromQuestionnaire") === "true";
+      const redirectToPayment = searchParams.get("redirectToPayment") === "true";
+
+      if (redirectToPayment || fromQuestionnaire) {
+         router.push("/payment");
+      } else {
+         router.push("/"); // Default redirect
+      }
 
     } catch (error: any) {
       let errorMessage = "Failed to login. Please check your credentials.";
@@ -60,11 +75,13 @@ export default function LoginPage() {
         errorMessage = "Invalid email or password.";
       } else if (error.message && error.message.includes("auth/configuration-not-found")) {
         errorMessage = "Firebase configuration error. Please contact support.";
+      } else if (error.message && error.message.includes("Firebase: Error (auth/network-request-failed).")) {
+         errorMessage = "Network error. Please check your internet connection and try again.";
       } else if (error.message) {
         errorMessage = error.message;
       }
       toast({ title: "Login Failed", description: errorMessage, variant: "destructive" });
-      throw new Error(errorMessage);
+      throw new Error(errorMessage); // Rethrow to be caught by AuthForm
     }
   };
 
@@ -80,7 +97,8 @@ export default function LoginPage() {
       <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}
         <Button variant="link" asChild className="p-0 h-auto">
-          <Link href="/signup">Sign up</Link>
+          {/* Pass query param if user was trying to complete questionnaire */}
+          <Link href={`/signup${searchParams.get("fromQuestionnaire") ? "?fromQuestionnaire=true" : ""}`}>Sign up</Link>
         </Button>
       </p>
     </>

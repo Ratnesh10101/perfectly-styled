@@ -3,19 +3,20 @@
 
 import AuthForm from "@/components/AuthForm";
 import { auth, db } from "@/config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, type User } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import type { UserMeta, QuestionnaireData } from "@/types";
 import { Button } from "@/components/ui/button";
 import { saveQuestionnaireData } from "@/actions/questionnaireActions";
 
-const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData";
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; // Ensure this matches the questionnaire page
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const handleSignup = async (values: { email: string; password: string }) => {
@@ -38,21 +39,20 @@ export default function SignupPage() {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
+      const user = userCredential.user as User; // Cast to Firebase User type
 
       const userMetaRef = doc(db, "users", user.uid, "meta", "data");
       const initialMeta: UserMeta = {
         email: user.email,
         hasPaid: false,
         hasGeneratedReport: false,
-        questionnaireComplete: false,
+        questionnaireComplete: false, // Default to false, will be updated if pending data exists
       };
-      await setDoc(userMetaRef, initialMeta);
       
       toast({ title: "Signup Successful", description: "Welcome to Perfectly Styled!" });
 
-      // Check for pending questionnaire data
       const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
+      let questionnaireSaved = false;
       if (pendingDataString) {
         try {
           const questionnaireData = JSON.parse(pendingDataString) as QuestionnaireData;
@@ -60,6 +60,8 @@ export default function SignupPage() {
           if (saveResult.success) {
             toast({ title: "Questionnaire Saved!", description: "Your style profile is updated." });
             localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
+            initialMeta.questionnaireComplete = true; // Update meta to reflect saved questionnaire
+            questionnaireSaved = true;
           } else {
             toast({ title: "Error Saving Questionnaire", description: saveResult.message, variant: "destructive" });
           }
@@ -69,7 +71,16 @@ export default function SignupPage() {
         }
       }
       
-      router.push("/payment"); // Proceed to payment after signup (and potential questionnaire save)
+      // Save initial (or updated) user meta
+      await setDoc(userMetaRef, initialMeta);
+      
+      // Redirect logic: If questionnaire was just saved (or was already complete from another session somehow)
+      // and user came from questionnaire flow, go to payment. Otherwise, homepage.
+      if (questionnaireSaved || searchParams.get("fromQuestionnaire") === "true") {
+        router.push("/payment");
+      } else {
+        router.push("/"); 
+      }
 
     } catch (error: any) {
       console.error("Signup error:", error);
@@ -93,7 +104,9 @@ export default function SignupPage() {
              errorMessage = "Firebase configuration error. Please ensure environment variables are correctly set for the deployment.";
             break;
           default:
-            if (error.message) {
+            if (error.message && error.message.includes("Firebase: Error (auth/network-request-failed).")) {
+                errorMessage = "Network error. Please check your internet connection and try again.";
+            } else if (error.message) {
                  errorMessage = `Signup failed: ${error.message}`;
             }
             if (error.message && error.message.toLowerCase().includes("firestore")) {
@@ -105,7 +118,7 @@ export default function SignupPage() {
       }
 
       toast({ title: "Signup Failed", description: errorMessage, variant: "destructive" });
-      throw new Error(errorMessage);
+      throw new Error(errorMessage); // Rethrow to be caught by AuthForm's error handling
     }
   };
 
@@ -127,4 +140,3 @@ export default function SignupPage() {
     </>
   );
 }
-
