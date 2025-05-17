@@ -1,7 +1,8 @@
+
 "use client";
 
-import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
 import type { QuestionnaireData } from "@/types";
 import LoadingSpinner from "./LoadingSpinner";
+import { useAuth } from "@/hooks/useAuth"; // Import useAuth
 
 const stepSchemas = [
   z.object({ dominantLine: z.string().min(1, "Please select your dominant line.") }),
@@ -68,30 +70,61 @@ const stepDescriptions = [
   "Tell us about your style goals, favorite pieces, or any specific advice you're seeking."
 ];
 
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData";
+
 export default function QuestionnaireForm({ onSubmit, initialData }: QuestionnaireFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const { currentUser, loading: authLoading } = useAuth(); // Get currentUser for conditional logic
 
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(stepSchemas[currentStep]), // Validate current step only
+    resolver: zodResolver(stepSchemas[currentStep]), 
     defaultValues: {
       dominantLine: initialData?.dominantLine || "",
       bodyShape: initialData?.bodyShape || "",
       scale: initialData?.scale || "",
       preferences: initialData?.preferences || "",
     },
-    mode: "onChange", // Re-validate on change for better UX
+    mode: "onChange", 
   });
 
+  // Effect to load pending data from localStorage if user is not logged in and form is empty
+  useEffect(() => {
+    if (!currentUser && !authLoading) { // Only for anonymous users
+      const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
+      if (pendingDataString) {
+        try {
+          const pendingData = JSON.parse(pendingDataString) as QuestionnaireData;
+          // Check if form is still at default values before resetting
+          const currentValues = form.getValues();
+          if (
+            !currentValues.dominantLine &&
+            !currentValues.bodyShape &&
+            !currentValues.scale &&
+            !currentValues.preferences
+          ) {
+             form.reset({
+                dominantLine: pendingData.dominantLine || "",
+                bodyShape: pendingData.bodyShape || "",
+                scale: pendingData.scale || "",
+                preferences: pendingData.preferences || "",
+            });
+          }
+        } catch (e) {
+          console.error("Error parsing pending questionnaire data from localStorage:", e);
+        }
+      }
+    }
+  }, [currentUser, authLoading, form]);
+
+
   const handleNext = async () => {
-    // Trigger validation for current step fields
     const fieldsToValidate: (keyof QuestionnaireFormValues)[] = Object.keys(stepSchemas[currentStep].shape) as (keyof QuestionnaireFormValues)[];
     const isValid = await form.trigger(fieldsToValidate);
     if (isValid) {
       if (currentStep < stepSchemas.length - 1) {
         setCurrentStep((prev) => prev + 1);
       } else {
-        // This is the final submit
         await form.handleSubmit(onFinalSubmit)();
       }
     }
@@ -105,14 +138,13 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   
   const onFinalSubmit = async (data: QuestionnaireFormValues) => {
     setIsLoading(true);
-    // Ensure all data is passed to the onSubmit prop
     const fullData: QuestionnaireData = {
       dominantLine: data.dominantLine,
       bodyShape: data.bodyShape,
       scale: data.scale,
       preferences: data.preferences,
     };
-    await onSubmit(fullData);
+    await onSubmit(fullData); // onSubmit is now passed from QuestionnairePage and handles logic
     setIsLoading(false);
   };
 
@@ -232,7 +264,6 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-             {/* Hidden submit button to allow form.handleSubmit to be called via Enter key if desired. */}
             {currentStep === stepSchemas.length -1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
           </form>
         </Form>
@@ -246,12 +277,13 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         ) : (
-          <Button type="button" onClick={handleNext} disabled={isLoading}>
+          <Button type="button" onClick={handleNext} disabled={isLoading || authLoading}> {/* Disable if auth is loading too */}
             {isLoading ? <LoadingSpinner size={20} className="mr-2"/> : <Send className="mr-2 h-4 w-4" />}
-            Submit for Analysis
+            {currentUser ? "Save & Proceed to Payment" : "Save & Proceed to Sign Up"}
           </Button>
         )}
       </CardFooter>
     </Card>
   );
 }
+

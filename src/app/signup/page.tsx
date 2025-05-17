@@ -2,34 +2,44 @@
 "use client";
 
 import AuthForm from "@/components/AuthForm";
-import { auth, db } from "@/config/firebase"; // db might not be needed here but auth is crucial
+import { auth, db } from "@/config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-import type { UserMeta } from "@/types";
+import type { UserMeta, QuestionnaireData } from "@/types";
 import { Button } from "@/components/ui/button";
+import { saveQuestionnaireData } from "@/actions/questionnaireActions";
+
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData";
 
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
 
   const handleSignup = async (values: { email: string; password: string }) => {
-    if (!auth || !db) { // Check if Firebase auth/db services are available
+    if (!auth) {
       toast({ 
         title: "Configuration Error", 
-        description: "Firebase is not configured correctly. Please ensure environment variables are set and contact support if the issue persists.", 
+        description: "Firebase Auth is not configured. Please contact support.", 
         variant: "destructive" 
       });
-      throw new Error("Firebase services (auth/db) not initialized. Check environment variables.");
+      throw new Error("Firebase Auth service not initialized.");
+    }
+     if (!db) {
+      toast({ 
+        title: "Configuration Error", 
+        description: "Firebase Firestore is not configured. Please contact support.", 
+        variant: "destructive" 
+      });
+      throw new Error("Firebase Firestore service not initialized.");
     }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
 
-      // Create user meta document
       const userMetaRef = doc(db, "users", user.uid, "meta", "data");
       const initialMeta: UserMeta = {
         email: user.email,
@@ -40,9 +50,29 @@ export default function SignupPage() {
       await setDoc(userMetaRef, initialMeta);
       
       toast({ title: "Signup Successful", description: "Welcome to Perfectly Styled!" });
-      router.push("/questionnaire"); // Redirect to questionnaire after signup
+
+      // Check for pending questionnaire data
+      const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
+      if (pendingDataString) {
+        try {
+          const questionnaireData = JSON.parse(pendingDataString) as QuestionnaireData;
+          const saveResult = await saveQuestionnaireData(user.uid, questionnaireData);
+          if (saveResult.success) {
+            toast({ title: "Questionnaire Saved!", description: "Your style profile is updated." });
+            localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
+          } else {
+            toast({ title: "Error Saving Questionnaire", description: saveResult.message, variant: "destructive" });
+          }
+        } catch (e) {
+          console.error("Error processing pending questionnaire data:", e);
+          toast({ title: "Error", description: "Could not process saved questionnaire data.", variant: "destructive" });
+        }
+      }
+      
+      router.push("/payment"); // Proceed to payment after signup (and potential questionnaire save)
+
     } catch (error: any) {
-      console.error("Signup error:", error); // Log the full error for debugging
+      console.error("Signup error:", error);
       let errorMessage = "An unexpected error occurred during sign up. Please try again.";
       
       if (error && typeof error.code === 'string') {
@@ -59,14 +89,13 @@ export default function SignupPage() {
           case "auth/weak-password":
             errorMessage = "The password is too weak. Please choose a stronger password (at least 6 characters).";
             break;
-          case "auth/configuration-not-found": // Explicitly handle this
-            errorMessage = "Firebase configuration is missing or invalid. Please contact support.";
+          case "auth/configuration-not-found":
+             errorMessage = "Firebase configuration error. Please ensure environment variables are correctly set for the deployment.";
             break;
           default:
             if (error.message) {
                  errorMessage = `Signup failed: ${error.message}`;
             }
-            // Check if it might be a Firestore error after successful auth
             if (error.message && error.message.toLowerCase().includes("firestore")) {
                  errorMessage = "Account created, but failed to save user profile information. Please try logging in or contact support.";
             }
@@ -76,7 +105,7 @@ export default function SignupPage() {
       }
 
       toast({ title: "Signup Failed", description: errorMessage, variant: "destructive" });
-      throw new Error(errorMessage); // Propagate error to AuthForm
+      throw new Error(errorMessage);
     }
   };
 
@@ -86,7 +115,7 @@ export default function SignupPage() {
         mode="signup"
         onSubmit={handleSignup}
         title="Create Your Account"
-        description="Join Perfectly Styled to discover your unique style."
+        description="Join Perfectly Styled to discover your unique style. Complete the questionnaire first, then sign up to save and get your report!"
         buttonText="Sign Up"
       />
       <p className="text-center text-sm text-muted-foreground">
@@ -98,3 +127,4 @@ export default function SignupPage() {
     </>
   );
 }
+

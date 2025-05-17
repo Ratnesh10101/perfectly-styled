@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Shirt, LogIn, LogOut, UserPlus, DraftingCompass, FileText, Diamond } from "lucide-react";
+import { Shirt, LogIn, LogOut, UserPlus, DraftingCompass, FileText, Diamond, CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const Header = () => {
-  const { currentUser, userMeta, logout, loading } = useAuth(); // Added loading
+  const { currentUser, userMeta, logout, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -24,9 +24,7 @@ const Header = () => {
     }
   };
 
-  // Render a loading state for the header if auth is still loading on the client
-  // This helps prevent hydration mismatches and UI flickering.
-  if (loading && typeof window !== 'undefined') {
+  if (loading && typeof window !== 'undefined') { // Only show skeleton on client during auth loading
     return (
       <header className="bg-card shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -35,8 +33,8 @@ const Header = () => {
             <span>Perfectly Styled</span>
           </Link>
           <nav className="flex items-center gap-2 sm:gap-4">
-            <Skeleton className="h-9 w-24" />
-            <Skeleton className="h-9 w-28" />
+            <Skeleton className="h-9 w-24 rounded-md" />
+            <Skeleton className="h-9 w-28 rounded-md" />
           </nav>
         </div>
       </header>
@@ -53,27 +51,26 @@ const Header = () => {
         <nav className="flex items-center gap-2 sm:gap-4">
           {currentUser ? (
             <>
-              {userMeta?.questionnaireComplete && !userMeta?.hasGeneratedReport && (
+              {!userMeta?.questionnaireComplete && (
+                <Button variant="ghost" asChild>
+                  <Link href="/questionnaire">
+                    <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
+                  </Link>
+                </Button>
+              )}
+              {userMeta?.questionnaireComplete && !userMeta?.hasPaid && !userMeta?.hasGeneratedReport && (
                  <Button variant="ghost" asChild>
                     <Link href="/payment">
-                      <Diamond className="mr-2 h-4 w-4" /> Pay & Get Report
+                      <CreditCard className="mr-2 h-4 w-4" /> Pay for Report
                     </Link>
                   </Button>
               )}
-              {userMeta?.hasGeneratedReport ? (
+              {userMeta?.hasGeneratedReport && (
                 <Button variant="ghost" asChild>
                   <Link href="/report">
                     <FileText className="mr-2 h-4 w-4" /> View Report
                   </Link>
                 </Button>
-              ) : (
-                 !userMeta?.questionnaireComplete && ( // Only show questionnaire if not complete
-                    <Button variant="ghost" asChild>
-                        <Link href="/questionnaire">
-                        <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
-                        </Link>
-                    </Button>
-                 )
               )}
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" /> Logout
@@ -81,6 +78,11 @@ const Header = () => {
             </>
           ) : (
             <>
+              <Button variant="ghost" asChild>
+                  <Link href="/questionnaire">
+                  <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
+                  </Link>
+              </Button>
               <Button variant="ghost" asChild>
                 <Link href="/login">
                   <LogIn className="mr-2 h-4 w-4" /> Login

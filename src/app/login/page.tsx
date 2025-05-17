@@ -3,11 +3,15 @@
 
 import AuthForm from "@/components/AuthForm";
 import { auth } from "@/config/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, type User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { saveQuestionnaireData } from "@/actions/questionnaireActions";
+import type { QuestionnaireData } from "@/types";
+
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,15 +21,39 @@ export default function LoginPage() {
     if (!auth) {
       toast({
         title: "Login Failed",
-        description: "Firebase is not configured correctly. Please contact support or check environment variables.",
+        description: "Firebase Auth is not configured correctly. Please contact support.",
         variant: "destructive",
       });
       throw new Error("Firebase auth service not available.");
     }
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user as User;
       toast({ title: "Login Successful", description: "Welcome back!" });
-      router.push("/");
+
+      // Check for pending questionnaire data
+      const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
+      if (pendingDataString) {
+        try {
+          const questionnaireData = JSON.parse(pendingDataString) as QuestionnaireData;
+          const saveResult = await saveQuestionnaireData(user.uid, questionnaireData);
+          if (saveResult.success) {
+            toast({ title: "Questionnaire Saved!", description: "Your style profile is updated." });
+            localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
+            router.push("/payment"); // Go to payment after saving questionnaire
+            return;
+          } else {
+            toast({ title: "Error Saving Questionnaire", description: saveResult.message, variant: "destructive" });
+          }
+        } catch (e) {
+          console.error("Error processing pending questionnaire data:", e);
+          toast({ title: "Error", description: "Could not process saved questionnaire data.", variant: "destructive" });
+        }
+      }
+      
+      // Standard redirect if no pending questionnaire data
+      router.push("/"); 
+
     } catch (error: any) {
       let errorMessage = "Failed to login. Please check your credentials.";
       if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
@@ -36,7 +64,7 @@ export default function LoginPage() {
         errorMessage = error.message;
       }
       toast({ title: "Login Failed", description: errorMessage, variant: "destructive" });
-      throw new Error(errorMessage); // Propagate error to AuthForm
+      throw new Error(errorMessage);
     }
   };
 
