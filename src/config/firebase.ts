@@ -10,7 +10,7 @@ function sanitizeString(value: string | undefined): string {
 }
 
 // Original config values from process.env
-const firebaseConfig = {
+const rawFirebaseConfigValues = {
   apiKey: "AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk",
   authDomain: "perfectly-styled.firebaseapp.com",
   projectId: "perfectly-styled",
