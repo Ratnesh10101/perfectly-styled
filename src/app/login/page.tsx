@@ -109,7 +109,7 @@ const ClientLoginPage = dynamic(() => import('@/components/AuthForm').then(mod =
         );
     };
 }), { ssr: false }); // Added semicolon here
-
+;
 export default function LoginPage() { // Keep the default export for the page
   return (
     <Suspense fallback={<div>Loading login form...</div>}>
