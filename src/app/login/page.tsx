@@ -1,5 +1,5 @@
 
-"use client";
+'use client';
 
 import AuthForm from "@/components/AuthForm";
 import { auth } from "@/config/firebase";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { saveQuestionnaireData } from "@/actions/questionnaireActions";
 import type { QuestionnaireData } from "@/types";
 
+import { Suspense } from 'react'; // Import Suspense
 const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; // Ensure this matches
 
 export default function LoginPage() {
@@ -85,7 +86,8 @@ export default function LoginPage() {
     }
   };
 
-  return (
+  // Render the content inside Suspense
+  const LoginContent = () => (
     <>
       <AuthForm
         mode="login"
@@ -102,5 +104,11 @@ export default function LoginPage() {
         </Button>
       </p>
     </>
+  );
+
+  return (
+    <Suspense fallback={<div>Loading login form...</div>}> {/* Add Suspense boundary */}
+      <LoginContent />
+    </Suspense>
   );
 }
