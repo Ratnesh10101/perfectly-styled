@@ -53,6 +53,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setUserMeta(null);
           }
           setLoading(false);
+        }, (error) => {
+          console.error("AuthContext: onAuthStateChanged error:", error);
+          setLoading(false);
         });
       } catch (e) {
         console.error("AuthContext: Error attaching onAuthStateChanged listener:", e);
@@ -94,7 +97,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
       } catch (e) {
         console.error("AuthContext: Error setting up Firestore onSnapshot listener:", e);
-        // Potentially set userMeta to a default or null state if listener setup fails
         setUserMeta({ email: currentUser.email, hasPaid: false, hasGeneratedReport: false, questionnaireComplete: false });
       }
     } else {
@@ -127,14 +129,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserMeta(null);
   };
 
-  if (loading && typeof window !== 'undefined') { // Only show full page spinner on client
-    return <LoadingSpinner fullPage />;
-  }
-  if (loading && typeof window === 'undefined') { // For SSR, if still loading, perhaps render minimal or null
-      return null; // Or some placeholder that doesn't rely on client-side state
-  }
-
-
+  // AuthProvider will now always render its children.
+  // Components consuming this context (like Header, HomePage, ProtectedRoute)
+  // should use the 'loading' state from the context to manage their own loading UI
+  // to prevent hydration mismatches.
   return (
     <AuthContext.Provider value={{ currentUser, userMeta, loading, logout }}>
       {children}

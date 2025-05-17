@@ -7,15 +7,15 @@ import { generateStyleRecommendations } from "@/ai/flows/generate-style-recommen
 import type { QuestionnaireData, UserReport, UserMeta } from "@/types";
 import { revalidatePath } from "next/cache";
 
-const FIREBASE_NOT_CONFIGURED_ERROR = { success: false, message: "Firebase is not configured correctly on the server. Please check server logs and environment variables." };
+// const FIREBASE_NOT_CONFIGURED_ERROR = { success: false, message: "Firebase is not configured correctly on the server. Please check server logs and environment variables." };
 
 export async function saveQuestionnaireAndGenerateReport(
   userId: string,
   data: QuestionnaireData
 ): Promise<{ success: boolean; message: string; reportId?: string }> {
-  if (!db || !auth) { // auth check is more for completeness, db is critical here
-    console.error("saveQuestionnaireAndGenerateReport: Firebase 'db' or 'auth' is not initialized.");
-    return FIREBASE_NOT_CONFIGURED_ERROR;
+  if (!db || !auth) { 
+    console.error("saveQuestionnaireAndGenerateReport: Firebase 'db' or 'auth' is not initialized. This usually means environment variables are missing in the deployment.");
+    return { success: false, message: "Firebase is not configured correctly on the server. Please check server logs and environment variables." };
   }
 
   if (!userId) {
@@ -51,9 +51,9 @@ export async function saveQuestionnaireAndGenerateReport(
 export async function processPaymentAndGenerateReport(
   userId: string
 ): Promise<{ success: boolean; message: string; reportId?: string }> {
-  if (!db || !auth) { // auth check is more for completeness, db is critical here
-    console.error("processPaymentAndGenerateReport: Firebase 'db' or 'auth' is not initialized.");
-    return FIREBASE_NOT_CONFIGURED_ERROR;
+  if (!db || !auth) { 
+    console.error("processPaymentAndGenerateReport: Firebase 'db' or 'auth' is not initialized. This usually means environment variables are missing in the deployment.");
+    return { success: false, message: "Firebase is not configured correctly on the server. Please check server logs and environment variables." };
   }
 
   if (!userId) {
@@ -105,7 +105,7 @@ export async function processPaymentAndGenerateReport(
     console.error("Error processing payment and generating report:", error);
     // Attempt to get userMetaRef again, but db might be null if initial check was somehow bypassed
     // This rollback is best-effort.
-    if (db) {
+    if (db) { // Check db again, as it's crucial for Firestore operations
         const userMetaRef = doc(db, "users", userId, "meta", "data");
         await setDoc(userMetaRef, { hasPaid: false, hasGeneratedReport: false }, { merge: true });
     }
