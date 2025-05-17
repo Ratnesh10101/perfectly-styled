@@ -24,7 +24,7 @@ const Header = () => {
     }
   };
 
-  if (loading) { // Removed "&& typeof window !== 'undefined'"
+  if (loading) {
     return (
       <header className="bg-card shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -83,16 +83,9 @@ const Header = () => {
                   <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
                   </Link>
               </Button>
-              <Button variant="ghost" asChild>
-                <Link href="/login">
-                  <LogIn className="mr-2 h-4 w-4" /> Login
-                </Link>
-              </Button>
-              <Button asChild>
-                <Link href="/signup">
-                  <UserPlus className="mr-2 h-4 w-4" /> Sign Up
-                </Link>
-              </Button>
+              {/* Login and Sign Up buttons removed from header for logged-out users 
+                  They will be guided to signup/login after questionnaire completion. 
+              */}
             </>
           )}
         </nav>

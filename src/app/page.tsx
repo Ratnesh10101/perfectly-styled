@@ -57,7 +57,6 @@ export default function HomePage() {
                 </CardContent>
                 <CardFooter className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
                     <div className="h-12 bg-muted rounded w-60"></div>
-                    {!currentUser && <div className="h-12 bg-muted rounded w-32"></div>}
                 </CardFooter>
             </Card>
         </div>
@@ -100,16 +99,7 @@ export default function HomePage() {
           <Button asChild size="lg">
             <Link href={getButtonLink()}>{buttonText} {buttonIcon}</Link>
           </Button>
-          {!currentUser && (
-            <>
-              <Button variant="outline" asChild size="lg">
-                <Link href="/login">Login <LogIn className="ml-2 h-5 w-5" /></Link>
-              </Button>
-               <Button variant="ghost" asChild size="lg" className="text-sm">
-                <Link href="/signup">Or Sign Up <UserPlus className="ml-2 h-4 w-4" /></Link>
-              </Button>
-            </>
-          )}
+          {/* Login and Sign Up buttons removed from homepage for new users */}
         </CardFooter>
       </Card>
     </div>
