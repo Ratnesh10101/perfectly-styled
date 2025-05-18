@@ -249,13 +249,14 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
 
   const progressValue = ((currentStep + 1) / stepSchemas.length) * 100;
 
-  const renderRadioGroup = (fieldName: keyof QuestionnaireFormValues, label: string, options: { value: string, label: string }[]) => (
+  const renderRadioGroup = (fieldName: keyof QuestionnaireFormValues, label: string, options: { value: string, label: string }[], description?: string) => (
     <FormField
       control={form.control}
       name={fieldName}
       render={({ field }) => (
         <FormItem className="space-y-3">
           <FormLabel className="text-base font-semibold">{label}</FormLabel>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
@@ -294,7 +295,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
             {currentStep === 0 && (
               <>
                 {renderRadioGroup("shoulders_answer", "Shoulders:", lineOptions.shoulders)}
-                {renderRadioGroup("waist_answer", "Waist:", lineOptions.waist)}
+                {renderRadioGroup("waist_answer", "Waist:", lineOptions.waist, "A defined waist is at least 8 inches narrower than the bust and hips, when looking at yourself straight on. Example: Bust: 38 inches, Waist: 28 inches, Hips: 38–40 inches")}
                 {renderRadioGroup("hips_answer", "Hips:", lineOptions.hips)}
               </>
             )}
@@ -399,3 +400,4 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     </Card>
   );
 }
+
