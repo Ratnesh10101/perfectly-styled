@@ -18,11 +18,11 @@ export async function saveQuestionnaireData(
   console.log("Current auth status:", auth ? "auth object exists" : "auth is null/undefined");
 
   if (!db) {
-    console.error("saveQuestionnaireData ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment.");
+    console.error("saveQuestionnaireData ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
     return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
   if (!auth) { 
-    console.error("saveQuestionnaireData ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment.");
+    console.error("saveQuestionnaireData ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
     return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
 
@@ -36,7 +36,7 @@ export async function saveQuestionnaireData(
     const questionnaireWithTimestamp = {
       ...data, 
       userId, 
-      createdAt: serverTimestamp(),
+      createdAt: serverTimestamp() as any, // Type assertion for Firestore sentinel
       preferences: data.preferences || "", // Ensure preferences is at least an empty string
     };
     await setDoc(questionnaireRef, questionnaireWithTimestamp);
@@ -67,11 +67,11 @@ export async function processPaymentAndGenerateReport(
   console.log("Current auth status:", auth ? "auth object exists" : "auth is null/undefined");
 
   if (!db) {
-    console.error("processPaymentAndGenerateReport ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment.");
+    console.error("processPaymentAndGenerateReport ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
      return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
   if (!auth) {
-    console.error("processPaymentAndGenerateReport ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment.");
+    console.error("processPaymentAndGenerateReport ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
     return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
 
@@ -113,7 +113,7 @@ export async function processPaymentAndGenerateReport(
         ...questionnaireData,
         preferences: questionnaireData.preferences || "",
       },
-      generatedAt: serverTimestamp(),
+      generatedAt: serverTimestamp() as any, // Type assertion for Firestore sentinel
     };
     await setDoc(reportRef, userReport);
     console.log(`Report ${reportId} saved for userId: ${userId}`);
