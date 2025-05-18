@@ -1,3 +1,4 @@
+
 "use client";
 
 import PaymentComponent from "@/components/PaymentComponent";
@@ -11,9 +12,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const paymentCheck = (meta: UserMeta | null) => {
+const paymentCheck = (meta: UserMeta | null): boolean => {
   // Allow access if questionnaire is complete AND (user hasn't paid OR payment failed and report not generated)
-  return !!meta && meta.questionnaireComplete && (!meta.hasPaid || !meta.hasGeneratedReport);
+  return !!( // Coerce the entire expression to boolean
+    meta &&
+    meta.questionnaireComplete &&
+    (!meta.hasPaid || !meta.hasGeneratedReport)
+  );
 };
 
 export default function PaymentPage() {

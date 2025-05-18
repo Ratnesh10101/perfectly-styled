@@ -30,50 +30,51 @@ let firebaseInitError: string | null = null;
 function initializeFirebase() {
   if (firebaseInitialized) return;
 
-  const apiKey = sanitizeString(rawFirebaseConfigValues.apiKey);
-  const authDomain = sanitizeString(rawFirebaseConfigValues.authDomain);
-  const projectId = sanitizeString(rawFirebaseConfigValues.projectId);
-  const storageBucket = sanitizeString(rawFirebaseConfigValues.storageBucket);
-  const messagingSenderId = sanitizeString(rawFirebaseConfigValues.messagingSenderId);
-  const appId = sanitizeString(rawFirebaseConfigValues.appId);
-  const measurementId = sanitizeString(rawFirebaseConfigValues.measurementId);
-
-  if (typeof window !== 'undefined') { // Log these only on the client to avoid noise on server logs if not relevant
-    console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY:", JSON.stringify(rawFirebaseConfigValues.apiKey), typeof rawFirebaseConfigValues.apiKey, rawFirebaseConfigValues.apiKey?.length);
-    console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", JSON.stringify(rawFirebaseConfigValues.authDomain), typeof rawFirebaseConfigValues.authDomain, rawFirebaseConfigValues.authDomain?.length);
-    console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID:", JSON.stringify(rawFirebaseConfigValues.projectId), typeof rawFirebaseConfigValues.projectId, rawFirebaseConfigValues.projectId?.length);
-  }
-
-  const missingVars: string[] = [];
-  if (!apiKey) missingVars.push("NEXT_PUBLIC_FIREBASE_API_KEY");
-  if (!authDomain) missingVars.push("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN");
-  if (!projectId) missingVars.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
-
-  if (missingVars.length > 0) {
-    firebaseInitError = `CRITICAL Firebase Initialization Error: The following environment variables are MISSING or EMPTY: ${missingVars.join(", ")}. These MUST be set in your application's deployment environment (for both client-side build and server-side runtime). Firebase will NOT be initialized, impacting ALL Firebase-dependent functionality. Please check your Firebase Hosting/Functions (or other deployment service) environment variable configuration.`;
-    console.error(firebaseInitError);
-    firebaseInitialized = true;
-    app = null; auth = null; db = null; analytics = null;
-    return;
-  }
-
-  const firebaseConfig = {
-    apiKey,
-    authDomain,
-    projectId,
-    storageBucket,
-    messagingSenderId,
-    appId,
-    measurementId,
-  };
-
-  if (typeof window !== 'undefined') {
-     console.log("Firebase config object being used by client:", firebaseConfig);
-  }
-  // console.log("Attempting Firebase initialization with config:", firebaseConfig);
-
-
   try {
+    const apiKey = sanitizeString(rawFirebaseConfigValues.apiKey);
+    const authDomain = sanitizeString(rawFirebaseConfigValues.authDomain);
+    const projectId = sanitizeString(rawFirebaseConfigValues.projectId);
+    const storageBucket = sanitizeString(rawFirebaseConfigValues.storageBucket);
+    const messagingSenderId = sanitizeString(rawFirebaseConfigValues.messagingSenderId);
+    const appId = sanitizeString(rawFirebaseConfigValues.appId);
+    const measurementId = sanitizeString(rawFirebaseConfigValues.measurementId);
+
+    // Log raw values only on client to avoid server log noise if not directly relevant there
+    if (typeof window !== 'undefined') {
+      console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY:", JSON.stringify(rawFirebaseConfigValues.apiKey), typeof rawFirebaseConfigValues.apiKey, rawFirebaseConfigValues.apiKey?.length);
+      console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", JSON.stringify(rawFirebaseConfigValues.authDomain), typeof rawFirebaseConfigValues.authDomain, rawFirebaseConfigValues.authDomain?.length);
+      console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID:", JSON.stringify(rawFirebaseConfigValues.projectId), typeof rawFirebaseConfigValues.projectId, rawFirebaseConfigValues.projectId?.length);
+    }
+
+    const missingVars: string[] = [];
+    if (!apiKey) missingVars.push("NEXT_PUBLIC_FIREBASE_API_KEY");
+    if (!authDomain) missingVars.push("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN");
+    if (!projectId) missingVars.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
+    // Add other critical vars if necessary, but these are primary for init
+
+    if (missingVars.length > 0) {
+      firebaseInitError = `CRITICAL Firebase Initialization Error: The following critical environment variables are MISSING or EMPTY: ${missingVars.join(", ")}. These MUST be set in your application's DEPLOYMENT ENVIRONMENT (server-side and build-time). Firebase will NOT be initialized, and ALL Firebase-dependent functionality (auth, database, etc.) WILL FAIL on both CLIENT and SERVER.`;
+      console.error(firebaseInitError);
+      // Explicitly nullify services
+      app = null; auth = null; db = null; analytics = null;
+      firebaseInitialized = true; // Mark as "initialization attempt complete"
+      return;
+    }
+
+    const firebaseConfig = {
+      apiKey,
+      authDomain,
+      projectId,
+      storageBucket,
+      messagingSenderId,
+      appId,
+      measurementId: measurementId || undefined, // Ensure measurementId is undefined if empty, not an empty string
+    };
+
+    if (typeof window !== 'undefined') {
+      console.log("Firebase config object being used by client:", firebaseConfig);
+    }
+
     if (!getApps().length) {
       app = initializeApp(firebaseConfig);
       console.log("Firebase app initialized successfully.");
@@ -94,11 +95,11 @@ function initializeFirebase() {
         db = null;
       }
 
-      if (typeof window !== 'undefined' && app && measurementId) {
+      if (typeof window !== 'undefined' && app && firebaseConfig.measurementId) {
         isAnalyticsSupported().then(supported => {
           if (supported) {
             try {
-              analytics = getAnalytics(app!); // app should be non-null here
+              analytics = getAnalytics(app!);
               console.log("Firebase Analytics initialized.");
             } catch (analyticsError: any) {
               console.error(`Firebase: Error initializing Analytics service: ${analyticsError.message || analyticsError}`, analyticsError);
@@ -110,16 +111,19 @@ function initializeFirebase() {
         }).catch(err => console.error("Error checking analytics support:", err));
       }
     } else {
-      firebaseInitError = "Firebase app object is null after initialization attempt. Firebase services (Auth, Firestore) will not be available.";
+      // This case should be covered by missingVars check, but as a fallback:
+      firebaseInitError = "Firebase app object is null after initialization attempt. This indicates a fundamental problem with initializeApp(config).";
       console.error(firebaseInitError);
       auth = null; db = null; analytics = null;
     }
   } catch (error: any) {
-    firebaseInitError = `Firebase initializeApp critical error: ${error.message || error}. This usually means the firebaseConfig object itself is malformed or core Firebase services are unreachable. Double check all NEXT_PUBLIC_FIREBASE_... environment variables.`;
+    // Catch any unexpected error during the entire initialization process
+    firebaseInitError = `CRITICAL UNHANDLED Firebase Initialization Block Error: ${error.message || error}. Firebase services will not be available.`;
     console.error(firebaseInitError, error);
     app = null; auth = null; db = null; analytics = null;
+  } finally {
+    firebaseInitialized = true; // Ensure this is always set
   }
-  firebaseInitialized = true;
 }
 
 initializeFirebase();
