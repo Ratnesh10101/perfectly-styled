@@ -92,7 +92,7 @@ export default function HomePage() {
             </div>
           </div>
            <p className="text-muted-foreground">
-            First, complete our style questionnaire. Then, sign up to save your results and proceed to get your comprehensive style report for just <strong className="text-primary">£19.99</strong>.
+            First, complete our style questionnaire. Then, sign up to save your results and proceed to get your comprehensive style report.
           </p>
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
@@ -105,3 +105,4 @@ export default function HomePage() {
     </div>
   );
 }
+
