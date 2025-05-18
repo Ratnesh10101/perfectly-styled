@@ -29,8 +29,23 @@ const lineAnswerSchema = z.string().min(1, "Please select an option.");
 const scaleAnswerSchema = z.string().min(1, "Please select an option.");
 const bodyShapeSchema = z.string().min(1, "Please select your body shape.");
 
-// Schemas for each step
-const stepSchemas = [
+// Combined schema for the entire form, used for defaultValues and final data structure
+const combinedSchema = z.object({
+  shoulders_answer: lineAnswerSchema,
+  waist_answer: lineAnswerSchema,
+  hips_answer: lineAnswerSchema,
+  face_answer: lineAnswerSchema,
+  jawline_answer: lineAnswerSchema,
+  wrist_answer: scaleAnswerSchema,
+  height_answer: scaleAnswerSchema,
+  shoeSize_answer: scaleAnswerSchema,
+  bodyShape: bodyShapeSchema.or(z.literal("")), // Allow empty for initial state
+});
+
+type QuestionnaireFormValues = z.infer<typeof combinedSchema>;
+
+// Schemas for each step - used to determine fields for form.trigger()
+const stepSchemas: z.ZodObject<any, any, any, any, any>[] = [
   z.object({ // Step 1: Line - Shoulders, Waist, Hips
     shoulders_answer: lineAnswerSchema,
     waist_answer: lineAnswerSchema,
@@ -48,27 +63,11 @@ const stepSchemas = [
   z.object({ // Step 4: Body Shape
     bodyShape: bodyShapeSchema,
   }),
-  // Step 5 (Preferences) removed
 ];
 
-// Combined schema for the entire form, used for defaultValues and final data structure
-const combinedSchema = z.object({
-  shoulders_answer: lineAnswerSchema,
-  waist_answer: lineAnswerSchema,
-  hips_answer: lineAnswerSchema,
-  face_answer: lineAnswerSchema,
-  jawline_answer: lineAnswerSchema,
-  wrist_answer: scaleAnswerSchema,
-  height_answer: scaleAnswerSchema,
-  shoeSize_answer: scaleAnswerSchema,
-  bodyShape: bodyShapeSchema.or(z.literal("")), // Allow empty for initial state
-  // preferences field removed
-});
-
-type QuestionnaireFormValues = z.infer<typeof combinedSchema>;
 
 interface QuestionnaireFormProps {
-  onSubmit: (data: Omit<QuestionnaireData, 'preferences'> & { preferences?: string }) => Promise<void>; // Preferences is now optional
+  onSubmit: (data: Omit<QuestionnaireData, 'preferences'> & { preferences?: string }) => Promise<void>;
   initialData?: Partial<QuestionnaireData>;
 }
 
@@ -127,7 +126,6 @@ const stepTitles = [
   "Line Analysis (Part 2)",
   "Scale Assessment",
   "Horizontal Proportion (Body Shape)",
-  // "Style Preferences" removed
 ];
 
 const stepDescriptions = [
@@ -135,7 +133,6 @@ const stepDescriptions = [
   "Continuing our line analysis (Face, Jawline).",
   "Let's determine your scale based on measurements.",
   "Try holding a meter stick against your shoulders (or ask a friend to help) and let it hang straight down. Observe where it aligns with your hips to get a better idea of your body shape.",
-  // Description for preferences removed
 ];
 
 const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2";
@@ -148,7 +145,6 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   const transformInitialDataToFormValues = (data?: Partial<QuestionnaireData>): Partial<QuestionnaireFormValues> => {
     if (!data) return {};
     const formValues: Partial<QuestionnaireFormValues> = { bodyShape: data.bodyShape as QuestionnaireFormValues['bodyShape'] };
-    // preferences removed from here
     data.lineAnswers?.forEach(la => {
       if (la.bodyPart === 'Shoulders') formValues.shoulders_answer = la.answer;
       if (la.bodyPart === 'Waist') formValues.waist_answer = la.answer;
@@ -165,7 +161,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   };
   
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(stepSchemas[currentStep]),
+    resolver: zodResolver(combinedSchema), // Use the combined schema for the resolver
     defaultValues: {
       shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || "",
       waist_answer: transformInitialDataToFormValues(initialData).waist_answer || "",
@@ -176,9 +172,8 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       height_answer: transformInitialDataToFormValues(initialData).height_answer || "",
       shoeSize_answer: transformInitialDataToFormValues(initialData).shoeSize_answer || "",
       bodyShape: transformInitialDataToFormValues(initialData).bodyShape || "",
-      // preferences removed
     },
-    mode: "onChange",
+    mode: "onChange", // Or consider "onTouched" or "onSubmit" for multi-step forms
   });
 
   useEffect(() => {
@@ -197,7 +192,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
 
   const getClassification = (bodyPartKey: keyof typeof lineOptions, answer: string): 'straight' | 'curved' => {
     const option = lineOptions[bodyPartKey].find(opt => opt.value === answer);
-    return option ? option.classification as 'straight' | 'curved' : 'straight';
+    return option ? option.classification as 'straight' | 'curved' : 'straight'; // Default to straight if not found
   };
 
   const onFinalSubmit = async (data: QuestionnaireFormValues) => {
@@ -219,19 +214,42 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       lineAnswers,
       scaleAnswers,
       bodyShape: data.bodyShape as QuestionnaireData['bodyShape'],
-      // preferences is no longer collected here, will be undefined
     };
     await onSubmit(fullData);
     setIsLoading(false);
   };
 
   const handleNext = async () => {
-    const fieldsToValidate = Object.keys(stepSchemas[currentStep].shape) as (keyof QuestionnaireFormValues)[];
-    const isValid = await form.trigger(fieldsToValidate);
+    const currentStepSchemaDef = stepSchemas[currentStep];
+    let fieldsToValidate: (keyof QuestionnaireFormValues)[] = [];
+
+    // Ensure currentStepSchemaDef is a ZodObject and its shape is defined
+    if (currentStepSchemaDef && typeof currentStepSchemaDef.shape === 'object' && currentStepSchemaDef.shape !== null) {
+      fieldsToValidate = Object.keys(
+        currentStepSchemaDef.shape
+      ) as (keyof QuestionnaireFormValues)[];
+    } else {
+      console.warn(`Step schema for step ${currentStep} is not a ZodObject or shape is undefined.`);
+      // Optionally, if you know the field names for a non-ZodObject step, define them here.
+      // For this form, all steps are ZodObjects, so this branch ideally isn't hit.
+    }
+    
+    if (fieldsToValidate.length === 0 && currentStep < stepSchemas.length) {
+        // If no fields to validate for this step (e.g., an intro step, though not the case here), just proceed
+        // Or if there was an issue getting fields, we might proceed or log more errors.
+        // For now, assume if fieldsToValidate is empty, it might be an error or an empty step.
+        // If it's the last step, this logic won't hit the form.trigger.
+        console.warn(`No fields identified for validation for step ${currentStep}. Proceeding or submitting.`);
+    }
+
+
+    const isValid = fieldsToValidate.length > 0 ? await form.trigger(fieldsToValidate) : true;
+    
     if (isValid) {
       if (currentStep < stepSchemas.length - 1) {
         setCurrentStep((prev) => prev + 1);
       } else {
+        // This is the last step, trigger full form submission
         await form.handleSubmit(onFinalSubmit)();
       }
     }
@@ -256,7 +274,8 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
-              defaultValue={field.value}
+              defaultValue={field.value} // Ensure this works as expected with RHF
+              value={field.value} // Controlled component
               className="flex flex-col space-y-2"
             >
               {options.map((option) => (
@@ -308,7 +327,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 {renderRadioGroup("shoeSize_answer", "Shoe size:", scaleOptions.shoeSize)}
               </>
             )}
-            {currentStep === 3 && ( // This is now the Body Shape step, and the last step
+            {currentStep === 3 && ( 
               <FormField
                 control={form.control}
                 name="bodyShape"
@@ -318,7 +337,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value} // Controlled component
                         className="space-y-4"
                       >
                         {bodyShapeOptions.map((option) => (
@@ -351,9 +370,8 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-            {/* Preferences step (previously currentStep === 4) removed */}
-             {/* Hidden submit button for implicit submission on last step's "Next" */}
-            {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
+             {/* Hidden submit button for implicit submission on last step's "Next" when it triggers form.handleSubmit */}
+            {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading || authLoading} />}
           </form>
         </Form>
       </CardContent>
@@ -365,7 +383,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
           <Button type="button" onClick={handleNext} disabled={isLoading}>
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
-        ) : ( // This is now the "Save & Proceed" button on the Body Shape step
+        ) : ( 
           <Button type="button" onClick={handleNext} disabled={isLoading || authLoading}>
             {isLoading ? <LoadingSpinner size={20} className="mr-2"/> : <Send className="mr-2 h-4 w-4" />}
             {currentUser ? "Save & Proceed to Payment" : "Save & Proceed to Sign Up"}
@@ -375,3 +393,5 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     </Card>
   );
 }
+
+    
