@@ -39,7 +39,7 @@ const combinedSchema = z.object({
   wrist_answer: scaleAnswerSchema,
   height_answer: scaleAnswerSchema,
   shoeSize_answer: scaleAnswerSchema,
-  bodyShape: bodyShapeSchema.or(z.literal("")), // Allow empty for initial state
+  bodyShape: bodyShapeSchema.or(z.literal("")), // Allow empty for initial state, but should resolve to undefined
 });
 
 type QuestionnaireFormValues = z.infer<typeof combinedSchema>;
@@ -161,19 +161,19 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   };
   
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(combinedSchema), // Use the combined schema for the resolver
+    resolver: zodResolver(combinedSchema),
     defaultValues: {
-      shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || "",
-      waist_answer: transformInitialDataToFormValues(initialData).waist_answer || "",
-      hips_answer: transformInitialDataToFormValues(initialData).hips_answer || "",
-      face_answer: transformInitialDataToFormValues(initialData).face_answer || "",
-      jawline_answer: transformInitialDataToFormValues(initialData).jawline_answer || "",
-      wrist_answer: transformInitialDataToFormValues(initialData).wrist_answer || "",
-      height_answer: transformInitialDataToFormValues(initialData).height_answer || "",
-      shoeSize_answer: transformInitialDataToFormValues(initialData).shoeSize_answer || "",
-      bodyShape: transformInitialDataToFormValues(initialData).bodyShape || "",
+      shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || undefined,
+      waist_answer: transformInitialDataToFormValues(initialData).waist_answer || undefined,
+      hips_answer: transformInitialDataToFormValues(initialData).hips_answer || undefined,
+      face_answer: transformInitialDataToFormValues(initialData).face_answer || undefined,
+      jawline_answer: transformInitialDataToFormValues(initialData).jawline_answer || undefined,
+      wrist_answer: transformInitialDataToFormValues(initialData).wrist_answer || undefined,
+      height_answer: transformInitialDataToFormValues(initialData).height_answer || undefined,
+      shoeSize_answer: transformInitialDataToFormValues(initialData).shoeSize_answer || undefined,
+      bodyShape: transformInitialDataToFormValues(initialData).bodyShape || undefined,
     },
-    mode: "onChange", // Or consider "onTouched" or "onSubmit" for multi-step forms
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -192,7 +192,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
 
   const getClassification = (bodyPartKey: keyof typeof lineOptions, answer: string): 'straight' | 'curved' => {
     const option = lineOptions[bodyPartKey].find(opt => opt.value === answer);
-    return option ? option.classification as 'straight' | 'curved' : 'straight'; // Default to straight if not found
+    return option ? option.classification as 'straight' | 'curved' : 'straight'; 
   };
 
   const onFinalSubmit = async (data: QuestionnaireFormValues) => {
@@ -223,25 +223,17 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     const currentStepSchemaDef = stepSchemas[currentStep];
     let fieldsToValidate: (keyof QuestionnaireFormValues)[] = [];
 
-    // Ensure currentStepSchemaDef is a ZodObject and its shape is defined
     if (currentStepSchemaDef && typeof currentStepSchemaDef.shape === 'object' && currentStepSchemaDef.shape !== null) {
       fieldsToValidate = Object.keys(
         currentStepSchemaDef.shape
       ) as (keyof QuestionnaireFormValues)[];
     } else {
       console.warn(`Step schema for step ${currentStep} is not a ZodObject or shape is undefined.`);
-      // Optionally, if you know the field names for a non-ZodObject step, define them here.
-      // For this form, all steps are ZodObjects, so this branch ideally isn't hit.
     }
     
     if (fieldsToValidate.length === 0 && currentStep < stepSchemas.length) {
-        // If no fields to validate for this step (e.g., an intro step, though not the case here), just proceed
-        // Or if there was an issue getting fields, we might proceed or log more errors.
-        // For now, assume if fieldsToValidate is empty, it might be an error or an empty step.
-        // If it's the last step, this logic won't hit the form.trigger.
         console.warn(`No fields identified for validation for step ${currentStep}. Proceeding or submitting.`);
     }
-
 
     const isValid = fieldsToValidate.length > 0 ? await form.trigger(fieldsToValidate) : true;
     
@@ -249,7 +241,6 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       if (currentStep < stepSchemas.length - 1) {
         setCurrentStep((prev) => prev + 1);
       } else {
-        // This is the last step, trigger full form submission
         await form.handleSubmit(onFinalSubmit)();
       }
     }
@@ -274,8 +265,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
-              defaultValue={field.value} // Ensure this works as expected with RHF
-              value={field.value} // Controlled component
+              value={field.value || ""} // Ensure value is not undefined for RadioGroup if it expects string
               className="flex flex-col space-y-2"
             >
               {options.map((option) => (
@@ -337,7 +327,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        value={field.value} // Controlled component
+                        value={field.value || ""} // Ensure value is not undefined for RadioGroup
                         className="space-y-4"
                       >
                         {bodyShapeOptions.map((option) => (
@@ -370,7 +360,6 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-             {/* Hidden submit button for implicit submission on last step's "Next" when it triggers form.handleSubmit */}
             {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading || authLoading} />}
           </form>
         </Form>
@@ -393,5 +382,3 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     </Card>
   );
 }
-
-    

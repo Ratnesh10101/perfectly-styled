@@ -12,7 +12,7 @@ import type { UserMeta, QuestionnaireData } from "@/types";
 import { Button } from "@/components/ui/button";
 import { saveQuestionnaireData } from "@/actions/questionnaireActions";
 
-const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; // Ensure this matches the questionnaire page
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; 
 
 export default function SignupPageContent() {
   const router = useRouter();
@@ -92,13 +92,13 @@ export default function SignupPageContent() {
             errorMessage = "The email address you entered is not valid. Please check and try again.";
             break;
           case "auth/operation-not-allowed":
-            errorMessage = "Email/password sign-up is not enabled for this project. Please contact support.";
+            errorMessage = "Email/password sign-up is not enabled for this project. Please contact support. (Ensure Email/Password provider is enabled in Firebase Authentication settings).";
             break;
           case "auth/weak-password":
             errorMessage = "The password is too weak. Please choose a stronger password (at least 6 characters).";
             break;
           case "auth/configuration-not-found":
-            errorMessage = "Firebase configuration error. Please ensure environment variables are correctly set for the deployment.";
+            errorMessage = "Firebase configuration error. Please ensure environment variables are correctly set for the deployment and check API key restrictions in Google Cloud Console.";
             break;
           default:
             if (error.message && error.message.includes("Firebase: Error (auth/network-request-failed).")) {
@@ -140,4 +140,3 @@ export default function SignupPageContent() {
     </>
   );
 }
-
