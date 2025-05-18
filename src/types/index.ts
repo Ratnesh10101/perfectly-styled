@@ -1,3 +1,4 @@
+
 import type { Timestamp } from "firebase/firestore";
 
 export interface LineAnswer {
@@ -15,14 +16,14 @@ export interface QuestionnaireData {
   lineAnswers: LineAnswer[];
   scaleAnswers: ScaleAnswer[];
   bodyShape: 'Pear Shape' | 'Inverted Triangle' | 'Straight' | 'Round/Apple' | 'Hourglass' | '';
-  preferences: string;
+  preferences?: string; // Made optional
   userId?: string;
   createdAt?: Timestamp;
 }
 
 export interface UserReport {
   recommendations: string;
-  questionnaireData: QuestionnaireData; // This will now hold the new detailed structure
+  questionnaireData: QuestionnaireData;
   generatedAt?: Timestamp;
   userId?: string;
 }
@@ -32,5 +33,5 @@ export interface UserMeta {
   hasGeneratedReport: boolean;
   email?: string | null;
   questionnaireComplete?: boolean;
-  activeReportId?: string; // Added this field based on report page logic
+  activeReportId?: string;
 }

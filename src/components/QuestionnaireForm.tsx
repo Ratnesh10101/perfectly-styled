@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
@@ -29,7 +28,6 @@ import Image from "next/image";
 const lineAnswerSchema = z.string().min(1, "Please select an option.");
 const scaleAnswerSchema = z.string().min(1, "Please select an option.");
 const bodyShapeSchema = z.string().min(1, "Please select your body shape.");
-const preferencesSchema = z.string().min(10, "Min 10 characters.").max(500, "Max 500 characters.");
 
 // Schemas for each step
 const stepSchemas = [
@@ -50,9 +48,7 @@ const stepSchemas = [
   z.object({ // Step 4: Body Shape
     bodyShape: bodyShapeSchema,
   }),
-  z.object({ // Step 5: Preferences
-    preferences: preferencesSchema,
-  }),
+  // Step 5 (Preferences) removed
 ];
 
 // Combined schema for the entire form, used for defaultValues and final data structure
@@ -66,14 +62,14 @@ const combinedSchema = z.object({
   height_answer: scaleAnswerSchema,
   shoeSize_answer: scaleAnswerSchema,
   bodyShape: bodyShapeSchema.or(z.literal("")), // Allow empty for initial state
-  preferences: preferencesSchema,
+  // preferences field removed
 });
 
 type QuestionnaireFormValues = z.infer<typeof combinedSchema>;
 
 interface QuestionnaireFormProps {
-  onSubmit: (data: QuestionnaireData) => Promise<void>;
-  initialData?: Partial<QuestionnaireData>; // Might need adjustment if initialData structure changes
+  onSubmit: (data: Omit<QuestionnaireData, 'preferences'> & { preferences?: string }) => Promise<void>; // Preferences is now optional
+  initialData?: Partial<QuestionnaireData>;
 }
 
 const lineOptions = {
@@ -131,7 +127,7 @@ const stepTitles = [
   "Line Analysis (Part 2)",
   "Scale Assessment",
   "Horizontal Proportion (Body Shape)",
-  "Style Preferences"
+  // "Style Preferences" removed
 ];
 
 const stepDescriptions = [
@@ -139,20 +135,20 @@ const stepDescriptions = [
   "Continuing our line analysis (Face, Jawline).",
   "Let's determine your scale based on measurements.",
   "Try holding a meter stick against your shoulders (or ask a friend to help) and let it hang straight down. Observe where it aligns with your hips to get a better idea of your body shape.",
-  "Tell us about your style goals, favorite pieces, or any specific advice you're seeking."
+  // Description for preferences removed
 ];
 
-const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; // New key for new structure
+const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2";
 
 export default function QuestionnaireForm({ onSubmit, initialData }: QuestionnaireFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { currentUser, loading: authLoading } = useAuth();
 
-  // Helper to transform initialData to form values
   const transformInitialDataToFormValues = (data?: Partial<QuestionnaireData>): Partial<QuestionnaireFormValues> => {
     if (!data) return {};
-    const formValues: Partial<QuestionnaireFormValues> = { preferences: data.preferences, bodyShape: data.bodyShape as QuestionnaireFormValues['bodyShape'] };
+    const formValues: Partial<QuestionnaireFormValues> = { bodyShape: data.bodyShape as QuestionnaireFormValues['bodyShape'] };
+    // preferences removed from here
     data.lineAnswers?.forEach(la => {
       if (la.bodyPart === 'Shoulders') formValues.shoulders_answer = la.answer;
       if (la.bodyPart === 'Waist') formValues.waist_answer = la.answer;
@@ -180,7 +176,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       height_answer: transformInitialDataToFormValues(initialData).height_answer || "",
       shoeSize_answer: transformInitialDataToFormValues(initialData).shoeSize_answer || "",
       bodyShape: transformInitialDataToFormValues(initialData).bodyShape || "",
-      preferences: transformInitialDataToFormValues(initialData).preferences || "",
+      // preferences removed
     },
     mode: "onChange",
   });
@@ -201,7 +197,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
 
   const getClassification = (bodyPartKey: keyof typeof lineOptions, answer: string): 'straight' | 'curved' => {
     const option = lineOptions[bodyPartKey].find(opt => opt.value === answer);
-    return option ? option.classification as 'straight' | 'curved' : 'straight'; // Default, though should always find
+    return option ? option.classification as 'straight' | 'curved' : 'straight';
   };
 
   const onFinalSubmit = async (data: QuestionnaireFormValues) => {
@@ -219,11 +215,11 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       { category: 'Shoe Size', answer: data.shoeSize_answer },
     ];
 
-    const fullData: QuestionnaireData = {
+    const fullData: Omit<QuestionnaireData, 'preferences'> & { preferences?: string } = {
       lineAnswers,
       scaleAnswers,
       bodyShape: data.bodyShape as QuestionnaireData['bodyShape'],
-      preferences: data.preferences,
+      // preferences is no longer collected here, will be undefined
     };
     await onSubmit(fullData);
     setIsLoading(false);
@@ -312,7 +308,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 {renderRadioGroup("shoeSize_answer", "Shoe size:", scaleOptions.shoeSize)}
               </>
             )}
-            {currentStep === 3 && (
+            {currentStep === 3 && ( // This is now the Body Shape step, and the last step
               <FormField
                 control={form.control}
                 name="bodyShape"
@@ -355,28 +351,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-            {currentStep === 4 && (
-              <FormField
-                control={form.control}
-                name="preferences"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-semibold">Style Preferences & Notes</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Describe your style goals, preferred colors, types of clothing you like or dislike, occasions you typically dress for, etc."
-                        className="resize-none min-h-[120px]"
-                        {...field}
-                      />
-                    </FormControl>
-                     <FormDescription>
-                      Help us understand what you're looking for. (Min 10, Max 500 characters)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+            {/* Preferences step (previously currentStep === 4) removed */}
              {/* Hidden submit button for implicit submission on last step's "Next" */}
             {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
           </form>
@@ -390,7 +365,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
           <Button type="button" onClick={handleNext} disabled={isLoading}>
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
-        ) : (
+        ) : ( // This is now the "Save & Proceed" button on the Body Shape step
           <Button type="button" onClick={handleNext} disabled={isLoading || authLoading}>
             {isLoading ? <LoadingSpinner size={20} className="mr-2"/> : <Send className="mr-2 h-4 w-4" />}
             {currentUser ? "Save & Proceed to Payment" : "Save & Proceed to Sign Up"}
@@ -400,4 +375,3 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     </Card>
   );
 }
-

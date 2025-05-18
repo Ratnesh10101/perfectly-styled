@@ -26,7 +26,7 @@ const StyleRecommendationsInputSchema = z.object({
   lineDetails: z.array(LineDetailSchema).describe("Detailed answers for line analysis, providing characteristics for different body parts."),
   scaleDetails: z.array(ScaleDetailSchema).describe("Detailed answers for scale analysis across different measurements."),
   bodyShape: z.string().describe('The user\u2019s overall body shape (e.g., Pear Shape, Hourglass).'),
-  preferences: z.string().describe('The user\u2019s general style preferences, likes, dislikes, and style goals.'),
+  preferences: z.string().optional().describe('The user\u2019s general style preferences, likes, dislikes, and style goals (optional).'),
 });
 export type StyleRecommendationsInput = z.infer<typeof StyleRecommendationsInputSchema>;
 
@@ -60,13 +60,15 @@ Use the following information about the user:
 
 3.  **Body Shape:** {{bodyShape}}
 
+{{#if preferences}}
 4.  **User's Style Preferences & Notes:**
     {{{preferences}}}
+{{/if}}
 
 **Instructions for your response:**
 -   Synthesize all the provided information to create a cohesive style profile.
 -   Provide specific recommendations for types of clothing (e.g., tops, bottoms, dresses, outerwear) and accessories (e.g., jewelry, belts, scarves, bags) that would best suit the user.
--   Explain *why* certain styles are recommended, linking back to their line, scale, body shape, and preferences. For example, "Given your {{lineDetails.[0].classification}} shoulders and {{bodyShape}} body shape, A-line dresses would be particularly flattering because..."
+-   Explain *why* certain styles are recommended, linking back to their line, scale, body shape, and preferences (if provided). For example, "Given your {{lineDetails.[0].classification}} shoulders and {{bodyShape}} body shape, A-line dresses would be particularly flattering because..."
 -   Consider elements like fabric, print, silhouette, and proportion in your recommendations.
 -   Offer advice on what to emphasize and what to balance to create a harmonious look.
 -   Structure the recommendations in a clear, organized, and easy-to-read manner. Use markdown for headings, bullet points, and bold text to improve readability.

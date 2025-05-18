@@ -3,7 +3,7 @@
 
 console.log("questionnaireActions.ts module loaded on server."); // MODULE-LEVEL LOG
 
-import { auth, db } from "@/config/firebase"; // db and auth can be null if init fails
+import { auth, db } from "@/config/firebase";
 import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { generateStyleRecommendations, type StyleRecommendationsInput } from "@/ai/flows/generate-style-recommendations";
 import type { QuestionnaireData, UserReport } from "@/types";
@@ -11,7 +11,7 @@ import { revalidatePath } from "next/cache";
 
 export async function saveQuestionnaireData(
   userId: string,
-  data: QuestionnaireData
+  data: QuestionnaireData // This will now have preferences as optional
 ): Promise<{ success: boolean; message: string }> {
   console.log("--- saveQuestionnaireData action entered on server. ---");
   console.log("Current db status:", db ? "db object exists" : "db is null/undefined");
@@ -19,13 +19,12 @@ export async function saveQuestionnaireData(
 
   if (!db) {
     console.error("saveQuestionnaireData ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment.");
-    return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables." };
+    return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
   if (!auth) { 
     console.error("saveQuestionnaireData ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment.");
-    return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables." };
+    return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
-
 
   if (!userId) {
     console.error("saveQuestionnaireData ERRORED: No userId provided.");
@@ -35,9 +34,10 @@ export async function saveQuestionnaireData(
   try {
     const questionnaireRef = doc(db, "users", userId, "questionnaire", "data");
     const questionnaireWithTimestamp = {
-      ...data, // This is now the new QuestionnaireData structure
+      ...data, 
       userId, 
       createdAt: serverTimestamp(),
+      preferences: data.preferences || "", // Ensure preferences is at least an empty string
     };
     await setDoc(questionnaireRef, questionnaireWithTimestamp);
     console.log(`Questionnaire data saved for userId: ${userId}`);
@@ -68,11 +68,11 @@ export async function processPaymentAndGenerateReport(
 
   if (!db) {
     console.error("processPaymentAndGenerateReport ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment.");
-     return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables." };
+     return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
   if (!auth) {
     console.error("processPaymentAndGenerateReport ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment.");
-    return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables." };
+    return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
   }
 
   if (!userId) {
@@ -91,15 +91,14 @@ export async function processPaymentAndGenerateReport(
       await setDoc(userMetaRef, { hasPaid: false }, { merge: true });
       return { success: false, message: "Questionnaire data not found. Please complete the questionnaire first." };
     }
-    const questionnaireData = questionnaireSnap.data() as QuestionnaireData; // Now has new structure
+    const questionnaireData = questionnaireSnap.data() as QuestionnaireData;
     console.log(`Questionnaire data fetched for userId: ${userId}`);
 
-    // Prepare input for the updated AI flow
     const aiInput: StyleRecommendationsInput = {
       lineDetails: questionnaireData.lineAnswers,
       scaleDetails: questionnaireData.scaleAnswers,
       bodyShape: questionnaireData.bodyShape,
-      preferences: questionnaireData.preferences,
+      preferences: questionnaireData.preferences || "", // Pass empty string if undefined
     };
     console.log(`Calling generateStyleRecommendations for userId: ${userId} with detailed input.`);
     const aiOutput = await generateStyleRecommendations(aiInput);
@@ -110,7 +109,10 @@ export async function processPaymentAndGenerateReport(
     const userReport: UserReport = {
       userId,
       recommendations: aiOutput.recommendations,
-      questionnaireData: questionnaireData, // Save the new detailed structure
+      questionnaireData: { // Ensure preferences is saved as string
+        ...questionnaireData,
+        preferences: questionnaireData.preferences || "",
+      },
       generatedAt: serverTimestamp(),
     };
     await setDoc(reportRef, userReport);
