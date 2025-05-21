@@ -27,44 +27,66 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     let unsubscribeAuth: (() => void) | undefined;
 
     if (!firebaseInitialized || firebaseInitError) {
-      console.error("AuthContext: Firebase was not initialized successfully. Cannot set up auth listeners. Error:", firebaseInitError);
-      setLoading(false);
-      return;
+      console.error(
+        "AuthContext: Firebase was not initialized successfully or is in an error state. Cannot set up auth listeners. Error:",
+        firebaseInitError
+      );
+      setLoading(false); // Ensure loading is set to false
+      return; // Prevent further execution within this useEffect
     }
 
     if (auth) {
       try {
-        unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
-          setCurrentUser(user);
-          if (user) {
-            if (db) {
-              const userMetaRef = doc(db, "users", user.uid, "meta", "data");
-              try {
-                const docSnap = await getDoc(userMetaRef);
-                if (docSnap.exists()) {
-                  setUserMeta(docSnap.data() as UserMeta);
-                } else {
-                  setUserMeta({ email: user.email, hasPaid: false, hasGeneratedReport: false, questionnaireComplete: false });
+        unsubscribeAuth = onAuthStateChanged(
+          auth,
+          async (user) => {
+            setCurrentUser(user);
+            if (user) {
+              if (db) {
+                const userMetaRef = doc(db, "users", user.uid, "meta", "data");
+                try {
+                  const docSnap = await getDoc(userMetaRef);
+                  if (docSnap.exists()) {
+                    setUserMeta(docSnap.data() as UserMeta);
+                  } else {
+                    setUserMeta({
+                      email: user.email,
+                      hasPaid: false,
+                      hasGeneratedReport: false,
+                      questionnaireComplete: false,
+                    });
+                  }
+                } catch (error) {
+                  console.error("AuthContext: Error fetching initial user meta:", error);
+                  setUserMeta({
+                    email: user.email,
+                    hasPaid: false,
+                    hasGeneratedReport: false,
+                    questionnaireComplete: false,
+                  }); // Provide default on error
                 }
-              } catch (error) {
-                console.error("AuthContext: Error fetching initial user meta:", error);
-                setUserMeta({ email: user.email, hasPaid: false, hasGeneratedReport: false, questionnaireComplete: false }); // Provide default on error
+              } else {
+                console.error("AuthContext: Firebase 'db' is not initialized. Cannot fetch initial user meta.");
+                setUserMeta({
+                  email: user.email,
+                  hasPaid: false,
+                  hasGeneratedReport: false,
+                  questionnaireComplete: false,
+                }); // Provide default if db is null
               }
             } else {
-               console.error("AuthContext: Firebase 'db' is not initialized. Cannot fetch initial user meta.");
-               setUserMeta({ email: user.email, hasPaid: false, hasGeneratedReport: false, questionnaireComplete: false }); // Provide default if db is null
+              setUserMeta(null);
             }
-          } else {
-            setUserMeta(null);
+            setLoading(false);
+          },
+          (error) => {
+            console.error("AuthContext: onAuthStateChanged error:", error);
+            setLoading(false);
           }
-          setLoading(false);
-        }, (error) => {
-          console.error("AuthContext: onAuthStateChanged error:", error);
-          setLoading(false);
-        });
+        );
       } catch (e) {
         console.error("AuthContext: Error attaching onAuthStateChanged listener:", e);
-        setLoading(false); 
+        setLoading(false);
       }
     } else {
       console.error("AuthContext: Firebase 'auth' service is not available. Cannot track auth state.");
@@ -82,38 +104,63 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     };
-  }, []);
+  }, []); // Removed firebaseInitialized and firebaseInitError as direct dependencies, their check at the start is sufficient
 
   useEffect(() => {
     let unsubscribeMeta: (() => void) | undefined;
 
     if (!firebaseInitialized || firebaseInitError || !db) {
-      if (db === null) console.error("AuthContext: Firebase 'db' is not initialized. Cannot set up meta listener.");
-      // No need to setLoading(false) here as the auth listener handles it.
+      // Log only if db is the specific null issue after general init checks passed for auth
+      if (db === null && firebaseInitialized && !firebaseInitError) {
+         console.error("AuthContext: Firebase 'db' is not initialized. Cannot set up meta listener.");
+      }
+      // No need to setLoading(false) here as the auth listener's useEffect handles overall loading state.
       return;
     }
-    
+
     if (currentUser && db) {
       try {
         const userMetaRef = doc(db, "users", currentUser.uid, "meta", "data");
-        unsubscribeMeta = onSnapshot(userMetaRef, (docSn) => {
-          if (docSn.exists()) {
-            setUserMeta(docSn.data() as UserMeta);
-          } else {
-             setUserMeta({ email: currentUser.email, hasPaid: false, hasGeneratedReport: false, questionnaireComplete: false });
+        unsubscribeMeta = onSnapshot(
+          userMetaRef,
+          (docSn) => {
+            if (docSn.exists()) {
+              setUserMeta(docSn.data() as UserMeta);
+            } else {
+              // If user is logged in but no meta doc, provide a default.
+              // This can happen if doc creation failed post-signup.
+              setUserMeta({
+                email: currentUser.email,
+                hasPaid: false,
+                hasGeneratedReport: false,
+                questionnaireComplete: false,
+              });
+            }
+          },
+          (error) => {
+            console.error("AuthContext: Error listening to user meta with onSnapshot:", error);
+            setUserMeta({
+              email: currentUser.email, // Fallback meta on error
+              hasPaid: false,
+              hasGeneratedReport: false,
+              questionnaireComplete: false,
+            });
           }
-        }, (error) => {
-          console.error("AuthContext: Error listening to user meta with onSnapshot:", error);
-           setUserMeta({ email: currentUser.email, hasPaid: false, hasGeneratedReport: false, questionnaireComplete: false }); // Provide default on error
-        });
+        );
       } catch (e) {
         console.error("AuthContext: Error setting up Firestore onSnapshot listener for user meta:", e);
-        setUserMeta({ email: currentUser.email, hasPaid: false, hasGeneratedReport: false, questionnaireComplete: false }); // Provide default on error
+        // Consider setting a default/fallback userMeta here if this setup fails
+         setUserMeta({
+            email: currentUser.email,
+            hasPaid: false,
+            hasGeneratedReport: false,
+            questionnaireComplete: false,
+        });
       }
-    } else {
-      if(!currentUser) setUserMeta(null); // Clear meta if user logs out
+    } else if (!currentUser) {
+      setUserMeta(null); // Clear meta if user logs out
     }
-    
+
     return () => {
       if (unsubscribeMeta) {
         try {
@@ -123,25 +170,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     };
-  }, [currentUser]);
-
+  }, [currentUser]); // Re-run when currentUser changes (or db object, though db should be stable post-init)
 
   const logout = async () => {
     if (auth) {
       try {
         await auth.signOut();
+        // setCurrentUser and setUserMeta will be updated by the onAuthStateChanged listener
       } catch (e) {
         console.error("Logout failed:", e);
-        // Potentially set an error state here if needed for UI feedback
       }
     } else {
       console.error("Logout failed: Firebase auth is not initialized.");
+      // Manually clear state if auth service itself is not available
+      setCurrentUser(null);
+      setUserMeta(null);
     }
-    // These should be set regardless of auth service availability to clear UI
-    setCurrentUser(null);
-    setUserMeta(null);
   };
-  
+
   return (
     <AuthContext.Provider value={{ currentUser, userMeta, loading, logout }}>
       {children}

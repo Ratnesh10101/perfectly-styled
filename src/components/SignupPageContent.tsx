@@ -23,7 +23,7 @@ export default function SignupPageContent() {
     if (!auth) {
       toast({
         title: "Configuration Error",
-        description: "Firebase Auth is not configured. Please contact support.",
+        description: "Firebase Auth is not configured. Please contact support. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment.",
         variant: "destructive",
       });
       throw new Error("Firebase Auth service not initialized.");
@@ -31,7 +31,7 @@ export default function SignupPageContent() {
     if (!db) {
       toast({
         title: "Configuration Error",
-        description: "Firebase Firestore is not configured. Please contact support.",
+        description: "Firebase Firestore is not configured. Please contact support. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in your deployment environment.",
         variant: "destructive",
       });
       throw new Error("Firebase Firestore service not initialized.");
@@ -98,7 +98,8 @@ export default function SignupPageContent() {
             errorMessage = "The password is too weak. Please choose a stronger password (at least 6 characters).";
             break;
           case "auth/configuration-not-found":
-            errorMessage = "Firebase configuration error. Please ensure environment variables are correctly set for the deployment and check API key restrictions in Google Cloud Console.";
+            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This is a Firebase/Google Cloud project configuration issue. Please meticulously re-check your API Key settings (Restrictions, Enabled APIs like 'Identity Toolkit API') and ensure environment variables are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console.";
+            console.error("SIGNUP FAILED - CRITICAL CONFIGURATION ISSUE (auth/configuration-not-found): This indicates a problem with your Firebase/Google Cloud project setup. Verify API Key restrictions, ensure 'Identity Toolkit API' is enabled, and check environment variable propagation in your Firebase deployment.", error);
             break;
           default:
             if (error.message && error.message.includes("Firebase: Error (auth/network-request-failed).")) {
