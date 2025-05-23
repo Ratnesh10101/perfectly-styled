@@ -22,16 +22,15 @@ const ScaleDetailSchema = z.object({
   answer: z.string().describe("The user's selected answer for that scale category."),
 });
 
-export const StyleRecommendationsInputSchema = z.object({
+const StyleRecommendationsInputSchema = z.object({
   lineDetails: z.array(LineDetailSchema).describe("Detailed answers for line analysis, providing characteristics for different body parts."),
   scaleDetails: z.array(ScaleDetailSchema).describe("Detailed answers for scale analysis across different measurements."),
   bodyShape: z.string().describe('The user\u2019s overall body shape (e.g., Pear Shape, Hourglass).'),
-  // preferences made optional as per previous request
   preferences: z.string().optional().describe('The user\u2019s general style preferences, likes, dislikes, and style goals (optional).'),
 });
 export type StyleRecommendationsInput = z.infer<typeof StyleRecommendationsInputSchema>;
 
-export const StyleRecommendationsOutputSchema = z.object({
+const StyleRecommendationsOutputSchema = z.object({
   recommendations: z.string().describe('Personalized styling recommendations for clothing and accessories, formatted as a comprehensive, easy-to-read report. Use markdown for formatting if appropriate, like headings, bullet points, and bold text for emphasis.'),
 });
 export type StyleRecommendationsOutput = z.infer<typeof StyleRecommendationsOutputSchema>;
