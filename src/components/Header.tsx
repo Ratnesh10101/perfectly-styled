@@ -1,14 +1,8 @@
-
 "use client";
 
 import Link from "next/link";
 import { Shirt, DraftingCompass } from "lucide-react";
 // Removed useAuth, Button, useRouter, useToast, Skeleton, and other auth-related imports
-// import { useAuth } from "@/hooks/useAuth";
-// import { Button } from "@/components/ui/button";
-// import { useRouter } from "next/navigation";
-// import { useToast } from "@/hooks/use-toast";
-// import { Skeleton } from "@/components/ui/skeleton";
 
 const Header = () => {
   // Removed all auth-related state and logic

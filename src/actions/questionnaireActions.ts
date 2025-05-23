@@ -26,12 +26,12 @@ export async function processPaymentAndGenerateReport(
   console.log("--- processPaymentAndGenerateReport action entered on server (no auth flow) ---");
   
   if (!questionnaireData) {
-    const errorMsg = "processPaymentAndGenerateReport ERRORED: No questionnaire data provided.";
+    const errorMsg = "processPaymentAndGenerateReport ERRORED: No questionnaire data provided. This should have been caught client-side.";
     console.error(errorMsg);
     return { success: false, message: "Questionnaire data is missing. Cannot generate report." };
   }
   if (!email || !email.includes('@')) { 
-    const errorMsg = `processPaymentAndGenerateReport ERRORED: Invalid email provided: ${email}`;
+    const errorMsg = `processPaymentAndGenerateReport ERRORED: Invalid email provided: ${email}. This should have been caught client-side.`;
     console.error(errorMsg);
     return { success: false, message: "A valid email address is required to send the report." };
   }
@@ -61,13 +61,28 @@ export async function processPaymentAndGenerateReport(
       }
     } catch (aiError: any) {
       console.error("--- ERROR DURING AI CALL (generateStyleRecommendations) ---");
-      console.error("AI Error for email:", email, "Input used:", JSON.stringify(aiInput, null, 2));
-      console.error("AI Error message:", aiError.message);
-      console.error("AI Error stack:", aiError.stack);
-      if (aiError.cause) console.error("AI Error cause:", aiError.cause);
+      console.error(`AI Error for email: ${email}`);
+      // Avoid stringifying potentially complex input if it's not strictly needed for this console log,
+      // especially if it could be very large or have circular references.
+      // console.error("Input used (sample):", { bodyShape: aiInput.bodyShape, lineAnswersCount: aiInput.lineDetails.length });
+      
+      let errorMessage = "An unknown AI error occurred.";
+      if (aiError instanceof Error) {
+        errorMessage = aiError.message;
+        console.error("AI Error message:", aiError.message);
+        console.error("AI Error stack:", aiError.stack);
+        if ((aiError as any).cause) console.error("AI Error cause:", (aiError as any).cause);
+      } else {
+        console.error("AI Error (not an Error object):", aiError);
+        try {
+          errorMessage = JSON.stringify(aiError);
+        } catch {
+          errorMessage = "Could not stringify AI error object.";
+        }
+      }
       return { 
         success: false, 
-        message: `An error occurred while generating the style report with AI. Please try again later. Details: ${aiError.message}`
+        message: `An error occurred while generating the style report with AI. Please try again later. Details: ${errorMessage}`
       };
     }
 
@@ -93,14 +108,25 @@ export async function processPaymentAndGenerateReport(
     // This catch block is for unexpected errors outside the AI call itself.
     console.error("--- processPaymentAndGenerateReport UNEXPECTED CRITICAL ERROR ---");
     console.error("Error during payment/report processing for email:", email);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
-    if (error.cause) {
-      console.error("Error cause:", error.cause);
+    let criticalErrorMessage = "An unknown server error occurred.";
+    if (error instanceof Error) {
+        criticalErrorMessage = error.message;
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        if ((error as any).cause) {
+          console.error("Error cause:", (error as any).cause);
+        }
+    } else {
+        console.error("Critical Error (not an Error object):", error);
+        try {
+            criticalErrorMessage = JSON.stringify(error);
+        } catch {
+            criticalErrorMessage = "Could not stringify critical error object.";
+        }
     }
     return { 
       success: false, 
-      message: `An unexpected server error occurred. Please try again later. Details: ${error.message}` 
+      message: `An unexpected server error occurred. Please try again later. Details: ${criticalErrorMessage}` 
     };
   }
 }
