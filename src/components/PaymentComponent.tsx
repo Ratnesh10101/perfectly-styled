@@ -54,4 +54,6 @@ export default function PaymentComponent({ onPaymentSuccess, price = "£19.99" }
           {isLoading ? "Processing..." : `Pay ${price} Now & Get Report`}
         </Button>
       </CardFooter>
-    
+    </Card> // Added closing Card tag here
+  );
+}

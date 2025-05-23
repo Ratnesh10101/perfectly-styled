@@ -123,3 +123,6 @@ export default function PaymentPage() {
         </CardContent>
       </Card>
       <PaymentComponent onPaymentSuccess={handlePaymentSuccess} />
+    </div>
+  );
+}
