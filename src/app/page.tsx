@@ -4,8 +4,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, DraftingCompass } from "lucide-react";
-// Removed useAuth and user-specific logic
+import { DraftingCompass } from "lucide-react"; // ArrowRight was imported but not used, keeping DraftingCompass
 import Image from "next/image";
 
 export default function HomePage() {
@@ -44,4 +43,12 @@ export default function HomePage() {
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
           <Button asChild size="lg">
-            <Link href="/questionnaire">Start Your Style Questionnaire <DraftingCompass className="ml-2 h-5 w-5
+            <Link href="/questionnaire">
+              Start Your Style Questionnaire <DraftingCompass className="ml-2 h-5 w-5" />
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  );
+}
