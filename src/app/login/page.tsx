@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { saveQuestionnaireData } from "@/actions/questionnaireActions";
+// import { saveQuestionnaireData } from "@/actions/questionnaireActions"; // Removed import
 import type { QuestionnaireData } from "@/types";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
@@ -28,7 +28,7 @@ const ClientLoginPage = dynamic(() =>
         if (!auth) {
           toast({
             title: "Login Failed: Firebase Not Ready",
-            description: "Firebase Authentication service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment. Please check server logs and contact support.",
+            description: "CRITICAL: Firebase Authentication service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment. Please check server logs and contact support. Also verify API key restrictions (HTTP referrers, API restrictions) and enabled services (like Identity Toolkit API) in Google Cloud Console.",
             variant: "destructive",
           });
           throw new Error("Firebase auth service not available when attempting login.");
@@ -36,65 +36,38 @@ const ClientLoginPage = dynamic(() =>
 
         try {
           const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-          const user = userCredential.user as User;
+          // const user = userCredential.user as User; // user variable not used after removing saveQuestionnaireData
 
           toast({ title: "Login Successful", description: "Welcome back!" });
 
-          // Check for pending questionnaire data
+          // Check for pending questionnaire data - logic to save it to user account removed
           const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
           if (pendingDataString) {
-            try {
-              const questionnaireData = JSON.parse(pendingDataString) as QuestionnaireData;
-              const saveResult = await saveQuestionnaireData(user.uid, questionnaireData);
-
-              if (saveResult.success) {
-                toast({
-                  title: "Questionnaire Saved!",
-                  description: "Your style profile is updated.",
-                });
-
-                localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
-
-                if (
-                  searchParams.get("fromQuestionnaire") === "true" ||
-                  searchParams.get("redirectToPayment") === "true"
-                ) {
-                  router.push("/payment");
-                } else {
-                  router.push("/");
-                }
-
-                return;
-              } else {
-                toast({
-                  title: "Error Saving Questionnaire",
-                  description: saveResult.message,
-                  variant: "destructive",
-                });
-              }
-            } catch (e) {
-              console.error("Error processing pending questionnaire data:", e);
-              toast({
-                title: "Error",
-                description: "Could not process saved questionnaire data.",
-                variant: "destructive",
-              });
-            }
+            // The 'saveQuestionnaireData' action was removed as part of the no-accounts refactor.
+            // Questionnaire data from localStorage is now handled by the payment page.
+            // We can still clear it here if desired, or let the payment page handle it.
+            // For now, we will not process it here to keep login focused.
+            // If the user proceeds to payment, that page will pick up this localStorage item.
+            console.log("Pending questionnaire data found in localStorage after login, will be handled by payment page if user proceeds there.");
+            // Optionally, clear it if login implies a different context:
+            // localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
           }
 
-          // Redirect logic if no pending data
+          // Redirect logic if no pending data (or after removing pending data processing)
           const fromQuestionnaire = searchParams.get("fromQuestionnaire") === "true";
           const redirectToPayment = searchParams.get("redirectToPayment") === "true";
 
           if (redirectToPayment || fromQuestionnaire) {
+            // If coming from questionnaire, always redirect to payment page after login
+            // as the data is in localStorage and needs to be processed by payment page.
             router.push("/payment");
           } else {
-            router.push("/");
+            router.push("/"); // Default redirect after login if not from questionnaire
           }
         } catch (error: any) {
           console.error("Login error:", error);
           if (auth && auth.app && auth.app.options) {
-            console.error("DEBUG: Auth options at point of login failure:", JSON.stringify(auth.app.options));
+            // console.error("DEBUG: Auth options at point of login failure:", JSON.stringify(auth.app.options));
           }
           let errorMessage = "Failed to login. Please check your credentials.";
 

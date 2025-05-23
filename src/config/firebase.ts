@@ -32,11 +32,10 @@ let firebaseInitError: string | null = null;
 console.log("firebase.ts module evaluation started (Client or Server).");
 
 function initializeFirebase(): void {
-  if (firebaseInitialized) {
+  if (firebaseInitialized) { // Added for idempotency
     return;
   }
   try {
-    // Log raw values for diagnostics, especially in deployed environments
     if (typeof window !== "undefined" || process.env.NODE_ENV === "development") {
       console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY:", JSON.stringify(rawFirebaseConfigValues.apiKey), `(type: ${typeof rawFirebaseConfigValues.apiKey}, length: ${rawFirebaseConfigValues.apiKey?.length})`);
       console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", JSON.stringify(rawFirebaseConfigValues.authDomain), `(type: ${typeof rawFirebaseConfigValues.authDomain}, length: ${rawFirebaseConfigValues.authDomain?.length})`);
@@ -60,8 +59,9 @@ function initializeFirebase(): void {
 
     if (missingOrInvalidCriticalVars.length > 0) {
       const varNames = missingOrInvalidCriticalVars.map(v => v.name).join(", ");
-      firebaseInitError = `CRITICAL Firebase Initialization Error: The following environment variables are missing, empty, or invalid: ${varNames}. Firebase will NOT be initialized. This impacts BOTH client-side and server-side functionality. Ensure these variables are correctly set in your deployment environment (e.g., Firebase Functions configuration, CI/CD settings, or .env files for local/build). For server-side errors (like 'Internal Server Error'), check your Firebase Functions logs for specific details. Also verify API key restrictions and enabled services (like Identity Toolkit API) in Google Cloud Console.`;
+      firebaseInitError = `CRITICAL Firebase Initialization Error: The following environment variables are missing, empty, or invalid in your deployment environment: ${varNames}. Firebase will NOT be initialized. This impacts BOTH client-side and server-side functionality. Ensure these variables are correctly set in your deployment environment (e.g., Firebase Functions configuration, CI/CD settings, or .env files for local/build). If you see 'missing required error components', check server logs for startup errors related to these missing variables. Also verify API key restrictions and enabled services (like Identity Toolkit API) in Google Cloud Console.`;
       console.error(firebaseInitError);
+      // Do not attempt to initialize if critical vars are missing
       return;
     }
 
@@ -74,8 +74,6 @@ function initializeFirebase(): void {
       appId: appId?.trim(),
       measurementId: measurementId?.trim()
     };
-
-    // console.log("Firebase config object being used by client/server:", firebaseConfig); // Removed as per user request
 
     if (!getApps().length) {
       app = initializeApp(firebaseConfig);
@@ -91,7 +89,7 @@ function initializeFirebase(): void {
         db = getFirestore(app);
         console.log("Firebase Auth and Firestore services obtained successfully.");
         if (auth && auth.app && auth.app.options) {
-            console.log("DEBUG: Initialized Auth service is using options:", JSON.stringify(auth.app.options));
+            // console.log("DEBUG: Initialized Auth service is using options:", JSON.stringify(auth.app.options));
         } else if (auth) {
             console.warn("DEBUG: Initialized Auth service exists, but auth.app or auth.app.options is not available.");
         }
@@ -102,7 +100,7 @@ function initializeFirebase(): void {
         db = null;
       }
 
-      if (typeof window !== "undefined" && measurementId && app) { // Check app again
+      if (typeof window !== "undefined" && measurementId && app) {
         isAnalyticsSupported()
           .then((supported) => {
             if (supported && app) { // Check app again
@@ -122,14 +120,14 @@ function initializeFirebase(): void {
       }
     } else {
       if (!firebaseInitError) { // Only set this if no more specific error was caught
-        firebaseInitError = "Firebase app object is null after initialization attempt, despite passing initial config checks. The Firebase SDK might be rejecting the provided configuration for reasons not caught by basic checks (e.g. malformed Project ID format, invalid API key structure).";
+        firebaseInitError = "Firebase app object is null after initialization attempt, despite passing initial config checks. The Firebase SDK might be rejecting the provided configuration for reasons not caught by basic checks (e.g. malformed Project ID format, invalid API key structure). This usually indicates a severe problem with the deployment environment's configuration for NEXT_PUBLIC_... variables.";
         console.error(firebaseInitError);
       }
     }
-  } catch (error: any) {
-    // This outer catch is for very unexpected errors during the initializeFirebase function itself
-    firebaseInitError = `UNHANDLED Firebase Initialization Error during initializeFirebase function: ${error?.message || error}. This is a critical failure in setting up Firebase. Check server logs if this occurs during deployment/SSR.`;
+  } catch (error: any) { // Outer catch for initializeFirebase function itself
+    firebaseInitError = `UNHANDLED Firebase Initialization Error during initializeFirebase function: ${error?.message || error}. This is a critical failure in setting up Firebase. Check server logs if this occurs during deployment/SSR. This can lead to 'missing required error components' if it happens server-side.`;
     console.error(firebaseInitError, error);
+    // Ensure services remain null
     app = null;
     auth = null;
     db = null;
@@ -139,10 +137,11 @@ function initializeFirebase(): void {
   }
 }
 
-initializeFirebase();
+initializeFirebase(); // Called at module level
 
-// Export the initialized services and status variables
 export { app, auth, db, analytics, firebaseInitialized, firebaseInitError };
 
 export const isFirebaseInitialized = () => firebaseInitialized;
 export const currentFirebaseConfigValues = rawFirebaseConfigValues;
+
+    
