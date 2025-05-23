@@ -22,19 +22,19 @@ export default function SignupPageContent() {
   const handleSignup = async (values: { email: string; password: string }) => {
     if (!auth) {
       toast({
-        title: "Configuration Error",
-        description: "Firebase Auth is not configured. Please contact support. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment.",
+        title: "Signup Failed: Firebase Not Ready",
+        description: "Firebase Authentication service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment. Please check server logs and contact support.",
         variant: "destructive",
       });
-      throw new Error("Firebase Auth service not initialized.");
+      throw new Error("Firebase Auth service not initialized when attempting signup.");
     }
     if (!db) {
       toast({
-        title: "Configuration Error",
-        description: "Firebase Firestore is not configured. Please contact support. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in your deployment environment.",
+        title: "Signup Failed: Firebase Not Ready",
+        description: "Firebase Firestore service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in your deployment environment. Please check server logs and contact support.",
         variant: "destructive",
       });
-      throw new Error("Firebase Firestore service not initialized.");
+      throw new Error("Firebase Firestore service not initialized when attempting to create user profile.");
     }
 
     try {
@@ -81,6 +81,9 @@ export default function SignupPageContent() {
 
     } catch (error: any) {
       console.error("Signup error:", error);
+       if (auth && auth.app && auth.app.options) {
+        console.error("DEBUG: Auth options at point of signup failure:", JSON.stringify(auth.app.options));
+      }
       let errorMessage = "An unexpected error occurred during sign up. Please try again.";
 
       if (error && typeof error.code === 'string') {
@@ -98,7 +101,7 @@ export default function SignupPageContent() {
             errorMessage = "The password is too weak. Please choose a stronger password (at least 6 characters).";
             break;
           case "auth/configuration-not-found":
-            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This is a Firebase/Google Cloud project configuration issue. Please meticulously re-check your API Key settings (Restrictions, Enabled APIs like 'Identity Toolkit API') and ensure environment variables are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console.";
+            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This indicates a problem with your Firebase/Google Cloud project setup. Please meticulously re-check your API Key settings (HTTP referrers, API restrictions, enabled 'Identity Toolkit API') and ensure environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console documentation.";
             console.error("SIGNUP FAILED - CRITICAL CONFIGURATION ISSUE (auth/configuration-not-found): This indicates a problem with your Firebase/Google Cloud project setup. Verify API Key restrictions, ensure 'Identity Toolkit API' is enabled, and check environment variable propagation in your Firebase deployment.", error);
             break;
           default:

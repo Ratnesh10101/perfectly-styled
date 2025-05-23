@@ -27,11 +27,11 @@ const ClientLoginPage = dynamic(() =>
       const handleLogin = async (values: { email: string; password: string }) => {
         if (!auth) {
           toast({
-            title: "Login Failed",
-            description: "Firebase Auth is not configured correctly. Please contact support. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment.",
+            title: "Login Failed: Firebase Not Ready",
+            description: "Firebase Authentication service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment. Please check server logs and contact support.",
             variant: "destructive",
           });
-          throw new Error("Firebase auth service not available.");
+          throw new Error("Firebase auth service not available when attempting login.");
         }
 
         try {
@@ -92,16 +92,18 @@ const ClientLoginPage = dynamic(() =>
             router.push("/");
           }
         } catch (error: any) {
+          console.error("Login error:", error);
+          if (auth && auth.app && auth.app.options) {
+            console.error("DEBUG: Auth options at point of login failure:", JSON.stringify(auth.app.options));
+          }
           let errorMessage = "Failed to login. Please check your credentials.";
 
-          if (
-            error.code === "auth/user-not-found" ||
-            error.code === "auth/wrong-password" ||
-            error.code === "auth/invalid-credential"
-          ) {
+          if (error.code === "auth/user-not-found" ||
+              error.code === "auth/wrong-password" ||
+              error.code === "auth/invalid-credential") {
             errorMessage = "Invalid email or password.";
           } else if (error.code === "auth/configuration-not-found") {
-            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This is a Firebase/Google Cloud project configuration issue. Please meticulously re-check your API Key settings (Restrictions, Enabled APIs like 'Identity Toolkit API') and ensure environment variables are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console.";
+            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This indicates a problem with your Firebase/Google Cloud project setup. Please meticulously re-check your API Key settings (HTTP referrers, API restrictions, enabled 'Identity Toolkit API') and ensure environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console documentation.";
             console.error("LOGIN FAILED - CRITICAL CONFIGURATION ISSUE (auth/configuration-not-found): This indicates a problem with your Firebase/Google Cloud project setup. Verify API Key restrictions, ensure 'Identity Toolkit API' is enabled, and check environment variable propagation in your Firebase deployment.", error);
           } else if (error.message?.includes("auth/network-request-failed")) {
             errorMessage = "Network error. Please check your internet connection and try again.";
