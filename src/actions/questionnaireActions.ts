@@ -1,141 +1,106 @@
 
 "use server";
 
-console.log("questionnaireActions.ts module loaded on server."); // MODULE-LEVEL LOG
-
-import { auth, db } from "@/config/firebase";
-import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { generateStyleRecommendations, type StyleRecommendationsInput } from "@/ai/flows/generate-style-recommendations";
-import type { QuestionnaireData, UserReport } from "@/types";
-import { revalidatePath } from "next/cache";
+import type { QuestionnaireData, UserReportData } from "@/types";
 
-export async function saveQuestionnaireData(
-  userId: string,
-  data: QuestionnaireData // This will now have preferences as optional
-): Promise<{ success: boolean; message: string }> {
-  console.log("--- saveQuestionnaireData action entered on server. ---");
-  console.log("Current db status:", db ? "db object exists" : "db is null/undefined");
-  console.log("Current auth status:", auth ? "auth object exists" : "auth is null/undefined");
+// This module is loaded on the server when an action is invoked.
+console.log("questionnaireActions.ts module loaded on server.");
 
-  if (!db) {
-    console.error("saveQuestionnaireData ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
-    return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
-  }
-  if (!auth) { 
-    console.error("saveQuestionnaireData ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
-    return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
-  }
-
-  if (!userId) {
-    console.error("saveQuestionnaireData ERRORED: No userId provided.");
-    return { success: false, message: "User not authenticated." };
-  }
-
-  try {
-    const questionnaireRef = doc(db, "users", userId, "questionnaire", "data");
-    const questionnaireWithTimestamp = {
-      ...data, 
-      userId, 
-      createdAt: serverTimestamp() as any, // Type assertion for Firestore sentinel
-      preferences: data.preferences || "", // Ensure preferences is at least an empty string
-    };
-    await setDoc(questionnaireRef, questionnaireWithTimestamp);
-    console.log(`Questionnaire data saved for userId: ${userId}`);
-
-    const userMetaRef = doc(db, "users", userId, "meta", "data");
-    await setDoc(userMetaRef, { questionnaireComplete: true }, { merge: true });
-    console.log(`User meta updated for userId: ${userId} - questionnaireComplete: true`);
-
-    revalidatePath("/questionnaire");
-    revalidatePath("/payment");
-    revalidatePath("/"); 
-
-    return { success: true, message: "Questionnaire data saved successfully!" };
-
-  } catch (error) {
-    console.error(`Error saving questionnaire data for userId ${userId}:`, error);
-    return { success: false, message: "Failed to save questionnaire data due to a server error." };
-  }
+// Placeholder for actual email sending logic
+async function sendReportByEmail(email: string, reportContent: string, questionnaireData: QuestionnaireData) {
+  console.log(`--- sendReportByEmail action entered (SIMULATED) ---`);
+  console.log(`Recipient Email: ${email}`);
+  console.log(`Report Content Length: ${reportContent.length > 0 ? reportContent.length : 'N/A (empty)'}`);
+  console.log(`Questionnaire Data Body Shape:`, questionnaireData.bodyShape); // Log a sample to confirm data presence
+  // In a real application, this would use an email service.
+  // For now, just log and return success.
+  console.log(`SIMULATED: Email with report would be sent to ${email}.`);
+  return { success: true, message: `Report (simulated) would be sent to ${email}.` };
 }
 
-
 export async function processPaymentAndGenerateReport(
-  userId: string
-): Promise<{ success: boolean; message: string; reportId?: string }> {
-  console.log("--- processPaymentAndGenerateReport action entered on server. ---");
-  console.log("Current db status:", db ? "db object exists" : "db is null/undefined");
-  console.log("Current auth status:", auth ? "auth object exists" : "auth is null/undefined");
+  questionnaireData: QuestionnaireData,
+  email: string
+): Promise<{ success: boolean; message: string; reportData?: UserReportData }> {
+  console.log("--- processPaymentAndGenerateReport action entered on server (no auth flow) ---");
+  
+  if (!questionnaireData) {
+    const errorMsg = "processPaymentAndGenerateReport ERRORED: No questionnaire data provided.";
+    console.error(errorMsg);
+    return { success: false, message: "Questionnaire data is missing. Cannot generate report." };
+  }
+  if (!email || !email.includes('@')) { 
+    const errorMsg = `processPaymentAndGenerateReport ERRORED: Invalid email provided: ${email}`;
+    console.error(errorMsg);
+    return { success: false, message: "A valid email address is required to send the report." };
+  }
+  console.log("Received Questionnaire Data (first line answer):", questionnaireData.lineAnswers.length > 0 ? questionnaireData.lineAnswers[0] : "No line answers");
+  console.log("Received Email:", email);
 
-  if (!db) {
-    console.error("processPaymentAndGenerateReport ERRORED: Firebase 'db' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
-     return { success: false, message: "Firebase database service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
-  }
-  if (!auth) {
-    console.error("processPaymentAndGenerateReport ERRORED: Firebase 'auth' is not initialized. This usually means environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in the deployment's server environment. This is a critical server configuration issue.");
-    return { success: false, message: "Firebase authentication service is not configured correctly on the server. Please check server logs and environment variables. Critical environment variables might be missing from your deployment." };
-  }
-
-  if (!userId) {
-    console.error("processPaymentAndGenerateReport ERRORED: No userId provided.");
-    return { success: false, message: "User not authenticated." };
-  }
   try {
-    const userMetaRef = doc(db, "users", userId, "meta", "data");
-    await setDoc(userMetaRef, { hasPaid: true }, { merge: true });
-    console.log(`User meta updated for userId: ${userId} - hasPaid: true`);
-
-    const questionnaireRef = doc(db, "users", userId, "questionnaire", "data");
-    const questionnaireSnap = await getDoc(questionnaireRef);
-    if (!questionnaireSnap.exists()) {
-      console.error(`processPaymentAndGenerateReport ERRORED: Questionnaire data not found for userId: ${userId}.`);
-      await setDoc(userMetaRef, { hasPaid: false }, { merge: true });
-      return { success: false, message: "Questionnaire data not found. Please complete the questionnaire first." };
-    }
-    const questionnaireData = questionnaireSnap.data() as QuestionnaireData;
-    console.log(`Questionnaire data fetched for userId: ${userId}`);
+    // Simulate payment processing success
+    console.log(`Simulated payment successful for email: ${email}`);
 
     const aiInput: StyleRecommendationsInput = {
       lineDetails: questionnaireData.lineAnswers,
       scaleDetails: questionnaireData.scaleAnswers,
       bodyShape: questionnaireData.bodyShape,
-      preferences: questionnaireData.preferences || "", // Pass empty string if undefined
+      preferences: "", // Preferences were removed from the questionnaire
     };
-    console.log(`Calling generateStyleRecommendations for userId: ${userId} with detailed input.`);
-    const aiOutput = await generateStyleRecommendations(aiInput);
-    console.log(`AI recommendations received for userId: ${userId}`);
 
-    const reportId = `report-${Date.now()}`; 
-    const reportRef = doc(db, "users", userId, "reports", reportId);
-    const userReport: UserReport = {
-      userId,
-      recommendations: aiOutput.recommendations,
-      questionnaireData: { // Ensure preferences is saved as string
-        ...questionnaireData,
-        preferences: questionnaireData.preferences || "",
-      },
-      generatedAt: serverTimestamp() as any, // Type assertion for Firestore sentinel
-    };
-    await setDoc(reportRef, userReport);
-    console.log(`Report ${reportId} saved for userId: ${userId}`);
-
-    await setDoc(userMetaRef, { hasGeneratedReport: true, activeReportId: reportId }, { merge: true });
-    console.log(`User meta updated for userId: ${userId} - hasGeneratedReport: true, activeReportId: ${reportId}`);
-
-    revalidatePath("/report");
-    revalidatePath("/payment");
-    revalidatePath("/");
-
-    return { success: true, message: "Report generated successfully!", reportId };
-
-  } catch (error) {
-    console.error(`Error in processPaymentAndGenerateReport for userId ${userId}:`, error);
-    if (db) { 
-        const userMetaRef = doc(db, "users", userId, "meta", "data");
-        await setDoc(userMetaRef, { hasPaid: false, hasGeneratedReport: false, activeReportId: null }, { merge: true });
-        console.log(`Payment status rolled back for userId: ${userId} due to error.`);
-    } else {
-        console.error("Cannot rollback payment status because Firebase 'db' is not initialized during error handling.");
+    console.log(`Calling generateStyleRecommendations for email: ${email}. Input bodyShape: ${aiInput.bodyShape}`);
+    
+    let aiOutput;
+    try {
+      aiOutput = await generateStyleRecommendations(aiInput);
+      console.log(`AI recommendations received for email: ${email}. Output recommendations length: ${aiOutput?.recommendations?.length ?? 'N/A'}`);
+      if (!aiOutput || !aiOutput.recommendations) {
+        console.error(`AI generateStyleRecommendations returned null or no recommendations for email: ${email}`);
+        return { success: false, message: "Failed to generate style recommendations. The AI model did not return a report." };
+      }
+    } catch (aiError: any) {
+      console.error("--- ERROR DURING AI CALL (generateStyleRecommendations) ---");
+      console.error("AI Error for email:", email, "Input used:", JSON.stringify(aiInput, null, 2));
+      console.error("AI Error message:", aiError.message);
+      console.error("AI Error stack:", aiError.stack);
+      if (aiError.cause) console.error("AI Error cause:", aiError.cause);
+      return { 
+        success: false, 
+        message: `An error occurred while generating the style report with AI. Please try again later. Details: ${aiError.message}`
+      };
     }
-    return { success: false, message: "Failed to generate report after payment due to a server error." };
+
+    const reportData: UserReportData = {
+      recommendations: aiOutput.recommendations,
+      questionnaireData: questionnaireData,
+      recipientEmail: email,
+      generatedAtClient: new Date().toISOString(), 
+    };
+    
+    console.log(`Attempting to send report by email to ${email}`);
+    const emailResult = await sendReportByEmail(email, reportData.recommendations, reportData.questionnaireData);
+    if (!emailResult.success) {
+      console.warn(`Failed to send email (simulated) to ${email}: ${emailResult.message}`);
+      // Decide if this should be a partial failure or not. For now, proceed with success message as report is generated.
+    }
+    
+    console.log(`Report generated and (simulated) email process completed for: ${email}`);
+    
+    return { success: true, message: "Report generated successfully! It will also be (simulated) sent to your email.", reportData };
+
+  } catch (error: any) {
+    // This catch block is for unexpected errors outside the AI call itself.
+    console.error("--- processPaymentAndGenerateReport UNEXPECTED CRITICAL ERROR ---");
+    console.error("Error during payment/report processing for email:", email);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    if (error.cause) {
+      console.error("Error cause:", error.cause);
+    }
+    return { 
+      success: false, 
+      message: `An unexpected server error occurred. Please try again later. Details: ${error.message}` 
+    };
   }
 }

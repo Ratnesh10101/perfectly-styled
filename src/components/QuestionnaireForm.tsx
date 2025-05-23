@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
 import type { QuestionnaireData, LineAnswer, ScaleAnswer } from "@/types";
 import LoadingSpinner from "./LoadingSpinner";
-import { useAuth } from "@/hooks/useAuth";
+// useAuth removed
 import Image from "next/image";
 
 // Schemas for individual form fields
@@ -29,7 +29,6 @@ const lineAnswerSchema = z.string().min(1, "Please select an option.");
 const scaleAnswerSchema = z.string().min(1, "Please select an option.");
 const bodyShapeSchema = z.string().min(1, "Please select your body shape.");
 
-// Combined schema for the entire form, used for defaultValues and final data structure
 const combinedSchema = z.object({
   shoulders_answer: lineAnswerSchema,
   waist_answer: lineAnswerSchema,
@@ -39,35 +38,34 @@ const combinedSchema = z.object({
   wrist_answer: scaleAnswerSchema,
   height_answer: scaleAnswerSchema,
   shoeSize_answer: scaleAnswerSchema,
-  bodyShape: bodyShapeSchema.or(z.literal("")), // Allow empty for initial state, but should resolve to undefined
+  bodyShape: bodyShapeSchema,
 });
 
 type QuestionnaireFormValues = z.infer<typeof combinedSchema>;
 
-// Schemas for each step - used to determine fields for form.trigger()
 const stepSchemas: z.ZodObject<any, any, any, any, any>[] = [
-  z.object({ // Step 1: Line - Shoulders, Waist, Hips
+  z.object({
     shoulders_answer: lineAnswerSchema,
     waist_answer: lineAnswerSchema,
     hips_answer: lineAnswerSchema,
   }),
-  z.object({ // Step 2: Line - Face, Jawline
+  z.object({
     face_answer: lineAnswerSchema,
     jawline_answer: lineAnswerSchema,
   }),
-  z.object({ // Step 3: Scale - Wrist, Height, Shoe Size
+  z.object({
     wrist_answer: scaleAnswerSchema,
     height_answer: scaleAnswerSchema,
     shoeSize_answer: scaleAnswerSchema,
   }),
-  z.object({ // Step 4: Body Shape
+  z.object({
     bodyShape: bodyShapeSchema,
   }),
 ];
 
 
 interface QuestionnaireFormProps {
-  onSubmit: (data: Omit<QuestionnaireData, 'preferences'> & { preferences?: string }) => Promise<void>;
+  onSubmit: (data: QuestionnaireData) => Promise<void>; // Preferences removed
   initialData?: Partial<QuestionnaireData>;
 }
 
@@ -140,7 +138,7 @@ const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2";
 export default function QuestionnaireForm({ onSubmit, initialData }: QuestionnaireFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const { currentUser, loading: authLoading } = useAuth();
+  // authLoading removed
 
   const transformInitialDataToFormValues = (data?: Partial<QuestionnaireData>): Partial<QuestionnaireFormValues> => {
     if (!data) return {};
@@ -161,7 +159,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   };
   
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(combinedSchema),
+    resolver: zodResolver(combinedSchema), // Use combinedSchema for the resolver
     defaultValues: {
       shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || undefined,
       waist_answer: transformInitialDataToFormValues(initialData).waist_answer || undefined,
@@ -177,18 +175,17 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   });
 
   useEffect(() => {
-    if (!currentUser && !authLoading) {
-      const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
-      if (pendingDataString) {
-        try {
-          const pendingData = JSON.parse(pendingDataString) as QuestionnaireData;
-          form.reset(transformInitialDataToFormValues(pendingData));
-        } catch (e) {
-          console.error("Error parsing pending questionnaire data from localStorage:", e);
-        }
+    // Removed currentUser and authLoading check, always try to load from localStorage
+    const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
+    if (pendingDataString) {
+      try {
+        const pendingData = JSON.parse(pendingDataString) as QuestionnaireData;
+        form.reset(transformInitialDataToFormValues(pendingData));
+      } catch (e) {
+        console.error("Error parsing pending questionnaire data from localStorage:", e);
       }
     }
-  }, [currentUser, authLoading, form]);
+  }, [form]);
 
   const getClassification = (bodyPartKey: keyof typeof lineOptions, answer: string): 'straight' | 'curved' => {
     const option = lineOptions[bodyPartKey].find(opt => opt.value === answer);
@@ -210,7 +207,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       { category: 'Shoe Size', answer: data.shoeSize_answer },
     ];
 
-    const fullData: Omit<QuestionnaireData, 'preferences'> & { preferences?: string } = {
+    const fullData: QuestionnaireData = { // Preferences removed
       lineAnswers,
       scaleAnswers,
       bodyShape: data.bodyShape as QuestionnaireData['bodyShape'],
@@ -265,7 +262,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
-              value={field.value || ""} // Ensure value is not undefined for RadioGroup if it expects string
+              value={field.value || ""} 
               className="flex flex-col space-y-2"
             >
               {options.map((option) => (
@@ -327,7 +324,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        value={field.value || ""} // Ensure value is not undefined for RadioGroup
+                        value={field.value || ""}
                         className="space-y-4"
                       >
                         {bodyShapeOptions.map((option) => (
@@ -360,7 +357,8 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-            {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading || authLoading} />}
+            {/* This button is only for triggering the form submission logic if using enter key, etc. */}
+            {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
           </form>
         </Form>
       </CardContent>
@@ -373,9 +371,10 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         ) : ( 
-          <Button type="button" onClick={handleNext} disabled={isLoading || authLoading}>
+          <Button type="button" onClick={handleNext} disabled={isLoading}>
             {isLoading ? <LoadingSpinner size={20} className="mr-2"/> : <Send className="mr-2 h-4 w-4" />}
-            {currentUser ? "Save & Proceed to Payment" : "Save & Proceed to Sign Up"}
+            {/* Button text updated */}
+            Proceed to Payment
           </Button>
         )}
       </CardFooter>
