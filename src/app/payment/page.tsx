@@ -3,12 +3,10 @@
 
 import { useEffect, useState } from "react";
 import PaymentComponent from "@/components/PaymentComponent";
-// ProtectedRoute removed
-// import { useAuth } from "@/hooks/useAuth"; // useAuth removed
 import { useToast } from "@/hooks/use-toast";
 import { processPaymentAndGenerateReport } from "@/actions/questionnaireActions";
 import { useRouter } from "next/navigation";
-import type { QuestionnaireData, UserReportData } from "@/types"; // UserMeta removed
+import type { QuestionnaireData, UserReportData } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -20,7 +18,6 @@ const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2";
 const REPORT_SESSION_KEY = "generatedReportData";
 
 export default function PaymentPage() {
-  // Removed useAuth related state
   const { toast } = useToast();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -29,17 +26,19 @@ export default function PaymentPage() {
   const [isLoadingData, setIsLoadingData] = useState(true);
 
   useEffect(() => {
+    setIsLoadingData(true);
     const dataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
     if (dataString) {
       try {
-        setQuestionnaireData(JSON.parse(dataString));
+        const parsedData = JSON.parse(dataString);
+        setQuestionnaireData(parsedData);
       } catch (e) {
         console.error("Error parsing questionnaire data from localStorage:", e);
-        toast({ title: "Error", description: "Could not load your questionnaire answers. Please try again.", variant: "destructive" });
+        toast({ title: "Error Loading Data", description: "Could not load your questionnaire answers. Please complete the questionnaire again.", variant: "destructive" });
         router.push("/questionnaire");
       }
     } else {
-      toast({ title: "Questionnaire Data Missing", description: "Please complete the questionnaire first.", variant: "destructive" });
+      toast({ title: "Questionnaire Data Missing", description: "Please complete the questionnaire first to proceed to payment.", variant: "destructive" });
       router.push("/questionnaire");
     }
     setIsLoadingData(false);
@@ -47,33 +46,49 @@ export default function PaymentPage() {
 
   const handlePaymentSuccess = async () => {
     if (!questionnaireData) {
-      toast({ title: "Error", description: "Questionnaire data is missing.", variant: "destructive" });
+      toast({ title: "Error", description: "Questionnaire data is missing. Please complete the questionnaire again.", variant: "destructive" });
+      router.push("/questionnaire");
       return;
     }
     if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email.trim())) {
-      toast({ title: "Invalid Email", description: "Please enter a valid email address.", variant: "destructive" });
+      toast({ title: "Invalid Email", description: "Please enter a valid email address to receive your report.", variant: "destructive" });
       return;
     }
 
     setIsLoading(true);
+    console.log("Client: Initiating payment and report generation for email:", email);
     try {
-      // Pass questionnaireData and email to the action
       const result = await processPaymentAndGenerateReport(questionnaireData, email.trim());
+      console.log("Client: Received response from server action:", result);
+
       if (result.success && result.reportData) {
-        toast({ title: "Payment Successful!", description: "Your style report is being generated." });
-        
-        // Store report data in sessionStorage for the report page to access
+        toast({ title: "Payment Successful!", description: "Your style report has been generated." });
         sessionStorage.setItem(REPORT_SESSION_KEY, JSON.stringify(result.reportData));
-        localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY); // Clear questionnaire from localStorage
-        
+        localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
         router.push("/report");
       } else {
-        toast({ title: "Report Generation Failed", description: result.message, variant: "destructive" });
+        console.error("Client: Report generation failed. Server message:", result.message);
+        toast({ 
+          title: "Report Generation Failed", 
+          description: result.message || "An unknown error occurred on the server.", 
+          variant: "destructive",
+          duration: 10000, // Show longer for server errors
+        });
       }
-    } catch (error) {
-      console.error("Payment/Report generation error:", error);
-      toast({ title: "Error", description: "Could not process payment or generate report.", variant: "destructive" });
+    } catch (error: any) {
+      console.error("Client: Critical error during handlePaymentSuccess:", error);
+      let description = "Could not process payment or generate report due to a client-side or network error.";
+      if (error instanceof Error) {
+        description = error.message;
+      }
+      toast({ 
+        title: "Processing Error", 
+        description: description, 
+        variant: "destructive",
+        duration: 10000, 
+      });
     } finally {
+      console.log("Client: Setting isLoading to false.");
       setIsLoading(false);
     }
   };
@@ -100,7 +115,6 @@ export default function PaymentPage() {
     );
   }
 
-  // Removed ProtectedRoute wrapper and userMeta checks
   return (
     <div className="max-w-4xl mx-auto py-8 flex flex-col items-center">
       <Card className="w-full max-w-md mb-8">
@@ -118,11 +132,14 @@ export default function PaymentPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)} 
               required
+              disabled={isLoading}
             />
           </div>
         </CardContent>
       </Card>
+      {/* Pass email to PaymentComponent if it needs it, or handle email submission before calling onPaymentSuccess */}
       <PaymentComponent onPaymentSuccess={handlePaymentSuccess} />
+      {isLoading && <LoadingSpinner fullPage />} {/* Show full page spinner when processing */}
     </div>
   );
 }
