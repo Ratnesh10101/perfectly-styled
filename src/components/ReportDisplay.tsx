@@ -6,12 +6,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import type { UserReport } from "@/types";
-import { ClipboardCopy, Printer } from "lucide-react";
+import type { UserReportData } from "@/types"; // Changed from UserReport
+import { ClipboardCopy, Printer, Mail } from "lucide-react";
 import { format } from 'date-fns';
 
 interface ReportDisplayProps {
-  report: UserReport;
+  report: UserReportData; // Changed from UserReport
 }
 
 export default function ReportDisplay({ report }: ReportDisplayProps) {
@@ -31,17 +31,27 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
     window.print();
   };
 
-  const { questionnaireData } = report;
+  const { questionnaireData, recipientEmail, generatedAtClient } = report;
+
+  let displayDate = "Not specified";
+  if (generatedAtClient) {
+    try {
+      displayDate = format(new Date(generatedAtClient), "MMMM d, yyyy 'at' h:mm a");
+    } catch (e) {
+      console.warn("Could not format generatedAtClient date:", generatedAtClient, e);
+      displayDate = "Invalid date";
+    }
+  }
+
 
   return (
     <Card className="w-full max-w-3xl mx-auto shadow-xl">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-bold text-primary">Your Personalized Style Report</CardTitle>
-        {report.generatedAt && (
-           <CardDescription>
-            Generated on: {format(new Date(report.generatedAt.seconds * 1000 + report.generatedAt.nanoseconds / 1000000), "MMMM d, yyyy 'at' h:mm a")}
-          </CardDescription>
-        )}
+        <CardDescription>
+          {recipientEmail && <p className="text-sm mb-1">For: {recipientEmail}</p>}
+          Generated on: {displayDate}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
@@ -64,12 +74,16 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
               ))}
             </div>
             <p className="text-sm"><strong>Body Shape:</strong> {questionnaireData.bodyShape}</p>
-            <div>
-                <p className="text-sm"><strong>Preferences:</strong></p>
-                <ScrollArea className="h-20 mt-1">
-                     <p className="text-sm whitespace-pre-wrap">{questionnaireData.preferences}</p>
-                </ScrollArea>
-            </div>
+            {/* Preferences were removed, so no need to display them here
+            {questionnaireData.preferences && (
+              <div>
+                  <p className="text-sm"><strong>Preferences:</strong></p>
+                  <ScrollArea className="h-20 mt-1">
+                       <p className="text-sm whitespace-pre-wrap">{questionnaireData.preferences}</p>
+                  </ScrollArea>
+              </div>
+            )}
+            */}
           </div>
         </div>
         
@@ -78,9 +92,10 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
         <div>
           <h3 className="text-xl font-semibold mb-2 text-secondary-foreground">Styling Recommendations</h3>
           <ScrollArea className="h-96 p-4 border rounded-lg bg-background"> {/* Increased height for report */}
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {report.recommendations}
-            </div>
+            <div 
+              className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: report.recommendations.replace(/\n/g, '<br />') }} // Basic markdown newline to <br>
+            />
           </ScrollArea>
         </div>
       </CardContent>
@@ -91,6 +106,13 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
         <Button onClick={handlePrint} variant="outline">
           <Printer className="mr-2 h-4 w-4" /> Print Report
         </Button>
+        {recipientEmail && (
+          <Button variant="outline" asChild>
+            <a href={`mailto:${recipientEmail}?subject=Your Perfectly Styled Report&body=Here is your personalized style report!`} target="_blank" rel="noopener noreferrer">
+              <Mail className="mr-2 h-4 w-4" /> Email Again (Draft)
+            </a>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

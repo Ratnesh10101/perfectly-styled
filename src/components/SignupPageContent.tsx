@@ -2,15 +2,15 @@
 'use client';
 
 import AuthForm from "@/components/AuthForm";
-import { auth, db } from "@/config/firebase";
+import { auth } from "@/config/firebase"; // db removed as it's not used here
 import { createUserWithEmailAndPassword, type User } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+// import { doc, setDoc } from "firebase/firestore"; // No longer writing user meta here
 import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-import type { UserMeta, QuestionnaireData } from "@/types";
+// import type { UserMeta, QuestionnaireData } from "@/types"; // UserMeta and QuestionnaireData not directly used here anymore
 import { Button } from "@/components/ui/button";
-import { saveQuestionnaireData } from "@/actions/questionnaireActions";
+// import { saveQuestionnaireData } from "@/actions/questionnaireActions"; // Removed import
 
 const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2"; 
 
@@ -23,66 +23,38 @@ export default function SignupPageContent() {
     if (!auth) {
       toast({
         title: "Signup Failed: Firebase Not Ready",
-        description: "Firebase Authentication service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment. Please check server logs and contact support.",
+        description: "CRITICAL: Firebase Authentication service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment. Please check server logs and contact support. Also verify API key restrictions (HTTP referrers, API restrictions) and enabled services (like Identity Toolkit API) in Google Cloud Console.",
         variant: "destructive",
       });
       throw new Error("Firebase Auth service not initialized when attempting signup.");
     }
-    if (!db) {
-      toast({
-        title: "Signup Failed: Firebase Not Ready",
-        description: "Firebase Firestore service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID) are missing or incorrect in your deployment environment. Please check server logs and contact support.",
-        variant: "destructive",
-      });
-      throw new Error("Firebase Firestore service not initialized when attempting to create user profile.");
-    }
+    // db check removed as we are not writing to Firestore here anymore
 
     try {
+      // User creation is still relevant if you intend to use Firebase for other features later,
+      // but it's not strictly needed for the current no-account flow.
+      // For now, we'll keep the user creation part but remove Firestore writes.
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user as User; 
+      // const user = userCredential.user as User; // user object not used
 
-      const userMetaRef = doc(db, "users", user.uid, "meta", "data");
-      const initialMeta: UserMeta = {
-        email: user.email,
-        hasPaid: false,
-        hasGeneratedReport: false,
-        questionnaireComplete: false, 
-      };
+      toast({ title: "Signup Successful (Simulation)", description: "Proceed to payment to get your report." });
 
-      toast({ title: "Signup Successful", description: "Welcome to Perfectly Styled!" });
-
-      const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
-      let questionnaireSaved = false;
-      if (pendingDataString) {
-        try {
-          const questionnaireData = JSON.parse(pendingDataString) as QuestionnaireData;
-          const saveResult = await saveQuestionnaireData(user.uid, questionnaireData);
-          if (saveResult.success) {
-            toast({ title: "Questionnaire Saved!", description: "Your style profile is updated." });
-            localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
-            initialMeta.questionnaireComplete = true; 
-            questionnaireSaved = true;
-          } else {
-            toast({ title: "Error Saving Questionnaire", description: saveResult.message, variant: "destructive" });
-          }
-        } catch (e) {
-          console.error("Error processing pending questionnaire data:", e);
-          toast({ title: "Error", description: "Could not process saved questionnaire data.", variant: "destructive" });
-        }
-      }
-      
-      await setDoc(userMetaRef, initialMeta);
-      
-      if (questionnaireSaved || searchParams.get("fromQuestionnaire") === "true") {
+      // Check if coming from questionnaire to redirect appropriately
+      // No longer saving questionnaire data here; payment page handles it from localStorage
+      const fromQuestionnaire = searchParams.get("fromQuestionnaire") === "true";
+      if (fromQuestionnaire) {
+        // If data was in localStorage, payment page will pick it up.
         router.push("/payment");
       } else {
-        router.push("/");
+        // If not from questionnaire, this signup path is less defined in the new flow.
+        // Defaulting to homepage, or consider redirecting to questionnaire.
+        router.push("/"); 
       }
 
     } catch (error: any) {
       console.error("Signup error:", error);
-       if (auth && auth.app && auth.app.options) {
-        console.error("DEBUG: Auth options at point of signup failure:", JSON.stringify(auth.app.options));
+      if (auth && auth.app && auth.app.options) {
+        // console.error("DEBUG: Auth options at point of signup failure:", JSON.stringify(auth.app.options));
       }
       let errorMessage = "An unexpected error occurred during sign up. Please try again.";
 
@@ -101,7 +73,7 @@ export default function SignupPageContent() {
             errorMessage = "The password is too weak. Please choose a stronger password (at least 6 characters).";
             break;
           case "auth/configuration-not-found":
-            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This indicates a problem with your Firebase/Google Cloud project setup. Please meticulously re-check your API Key settings (HTTP referrers, API restrictions, enabled 'Identity Toolkit API') and ensure environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console documentation.";
+            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This indicates a problem with your Firebase/Google Cloud project setup. Please meticulously re-check your API Key settings (HTTP referrers, API restrictions, enabled 'Identity Toolkit API') and ensure environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console documentation for API Key and service enablement. Also check server logs if deploying with server-side components.";
             console.error("SIGNUP FAILED - CRITICAL CONFIGURATION ISSUE (auth/configuration-not-found): This indicates a problem with your Firebase/Google Cloud project setup. Verify API Key restrictions, ensure 'Identity Toolkit API' is enabled, and check environment variable propagation in your Firebase deployment.", error);
             break;
           default:
@@ -109,9 +81,6 @@ export default function SignupPageContent() {
               errorMessage = "Network error. Please check your internet connection and try again.";
             } else if (error.message) {
               errorMessage = `Signup failed: ${error.message}`;
-            }
-            if (error.message && error.message.toLowerCase().includes("firestore")) {
-              errorMessage = "Account created, but failed to save user profile information. Please try logging in or contact support.";
             }
         }
       } else if (error instanceof Error && error.message) {
@@ -123,7 +92,8 @@ export default function SignupPageContent() {
     }
   };
 
-  const loginQueryParam = searchParams.get("fromQuestionnaire") === "true" ? "?fromQuestionnaire=true" : "";
+  const fromQuestionnaire = searchParams.get("fromQuestionnaire") === "true";
+  const loginQueryParam = fromQuestionnaire ? "?fromQuestionnaire=true" : "";
   const loginHref = `/login${loginQueryParam}`;
 
   return (
@@ -131,16 +101,36 @@ export default function SignupPageContent() {
       <AuthForm
         mode="signup"
         onSubmit={handleSignup}
-        title="Create Your Account"
-        description="Join Perfectly Styled to discover your unique style. Complete the questionnaire first, then sign up to save and get your report!"
-        buttonText="Sign Up"
+        title="Create Your Account (Optional)"
+        description={fromQuestionnaire 
+          ? "Optionally create an account, or proceed to payment with your email." 
+          : "Join Perfectly Styled."}
+        buttonText="Sign Up (Not Required)"
       />
-      <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Button variant="link" asChild className="p-0 h-auto">
-          <Link href={loginHref}>Login</Link>
-        </Button>
+      <p className="text-center text-sm text-muted-foreground mt-4">
+        {fromQuestionnaire 
+          ? "Alternatively, " 
+          : "Already have an account? "}
+        {fromQuestionnaire ? (
+          <Button variant="link" asChild className="p-0 h-auto">
+            <Link href="/payment">
+              Skip to Payment
+            </Link>
+          </Button>
+        ) : (
+          <Button variant="link" asChild className="p-0 h-auto">
+            <Link href={loginHref}>Login</Link>
+          </Button>
+        )}
       </p>
+      {fromQuestionnaire && (
+         <p className="text-center text-sm text-muted-foreground mt-2">
+            Or, if you have an existing account:{" "}
+            <Button variant="link" asChild className="p-0 h-auto">
+              <Link href={loginHref}>Login</Link>
+            </Button>
+          </p>
+      )}
     </>
   );
 }
