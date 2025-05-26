@@ -1,36 +1,17 @@
-<<<<<<< HEAD
-import type {Metadata} from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { Toaster } from '@/components/ui/toaster';
-import Header from '@/components/Header';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
-=======
-
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
-// Toaster import removed as it was removed in a previous step
 import Header from '@/components/Header';
 
-// Explicit check for a critical environment variable on the server
+// Explicit check for critical environment variables on the server
 if (typeof window === 'undefined') { // Only run this check on the server
+  console.log("RootLayout: Server-side rendering context detected.");
   if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
     console.error("**********************************************************************************");
     console.error("CRITICAL SERVER-SIDE ERROR in RootLayout: NEXT_PUBLIC_FIREBASE_PROJECT_ID is missing or undefined.");
     console.error("This indicates a fundamental problem with environment variable configuration in your deployment.");
-    console.error("This can lead to 'missing required error components' if Firebase/Genkit services fail to initialize.");
+    console.error("This can lead to 'missing required error components' or other severe errors if Firebase services fail to initialize.");
     console.error("Please verify your Firebase deployment's environment variable settings.");
     console.error("**********************************************************************************");
   }
@@ -38,12 +19,11 @@ if (typeof window === 'undefined') { // Only run this check on the server
     console.error("**********************************************************************************");
     console.error("CRITICAL SERVER-SIDE ERROR in RootLayout: GOOGLE_API_KEY for Genkit is missing or undefined.");
     console.error("This indicates a fundamental problem with environment variable configuration in your deployment.");
-    console.error("This can lead to 'missing required error components' if Genkit services fail to initialize.");
+    console.error("This can lead to 'missing required error components' or other severe errors if Genkit services fail to initialize.");
     console.error("Please verify your Firebase deployment's environment variable settings for Genkit.");
     console.error("**********************************************************************************");
   }
 }
->>>>>>> master
 
 export const metadata: Metadata = {
   title: 'Perfectly Styled',
@@ -56,25 +36,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-<<<<<<< HEAD
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
-        <AuthProvider>
-          <Header />
-          <main className="flex-grow container mx-auto px-4 py-8">
-            {children}
-          </main>
-          <Toaster />
-        </AuthProvider>
-=======
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className={`antialiased flex flex-col min-h-screen`}>
         <Header />
         <main className="flex-grow container mx-auto px-4 py-8">
           {children}
         </main>
-        {/* Toaster component was previously removed */}
->>>>>>> master
+        {/* Toaster component was previously removed, AuthProvider was also removed */}
       </body>
     </html>
   );
