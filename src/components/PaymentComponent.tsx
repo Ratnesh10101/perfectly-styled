@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -9,7 +8,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import Image from "next/image";
 
 interface PaymentComponentProps {
-  onPaymentSuccess: () => Promise<void>; // Email is now collected in parent
+  onPaymentSuccess: () => Promise<void>; 
   price?: string;
 }
 

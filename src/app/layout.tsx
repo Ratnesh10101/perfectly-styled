@@ -1,9 +1,9 @@
-
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import Header from '@/components/Header';
+// Toaster removed, AuthProvider removed
 
 // Explicit check for critical environment variables on the server
 if (typeof window === 'undefined') { // Only run this check on the server
@@ -43,7 +43,7 @@ export default function RootLayout({
         <main className="flex-grow container mx-auto px-4 py-8">
           {children}
         </main>
-        {/* Toaster component was previously removed, AuthProvider was also removed */}
+        {/* Toaster component was previously removed */}
       </body>
     </html>
   );

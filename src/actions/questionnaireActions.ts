@@ -3,8 +3,8 @@
 
 import { generateStyleRecommendations, type StyleRecommendationsInput } from "@/ai/flows/generate-style-recommendations";
 import type { QuestionnaireData, UserReportData } from "@/types";
-import { firebaseInitialized, firebaseInitError } from "@/config/firebase"; // db can be null if init fails
-import { ai as genkitInstance, genkitServiceInitError } from "@/ai/genkit"; // For checking Genkit status and ai instance
+import { firebaseInitialized, firebaseInitError } from "@/config/firebase"; 
+import { ai as genkitInstance, genkitServiceInitError } from "@/ai/genkit"; 
 
 // This module is loaded on the server when an action is invoked.
 console.log("questionnaireActions.ts module loaded on server.");
@@ -14,21 +14,16 @@ console.log("questionnaireActions.ts module loaded on server.");
 async function sendReportByEmail(email: string, reportContent: string, questionnaireData: QuestionnaireData) {
   console.log(`--- sendReportByEmail action entered (SIMULATED) ---`);
   console.log(`Recipient Email: ${email}`);
-  // It's good practice to avoid logging the entire report content if it's very large or sensitive.
-  // Log metadata instead, or a snippet.
   console.log(`Report Content Length: ${reportContent.length > 0 ? reportContent.length : 'N/A (empty)'}`);
   console.log(`Questionnaire Data Body Shape (from sendReportByEmail):`, questionnaireData?.bodyShape);
-
-  // In a real application, this would use an email service (e.g., SendGrid, Nodemailer with an SMTP provider).
-  // For now, just log and return success.
   console.log(`SIMULATED: Email with style report would be sent to ${email}.`);
   return { success: true, message: `Report (simulated) would be sent to ${email}.` };
 }
 
 
 export async function processPaymentAndGenerateReport(
-  questionnaireData: QuestionnaireData | null, // Allow null for validation
-  email: string | null // Allow null for validation
+  questionnaireData: QuestionnaireData | null,
+  email: string | null 
 ): Promise<{ success: boolean; message: string; reportData?: UserReportData }> {
   console.log("--- processPaymentAndGenerateReport action entered on server (no-auth flow) ---");
   console.log(`Initial Firebase Initialized: ${firebaseInitialized}, Firebase Init Error: ${firebaseInitError || 'None'}`);
@@ -52,12 +47,6 @@ export async function processPaymentAndGenerateReport(
     return { success: false, message: "The AI styling service is currently unavailable due to a server configuration issue. Please try again later or contact support." };
   }
   
-  // Warning if Firebase is not initialized (though less critical for this specific flow now)
-  if (!firebaseInitialized) {
-    const warningMessage = `Firebase services are not available: ${firebaseInitError || 'Unknown Firebase initialization error'}. This might affect some non-core functionalities. Continuing with AI report generation.`;
-    console.warn("processPaymentAndGenerateReport WARNING - Firebase Uninitialized:", warningMessage);
-  }
-
   console.log("Received Questionnaire Data Body Shape:", questionnaireData.bodyShape);
   console.log("Received Email:", email);
 
@@ -91,9 +80,7 @@ export async function processPaymentAndGenerateReport(
         console.error("AI Error message:", aiError.message);
         console.error("AI Error stack:", aiError.stack);
         if ((aiError as any).cause) console.error("AI Error cause:", (aiError as any).cause);
-        // Check for specific Genkit uninitialized error text (if it's re-thrown by the flow)
         if (internalErrorMessage.includes("AI Service Uninitialized") || internalErrorMessage.includes("GOOGLE_API_KEY")) {
-            // Return a user-friendly, generic message
             console.error(`Returning AI failure (likely Genkit init) for ${email}: ${internalErrorMessage}`);
             return { 
               success: false, 
@@ -102,14 +89,9 @@ export async function processPaymentAndGenerateReport(
         }
       } else {
         console.error("AI Error (not an Error object):", aiError);
-        try {
-          internalErrorMessage = JSON.stringify(aiError);
-        } catch {
-          internalErrorMessage = "Could not stringify AI error object.";
-        }
+        try { internalErrorMessage = JSON.stringify(aiError); } catch { internalErrorMessage = "Could not stringify AI error object."; }
       }
       console.error(`Returning AI failure for ${email}: ${internalErrorMessage}`);
-      // Return a more generic message to the client but log the specific error on the server
       return { 
         success: false, 
         message: "An error occurred while generating the style report with AI. Please try again later."
@@ -120,35 +102,29 @@ export async function processPaymentAndGenerateReport(
       recommendations: aiOutput.recommendations,
       questionnaireData: questionnaireData,
       recipientEmail: email,
-      generatedAtClient: new Date().toISOString(), // Use a client-understandable timestamp
+      generatedAtClient: new Date().toISOString(), 
     };
     
     console.log(`Report content generated for email: ${email}. Attempting to send (simulated) email.`);
     const emailResult = await sendReportByEmail(email, reportData.recommendations, reportData.questionnaireData);
     if (!emailResult.success) {
       console.warn(`Failed to send email (simulated) to ${email}: ${emailResult.message}`);
-      // Decide if this should be a partial failure or not. For now, proceed with success message as report is generated.
     }
     
     console.log(`Report generated and (simulated) email process completed for: ${email}. Returning success.`);
-    
     return { success: true, message: "Report generated successfully! It will also be (simulated) sent to your email.", reportData };
 
   } catch (error: any) {
-    // This catch block is for unexpected errors outside the AI call itself, or if the AI call's catch re-throws an error
     console.error("--- processPaymentAndGenerateReport UNEXPECTED CRITICAL ERROR ---");
     console.error("Critical Error during payment/report processing for email:", email);
     if (error instanceof Error) {
         console.error("Error message:", error.message);
         console.error("Error stack:", error.stack);
-        if ((error as any).cause) {
-          console.error("Error cause:", (error as any).cause);
-        }
+        if ((error as any).cause) console.error("Error cause:", (error as any).cause);
     } else {
         console.error("Critical Error (not an Error object):", error);
     }
     console.error(`Returning critical failure for ${email}`);
-    // Return a simple, serializable error message.
     return { 
       success: false, 
       message: "An unexpected server error occurred. Please check server logs for details and ensure all environment variables are correctly set."

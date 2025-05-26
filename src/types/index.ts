@@ -1,7 +1,4 @@
 
-// No longer using Firebase Timestamps directly for these transient types
-// import type { Timestamp } from "firebase/firestore";
-
 export interface LineAnswer {
   bodyPart: 'Shoulders' | 'Waist' | 'Hips' | 'Face' | 'Jawline';
   answer: string;
@@ -20,11 +17,9 @@ export interface QuestionnaireData {
   // preferences removed as per previous request
 }
 
-export interface UserReportData { // Renamed to avoid confusion with User-specific reports
+export interface UserReportData {
   recommendations: string;
   questionnaireData: QuestionnaireData;
-  recipientEmail?: string; // Email for sending the report
-  generatedAtClient?: string; // Client-side timestamp for display, since no server timestamp is stored
+  recipientEmail?: string; 
+  generatedAtClient?: string; 
 }
-
-// UserMeta and UserReport (Firestore specific) are no longer needed

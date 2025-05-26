@@ -3,10 +3,10 @@
 ## Core Features:
 
 - Interactive Questionnaire: Interactive questionnaire to determine body shape, scale, and line.
-- Payment Processing: Securely process payments (£19.99) for the style analysis report using Stripe.
-- User Authentication and Report Retrieval: User authentication with email and password, and report retrieval on login.
-- Answer persistence: Store the questionnaire answers.
-- AI Styling Tool: Generate personalized styling recommendations based on the user's questionnaire responses, dominant line, body shape, and scale by acting as a style consultant tool, focusing on clothing and accessories.
+- Payment Processing: Securely process payments (£19.99) for the style analysis report using Stripe (currently simulated).
+- Report Retrieval: Users receive their report via email and can view it directly in the browser after payment. No persistent user accounts.
+- Answer persistence: Questionnaire answers are temporarily stored in `localStorage` during the session.
+- AI Styling Tool: Generate personalized styling recommendations based on the user's questionnaire responses, line classifications, body shape, and scale by acting as a style consultant tool, focusing on clothing and accessories.
 - Results Report: Display a detailed, copyable style analysis report based on the questionnaire results.
 
 ## Style Guidelines:

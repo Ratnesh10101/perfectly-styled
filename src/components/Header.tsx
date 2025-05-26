@@ -1,13 +1,9 @@
-
 "use client";
 
 import Link from "next/link";
 import { Shirt, DraftingCompass } from "lucide-react";
-// Removed useAuth, Button, useRouter, useToast, Skeleton, and other auth-related imports
 
 const Header = () => {
-  // Removed all auth-related state and logic
-
   return (
     <header className="bg-card shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -16,7 +12,6 @@ const Header = () => {
           <span>Perfectly Styled</span>
         </Link>
         <nav className="flex items-center gap-2 sm:gap-4">
-          {/* Simplified navigation, as there's no user login state */}
           <Link href="/questionnaire" className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary">
             <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
           </Link>

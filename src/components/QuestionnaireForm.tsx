@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -159,7 +158,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   };
   
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(combinedSchema), // Use combinedSchema for the resolver
+    resolver: zodResolver(combinedSchema),
     defaultValues: {
       shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || undefined,
       waist_answer: transformInitialDataToFormValues(initialData).waist_answer || undefined,
@@ -227,7 +226,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       console.warn(`Step schema for step ${currentStep} is not a ZodObject or shape is undefined.`);
     }
     
-    if (fieldsToValidate.length === 0 && currentStep < stepSchemas.length -1) { // Adjusted condition
+    if (fieldsToValidate.length === 0 && currentStep < stepSchemas.length -1) { 
         console.warn(`No fields identified for validation for step ${currentStep}. Proceeding or submitting.`);
     }
 
@@ -237,7 +236,6 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       if (currentStep < stepSchemas.length - 1) {
         setCurrentStep((prev) => prev + 1);
       } else {
-        // This is the final submit
         await form.handleSubmit(onFinalSubmit)();
       }
     }
@@ -262,7 +260,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
-              value={field.value || undefined} // Ensure value is undefined if not set to avoid uncontrolled warning
+              value={field.value || undefined} 
               className="flex flex-col space-y-2"
             >
               {options.map((option) => (
@@ -324,7 +322,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        value={field.value || undefined} // Ensure value is undefined if not set
+                        value={field.value || undefined} 
                         className="space-y-4"
                       >
                         {bodyShapeOptions.map((option) => (
@@ -357,7 +355,6 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-            {/* This button is only for triggering the form submission logic if using enter key, etc. */}
             {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
           </form>
         </Form>

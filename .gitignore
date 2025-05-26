@@ -1,4 +1,3 @@
-
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Dependencies
@@ -6,46 +5,48 @@
 /.pnp
 .pnp.js
 
-# Testing
-/coverage
-
-# Next.js
+# Next.js build output
 /.next/
 /out/
 
-# Production
-/build
+# Firebase
+/.firebase/
+firebase-debug.log
+firebase-debug.*.log
+*.firebase.*.log # Firebase Emulator UI logs
+
+# Local Environment Variables
+.env.local
+.env.*.local
+.env # Only if it's not a template and contains secrets
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Test Results
+/coverage
+/.nyc_output
 
 # Misc
 .DS_Store
-*.pem
-
-# Firebase
-.firebase/
-firebase-debug.log
-firebase-debug.*.log
-*.local # Also covers .env.local
-
-# Environment Variables
-.env
-.env*.local
-!.env.example
-.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.local
+*.log
 
 # IDE / Editor specific
-.vscode/
-.idea/
-*.swp
-*.swo
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# TypeScript
-*.tsbuildinfo
-next-env.d.ts
-
-# macOS
-.AppleDouble
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Turbopack
+.turbo

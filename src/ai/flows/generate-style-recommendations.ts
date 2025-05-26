@@ -1,5 +1,3 @@
-
-// src/ai/flows/generate-style-recommendations.ts
 'use server';
 /**
  * @fileOverview Generates personalized styling recommendations based on detailed user inputs.
@@ -23,7 +21,6 @@ const ScaleDetailSchema = z.object({
   answer: z.string().describe("The user's selected answer for that scale category."),
 });
 
-// Internal schema, not exported
 const StyleRecommendationsInputSchemaInternal = z.object({
   lineDetails: z.array(LineDetailSchema).describe("Detailed answers for line analysis, providing characteristics for different body parts."),
   scaleDetails: z.array(ScaleDetailSchema).describe("Detailed answers for scale analysis across different measurements."),
@@ -32,21 +29,19 @@ const StyleRecommendationsInputSchemaInternal = z.object({
 });
 export type StyleRecommendationsInput = z.infer<typeof StyleRecommendationsInputSchemaInternal>;
 
-// Internal schema, not exported
 const StyleRecommendationsOutputSchemaInternal = z.object({
   recommendations: z.string().describe('Personalized styling recommendations for clothing and accessories, formatted as a comprehensive, easy-to-read report. Use markdown for formatting if appropriate, like headings, bullet points, and bold text for emphasis.'),
 });
 export type StyleRecommendationsOutput = z.infer<typeof StyleRecommendationsOutputSchemaInternal>;
 
-// Define prompt and flow conditionally based on whether 'ai' was initialized
 let promptInstance: any = null;
 let definedGenerateStyleRecommendationsFlow: (input: StyleRecommendationsInput) => Promise<StyleRecommendationsOutput>;
 
-if (ai) { // ai is the initialized Genkit instance
+if (ai) { 
   promptInstance = ai.definePrompt({
     name: 'styleRecommendationsPrompt',
-    input: {schema: StyleRecommendationsInputSchemaInternal}, // Use internal schema
-    output: {schema: StyleRecommendationsOutputSchemaInternal}, // Use internal schema
+    input: {schema: StyleRecommendationsInputSchemaInternal}, 
+    output: {schema: StyleRecommendationsOutputSchemaInternal}, 
     prompt: `You are a professional personal style consultant. Your task is to generate detailed and personalized styling recommendations for clothing and accessories.
 Use the following information about the user:
 
@@ -84,21 +79,19 @@ Return the complete set of recommendations as a single string.
   definedGenerateStyleRecommendationsFlow = ai.defineFlow(
     {
       name: 'generateStyleRecommendationsFlow',
-      inputSchema: StyleRecommendationsInputSchemaInternal, // Use internal schema
-      outputSchema: StyleRecommendationsOutputSchemaInternal, // Use internal schema
+      inputSchema: StyleRecommendationsInputSchemaInternal, 
+      outputSchema: StyleRecommendationsOutputSchemaInternal, 
     },
     async input => {
       const {output} = await promptInstance(input);
       if (!output) {
         console.error("AI prompt returned null or undefined output for style recommendations. Input was:", JSON.stringify(input));
-        // It's better to throw an error here which can be caught by the calling server action.
         throw new Error("AI failed to generate recommendations (empty output from prompt).");
       }
       return output;
     }
   );
 } else {
-  // If ai is null (meaning Genkit failed to initialize), define a stub for definedGenerateStyleRecommendationsFlow that throws an error
   definedGenerateStyleRecommendationsFlow = async (input: StyleRecommendationsInput): Promise<StyleRecommendationsOutput> => {
     const errorMessage = genkitServiceInitError || "Genkit 'ai' object is not initialized. Cannot execute generateStyleRecommendationsFlow.";
     console.error("CRITICAL (generateStyleRecommendationsFlow stub):", errorMessage, "This is likely due to missing GOOGLE_API_KEY or other Genkit configuration issues during server startup.");
@@ -109,6 +102,5 @@ Return the complete set of recommendations as a single string.
 export async function generateStyleRecommendations(
   input: StyleRecommendationsInput
 ): Promise<StyleRecommendationsOutput> {
-  // This function will now call either the real flow or the stub that throws an error.
   return definedGenerateStyleRecommendationsFlow(input);
 }

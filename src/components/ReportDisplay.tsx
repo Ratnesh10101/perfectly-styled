@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -73,7 +72,6 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
               ))}
             </div>
             <p className="text-sm"><strong>Body Shape:</strong> {questionnaireData.bodyShape}</p>
-            {/* Preferences were removed, so no need to display them here */}
           </div>
         </div>
         
