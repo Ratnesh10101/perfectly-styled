@@ -2279,3 +2279,210 @@ Type error: Cannot find module './LoadingSpinner' or its corresponding type decl
 [debug] [2025-05-26T15:28:49.347Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/export-marker.json'
 [error] 
 [error] Error: An unexpected error has occurred.
+[debug] [2025-05-26T15:33:54.982Z] ----------------------------------------------------------------------
+[debug] [2025-05-26T15:33:54.986Z] Command:       /nix/store/rbdrkcs5kkwpalxcd7c6bnm33lk2955n-nodejs-20.19.0/bin/node /home/user/.global_modules/bin/firebase deploy
+[debug] [2025-05-26T15:33:54.986Z] CLI Version:   14.4.0
+[debug] [2025-05-26T15:33:54.987Z] Platform:      linux
+[debug] [2025-05-26T15:33:54.987Z] Node Version:  v20.19.0
+[debug] [2025-05-26T15:33:54.987Z] Time:          Mon May 26 2025 15:33:54 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-05-26T15:33:54.987Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-26T15:33:55.666Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T15:33:55.667Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T15:33:55.667Z] [iam] checking project perfectly-styled for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-05-26T15:33:55.670Z] No OAuth tokens found
+[debug] [2025-05-26T15:33:55.671Z] No OAuth tokens found
+[debug] [2025-05-26T15:33:55.671Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T15:33:55.672Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T15:33:55.673Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions [none]
+[debug] [2025-05-26T15:33:55.674Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions x-goog-quota-user=projects/perfectly-styled
+[debug] [2025-05-26T15:33:55.675Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T15:33:56.415Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions 200
+[debug] [2025-05-26T15:33:56.415Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T15:33:56.417Z] No OAuth tokens found
+[debug] [2025-05-26T15:33:56.417Z] No OAuth tokens found
+[debug] [2025-05-26T15:33:56.417Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T15:33:56.418Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T15:33:56.418Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled [none]
+[debug] [2025-05-26T15:33:56.687Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled 200
+[debug] [2025-05-26T15:33:56.687Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled {"projectId":"perfectly-styled","projectNumber":"377334244117","displayName":"Perfectly Styled","name":"projects/perfectly-styled","resources":{"hostingSite":"perfectly-styled"},"state":"ACTIVE","etag":"1_c3964132-e093-42c9-b5ed-f26f80206b9f"}
+[debug] [2025-05-26T15:34:00.197Z] No OAuth tokens found
+[debug] [2025-05-26T15:34:00.197Z] No OAuth tokens found
+[debug] [2025-05-26T15:34:00.197Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T15:34:00.197Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T15:34:00.199Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites pageToken=&pageSize=10
+[debug] [2025-05-26T15:34:01.353Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites 200
+[debug] [2025-05-26T15:34:01.353Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites {"sites":[{"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}]}
+[debug] [2025-05-26T15:34:01.355Z] No OAuth tokens found
+[debug] [2025-05-26T15:34:01.355Z] No OAuth tokens found
+[debug] [2025-05-26T15:34:01.355Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T15:34:01.355Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T15:34:01.356Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config [none]
+[debug] [2025-05-26T15:34:02.052Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config 200
+[debug] [2025-05-26T15:34:02.052Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config {"projectId":"perfectly-styled","appId":"1:377334244117:web:3fff766d728fd838a83f1c","storageBucket":"perfectly-styled.firebasestorage.app","apiKey":"AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk","authDomain":"perfectly-styled.firebaseapp.com","messagingSenderId":"377334244117","measurementId":"G-LLZ1XNNXET"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-05-26T15:34:10.562Z] No OAuth tokens found
+[debug] [2025-05-26T15:34:10.565Z] No OAuth tokens found
+[debug] [2025-05-26T15:34:10.565Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T15:34:10.566Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T15:34:10.576Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled [none]
+[debug] [2025-05-26T15:34:11.601Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled 200
+[debug] [2025-05-26T15:34:11.602Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled {"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.0.4
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info]  ⚠ Compiled with warnings
+
+
+[info] ./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/index.js
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/index.js
+./node_modules/@opentelemetry/instrumentation/build/esm/index.js
+./node_modules/@opentelemetry/sdk-node/build/src/sdk.js
+./node_modules/@opentelemetry/sdk-node/build/src/index.js
+./node_modules/@genkit-ai/core/lib/tracing.js
+./node_modules/genkit/lib/tracing.js
+./node_modules/@genkit-ai/googleai/lib/gemini.js
+./node_modules/@genkit-ai/googleai/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/actions/questionnaireActions.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/actions/questionnaireActions.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/actions/questionnaireActions.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+
+[info]  ✓ Compiled successfully
+
+[info]    Skipping linting
+
+[info]    Checking validity of types ...
+
+[info]    Collecting page data ...
+
+[info] firebase.ts module evaluation started (Client or Server).
+Attempting Firebase initialization...
+
+[info] Firebase app initialized successfully.
+Firebase initialization attempt complete. Status: SUCCESS. Error: None
+
+[info] genkit.ts module evaluation started (Client or Server).
+
+[info] Genkit initialized successfully with Google AI plugin.
+RootLayout: Server-side rendering context detected.
+RootLayout: Server-side Firebase Initialized Status (from firebase.ts): true
+
+[info]    Generating static pages (0/10) ...
+
+[info] firebase.ts module evaluation started (Client or Server).
+Attempting Firebase initialization...
+Firebase app initialized successfully.
+Firebase initialization attempt complete. Status: SUCCESS. Error: None
+genkit.ts module evaluation started (Client or Server).
+Genkit initialized successfully with Google AI plugin.
+RootLayout: Server-side rendering context detected.
+RootLayout: Server-side Firebase Initialized Status (from firebase.ts): true
+   Generating static pages (2/10) 
+   Generating static pages (4/10) 
+   Generating static pages (7/10) 
+
+[info]  ✓ Generating static pages (10/10)
+
+[info] Shutting down all Genkit servers...
+
+[info]    Finalizing page optimization ...
+   Collecting build traces ...
+
+[info] Shutting down all Genkit servers...
+
