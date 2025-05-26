@@ -1,52 +1,68 @@
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Dependencies
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
-# Next.js build output
+# Testing
+/coverage
+
+# Next.js
 /.next/
 /out/
 
-# Firebase
-/.firebase/
-firebase-debug.log
-firebase-debug.*.log
-*.firebase.*.log # Firebase Emulator UI logs
-
-# Local Environment Variables
-.env.local
-.env.*.local
-.env # Only if it's not a template and contains secrets
-
-# TypeScript cache
+# TypeScript
 *.tsbuildinfo
-
-# Test Results
-/coverage
-/.nyc_output
+next-env.d.ts
 
 # Misc
 .DS_Store
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-*.local
-*.log
+*.pem
+
+# Local Environment Variables
+.env.local
+.env*.local
+!.env.example
+!.env.production.example
+!.env.development.example
+
+# Firebase
+# If you're using Firebase emulators, you might want to ignore emulator data
+# .firebase/emulators/
+# firebase-debug.log
+# firebase-debug.*.log
+
+# Firebase Hosting build artifacts (if "firebase deploy" builds locally in this dir)
+# This directory is often generated when Firebase CLI prepares or emulates functions.
+# It can contain node_modules and .next builds specific to the functions environment.
+# IMPORTANT: If your deployment process relies on this directory being present
+# and you are NOT using firebase deploy which handles this, adjust accordingly.
+# However, for source control, build artifacts and nested node_modules
+# should generally be ignored.
+/.firebase/
 
 # IDE / Editor specific
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.idea
+.vscode/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# dotenv environment variable files
+.env
+.env.development
+.env.production
 
 # Turbopack
 .turbo

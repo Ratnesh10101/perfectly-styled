@@ -1,0 +1,1924 @@
+[debug] [2025-05-26T12:42:01.934Z] ----------------------------------------------------------------------
+[debug] [2025-05-26T12:42:01.937Z] Command:       /nix/store/rbdrkcs5kkwpalxcd7c6bnm33lk2955n-nodejs-20.19.0/bin/node /home/user/.global_modules/bin/firebase deploy
+[debug] [2025-05-26T12:42:01.939Z] CLI Version:   14.4.0
+[debug] [2025-05-26T12:42:01.939Z] Platform:      linux
+[debug] [2025-05-26T12:42:01.939Z] Node Version:  v20.19.0
+[debug] [2025-05-26T12:42:01.939Z] Time:          Mon May 26 2025 12:42:01 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-05-26T12:42:01.940Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-26T12:42:02.554Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:42:10.271Z] Running auto auth
+[debug] [2025-05-26T12:42:10.325Z] [iam] checking project perfectly-styled for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-05-26T12:42:10.327Z] No OAuth tokens found
+[debug] [2025-05-26T12:42:10.335Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions [none]
+[debug] [2025-05-26T12:42:10.336Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions x-goog-quota-user=projects/perfectly-styled
+[debug] [2025-05-26T12:42:10.336Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T12:42:11.050Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions 200
+[debug] [2025-05-26T12:42:11.053Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T12:42:11.055Z] No OAuth tokens found
+[debug] [2025-05-26T12:42:11.055Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-05-26T12:42:11.057Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T12:42:11.710Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-05-26T12:42:11.710Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T12:42:11.714Z] No OAuth tokens found
+[debug] [2025-05-26T12:42:11.714Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled [none]
+[debug] [2025-05-26T12:42:12.126Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled 200
+[debug] [2025-05-26T12:42:12.127Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled {"projectId":"perfectly-styled","projectNumber":"377334244117","displayName":"Perfectly Styled","name":"projects/perfectly-styled","resources":{"hostingSite":"perfectly-styled"},"state":"ACTIVE","etag":"1_c3964132-e093-42c9-b5ed-f26f80206b9f"}
+[debug] [2025-05-26T12:42:15.484Z] No OAuth tokens found
+[debug] [2025-05-26T12:42:15.486Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites pageToken=&pageSize=10
+[debug] [2025-05-26T12:42:16.646Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites 200
+[debug] [2025-05-26T12:42:16.646Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites {"sites":[{"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}]}
+[debug] [2025-05-26T12:42:16.647Z] No OAuth tokens found
+[debug] [2025-05-26T12:42:16.648Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config [none]
+[debug] [2025-05-26T12:42:17.378Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config 200
+[debug] [2025-05-26T12:42:17.378Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config {"projectId":"perfectly-styled","appId":"1:377334244117:web:3fff766d728fd838a83f1c","storageBucket":"perfectly-styled.firebasestorage.app","apiKey":"AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk","authDomain":"perfectly-styled.firebaseapp.com","messagingSenderId":"377334244117","measurementId":"G-LLZ1XNNXET"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-05-26T12:42:24.090Z] No OAuth tokens found
+[debug] [2025-05-26T12:42:24.091Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled [none]
+[debug] [2025-05-26T12:42:25.040Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled 200
+[debug] [2025-05-26T12:42:25.040Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled {"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.0.4
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info] Failed to compile.
+
+
+[info] ./src/ai/flows/generate-style-recommendations.ts
+Error:   x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:15:1]
+ 12 |  * - StyleRecommendationsOutput - The return type for the generateStyleRecommendations function.
+ 13 |  */
+ 14 | 
+ 15 | <<<<<<< HEAD
+    : ^^^^^^^
+ 16 | import {ai} from '@/ai/genkit';
+ 17 | import {z} from 'genkit';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:24:1]
+ 21 |   dominantLine: z.string().describe('The user\u2019s dominant line (e.g., straight, curved).'),
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+    : ^^^^^^^
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+ 26 | import {z} from 'genkit';
+    `----
+  x Expected a semicolon
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+  x Expected ',', got '{'
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/ai/flows/generate-style-recommendations.ts
+./src/app/login/page.tsx
+
+./src/app/layout.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/layout.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | import type {Metadata} from 'next';
+ 3 | import { Geist, Geist_Mono } from 'next/font/google';
+ 4 | import './globals.css';
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:18:1]
+ 15 |   variable: '--font-geist-mono',
+ 16 |   subsets: ['latin'],
+ 17 | });
+ 18 | =======
+    : ^^^^^^^
+ 19 | 
+ 20 | import type {Metadata} from 'next';
+ 21 | import { GeistSans } from 'geist/font/sans';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:46:1]
+ 43 |     console.error("**********************************************************************************");
+ 44 |   }
+ 45 | }
+ 46 | >>>>>>> master
+    : ^^^^^^^
+ 47 | 
+ 48 | export const metadata: Metadata = {
+ 49 |   title: 'Perfectly Styled',
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:59:1]
+ 56 |   children: React.ReactNode;
+ 57 | }>) {
+ 58 |   return (
+ 59 | <<<<<<< HEAD
+    : ^^^^^^^
+ 60 |     <html lang="en">
+ 61 |       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+ 62 |         <AuthProvider>
+    `----
+  x Expression expected
+    ,-[/home/user/studio/src/app/layout.tsx:60:1]
+ 57 | }>) {
+ 58 |   return (
+ 59 | <<<<<<< HEAD
+ 60 |     <html lang="en">
+    :                    ^
+ 61 |       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+ 62 |         <AuthProvider>
+ 63 |           <Header />
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    : ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :  ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :   ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :    ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :     ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :      ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :       ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+    ,-[/home/user/studio/src/app/layout.tsx:81:1]
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+ 81 | }
+    : ^
+    `----
+  x Unexpected eof
+    ,-[/home/user/studio/src/app/layout.tsx:81:3]
+ 79 |     </html>
+ 80 |   );
+ 81 | }
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/layout.tsx
+
+./src/app/payment/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/payment/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import PaymentComponent from "@/components/PaymentComponent";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/payment/page.tsx:64:1]
+ 61 |   }
+ 62 | 
+ 63 |   if (userMeta && !userMeta.questionnaireComplete) {
+ 64 | =======
+    : ^^^^^^^
+ 65 | 
+ 66 | "use client";
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/payment/page.tsx:68:1]
+ 65 | 
+ 66 | "use client";
+ 67 | 
+ 68 | import { useEffect, useState } from "react";
+    : ^^^^^^
+ 69 | import PaymentComponent from "@/components/PaymentComponent";
+ 70 | import { useToast } from "@/hooks/use-toast";
+ 71 | import { processPaymentAndGenerateReport } from "@/actions/questionnaireActions";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/payment/page.tsx
+
+./src/app/questionnaire/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/questionnaire/page.tsx:4:1]
+ 1 | "use client";
+ 2 | 
+ 3 | import QuestionnaireForm from "@/components/QuestionnaireForm";
+ 4 | <<<<<<< HEAD
+   : ^^^^^^^
+ 5 | import ProtectedRoute from "@/components/ProtectedRoute";
+ 6 | import { useAuth } from "@/hooks/useAuth";
+ 7 | import { useToast } from "@/hooks/use-toast";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 | 
+ 15 | export default function QuestionnairePage() {
+ 16 |   const { currentUser, userMeta } = useAuth();
+ 17 | =======
+    : ^^^^^^^
+ 18 | // useAuth removed
+ 19 | import { useToast } from "@/hooks/use-toast";
+ 20 | // saveQuestionnaireData action removed, will be handled by payment action
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 |     
+ 15 |     export default function QuestionnairePage() {
+ 16 |       const { currentUser, userMeta } = useAuth();
+ 17 | ,-> =======
+ 18 | |   // useAuth removed
+ 19 | `-> import { useToast } from "@/hooks/use-toast";
+ 20 |     // saveQuestionnaireData action removed, will be handled by payment action
+ 21 |     import { useRouter } from "next/navigation";
+ 22 |     import type { QuestionnaireData } from "@/types";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/questionnaire/page.tsx
+
+./src/app/report/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/report/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import { useEffect, useState } from "react";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:12:1]
+  9 | import { db } from "@/config/firebase";
+ 10 | import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+ 11 | import type { UserReport, UserMeta } from "@/types";
+ 12 | =======
+    : ^^^^^^^
+ 13 | 
+ 14 | "use client";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:20:1]
+ 17 | import ReportDisplay from "@/components/ReportDisplay";
+ 18 | import LoadingSpinner from "@/components/LoadingSpinner";
+ 19 | import type { UserReportData } from "@/types"; // Changed from UserReport, UserMeta removed
+ 20 | >>>>>>> master
+    : ^^^^^^^
+ 21 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+ 22 | import { Button } from "@/components/ui/button";
+ 23 | import Link from "next/link";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:26:1]
+ 23 | import Link from "next/link";
+ 24 | import { AlertTriangle } from "lucide-react";
+ 25 | 
+ 26 | <<<<<<< HEAD
+    : ^^^^^^^
+ 27 | const reportCheck = (meta: UserMeta | null) => {
+ 28 |   return !!meta && meta.hasPaid && meta.hasGeneratedReport;
+ 29 | };
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:34:1]
+ 31 | export default function ReportPage() {
+ 32 |   const { currentUser, userMeta, loading: authLoading } = useAuth();
+ 33 |   const [report, setReport] = useState<UserReport | null>(null);
+ 34 | =======
+    : ^^^^^^^
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/report/page.tsx:37:1]
+ 34 | =======
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    : ^^^^^^
+ 38 |   const [reportData, setReportData] = useState<UserReportData | null>(null);
+ 39 | >>>>>>> master
+ 40 |   const [isLoadingReport, setIsLoadingReport] = useState(true);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/report/page.tsx
+
+
+[info] 
+> Build failed because of webpack errors
+
+[debug] [2025-05-26T12:42:40.679Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/server/middleware-manifest.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-05-26T12:48:43.860Z] ----------------------------------------------------------------------
+[debug] [2025-05-26T12:48:43.869Z] Command:       /nix/store/rbdrkcs5kkwpalxcd7c6bnm33lk2955n-nodejs-20.19.0/bin/node /home/user/.global_modules/bin/firebase deploy
+[debug] [2025-05-26T12:48:43.871Z] CLI Version:   14.4.0
+[debug] [2025-05-26T12:48:43.872Z] Platform:      linux
+[debug] [2025-05-26T12:48:43.872Z] Node Version:  v20.19.0
+[debug] [2025-05-26T12:48:43.872Z] Time:          Mon May 26 2025 12:48:43 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-05-26T12:48:43.872Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-26T12:48:45.419Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:48:45.420Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:48:45.422Z] [iam] checking project perfectly-styled for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-05-26T12:48:45.424Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:45.425Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:45.425Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:48:45.426Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:48:45.429Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions [none]
+[debug] [2025-05-26T12:48:45.430Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions x-goog-quota-user=projects/perfectly-styled
+[debug] [2025-05-26T12:48:45.430Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T12:48:46.357Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions 200
+[debug] [2025-05-26T12:48:46.363Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T12:48:46.364Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:46.365Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:46.365Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:48:46.365Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:48:46.369Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-05-26T12:48:46.370Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T12:48:47.028Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-05-26T12:48:47.032Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T12:48:47.040Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:47.040Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:47.040Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:48:47.041Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:48:47.045Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled [none]
+[debug] [2025-05-26T12:48:47.330Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled 200
+[debug] [2025-05-26T12:48:47.330Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled {"projectId":"perfectly-styled","projectNumber":"377334244117","displayName":"Perfectly Styled","name":"projects/perfectly-styled","resources":{"hostingSite":"perfectly-styled"},"state":"ACTIVE","etag":"1_c3964132-e093-42c9-b5ed-f26f80206b9f"}
+[debug] [2025-05-26T12:48:51.453Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:51.453Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:51.453Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:48:51.453Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:48:51.454Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites pageToken=&pageSize=10
+[debug] [2025-05-26T12:48:52.615Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites 200
+[debug] [2025-05-26T12:48:52.615Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites {"sites":[{"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}]}
+[debug] [2025-05-26T12:48:52.618Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:52.619Z] No OAuth tokens found
+[debug] [2025-05-26T12:48:52.619Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:48:52.619Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:48:52.619Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config [none]
+[debug] [2025-05-26T12:48:53.354Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config 200
+[debug] [2025-05-26T12:48:53.354Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config {"projectId":"perfectly-styled","appId":"1:377334244117:web:3fff766d728fd838a83f1c","storageBucket":"perfectly-styled.firebasestorage.app","apiKey":"AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk","authDomain":"perfectly-styled.firebaseapp.com","messagingSenderId":"377334244117","measurementId":"G-LLZ1XNNXET"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-05-26T12:49:00.359Z] No OAuth tokens found
+[debug] [2025-05-26T12:49:00.362Z] No OAuth tokens found
+[debug] [2025-05-26T12:49:00.362Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:49:00.362Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:49:00.362Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled [none]
+[debug] [2025-05-26T12:49:01.350Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled 200
+[debug] [2025-05-26T12:49:01.351Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled {"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.0.4
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info] Failed to compile.
+
+
+[info] ./src/ai/flows/generate-style-recommendations.ts
+Error:   x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:15:1]
+ 12 |  * - StyleRecommendationsOutput - The return type for the generateStyleRecommendations function.
+ 13 |  */
+ 14 | 
+ 15 | <<<<<<< HEAD
+    : ^^^^^^^
+ 16 | import {ai} from '@/ai/genkit';
+ 17 | import {z} from 'genkit';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:24:1]
+ 21 |   dominantLine: z.string().describe('The user\u2019s dominant line (e.g., straight, curved).'),
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+    : ^^^^^^^
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+ 26 | import {z} from 'genkit';
+    `----
+  x Expected a semicolon
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+  x Expected ',', got '{'
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/ai/flows/generate-style-recommendations.ts
+./src/app/login/page.tsx
+
+./src/app/layout.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/layout.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | import type {Metadata} from 'next';
+ 3 | import { Geist, Geist_Mono } from 'next/font/google';
+ 4 | import './globals.css';
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:18:1]
+ 15 |   variable: '--font-geist-mono',
+ 16 |   subsets: ['latin'],
+ 17 | });
+ 18 | =======
+    : ^^^^^^^
+ 19 | 
+ 20 | import type {Metadata} from 'next';
+ 21 | import { GeistSans } from 'geist/font/sans';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:46:1]
+ 43 |     console.error("**********************************************************************************");
+ 44 |   }
+ 45 | }
+ 46 | >>>>>>> master
+    : ^^^^^^^
+ 47 | 
+ 48 | export const metadata: Metadata = {
+ 49 |   title: 'Perfectly Styled',
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:59:1]
+ 56 |   children: React.ReactNode;
+ 57 | }>) {
+ 58 |   return (
+ 59 | <<<<<<< HEAD
+    : ^^^^^^^
+ 60 |     <html lang="en">
+ 61 |       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+ 62 |         <AuthProvider>
+    `----
+  x Expression expected
+    ,-[/home/user/studio/src/app/layout.tsx:60:1]
+ 57 | }>) {
+ 58 |   return (
+ 59 | <<<<<<< HEAD
+ 60 |     <html lang="en">
+    :                    ^
+ 61 |       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+ 62 |         <AuthProvider>
+ 63 |           <Header />
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    : ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :  ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :   ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :    ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :     ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :      ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :       ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+    ,-[/home/user/studio/src/app/layout.tsx:81:1]
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+ 81 | }
+    : ^
+    `----
+  x Unexpected eof
+    ,-[/home/user/studio/src/app/layout.tsx:81:3]
+ 79 |     </html>
+ 80 |   );
+ 81 | }
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/layout.tsx
+
+./src/app/payment/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/payment/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import PaymentComponent from "@/components/PaymentComponent";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/payment/page.tsx:64:1]
+ 61 |   }
+ 62 | 
+ 63 |   if (userMeta && !userMeta.questionnaireComplete) {
+ 64 | =======
+    : ^^^^^^^
+ 65 | 
+ 66 | "use client";
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/payment/page.tsx:68:1]
+ 65 | 
+ 66 | "use client";
+ 67 | 
+ 68 | import { useEffect, useState } from "react";
+    : ^^^^^^
+ 69 | import PaymentComponent from "@/components/PaymentComponent";
+ 70 | import { useToast } from "@/hooks/use-toast";
+ 71 | import { processPaymentAndGenerateReport } from "@/actions/questionnaireActions";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/payment/page.tsx
+
+./src/app/questionnaire/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/questionnaire/page.tsx:4:1]
+ 1 | "use client";
+ 2 | 
+ 3 | import QuestionnaireForm from "@/components/QuestionnaireForm";
+ 4 | <<<<<<< HEAD
+   : ^^^^^^^
+ 5 | import ProtectedRoute from "@/components/ProtectedRoute";
+ 6 | import { useAuth } from "@/hooks/useAuth";
+ 7 | import { useToast } from "@/hooks/use-toast";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 | 
+ 15 | export default function QuestionnairePage() {
+ 16 |   const { currentUser, userMeta } = useAuth();
+ 17 | =======
+    : ^^^^^^^
+ 18 | // useAuth removed
+ 19 | import { useToast } from "@/hooks/use-toast";
+ 20 | // saveQuestionnaireData action removed, will be handled by payment action
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 |     
+ 15 |     export default function QuestionnairePage() {
+ 16 |       const { currentUser, userMeta } = useAuth();
+ 17 | ,-> =======
+ 18 | |   // useAuth removed
+ 19 | `-> import { useToast } from "@/hooks/use-toast";
+ 20 |     // saveQuestionnaireData action removed, will be handled by payment action
+ 21 |     import { useRouter } from "next/navigation";
+ 22 |     import type { QuestionnaireData } from "@/types";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/questionnaire/page.tsx
+
+./src/app/report/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/report/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import { useEffect, useState } from "react";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:12:1]
+  9 | import { db } from "@/config/firebase";
+ 10 | import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+ 11 | import type { UserReport, UserMeta } from "@/types";
+ 12 | =======
+    : ^^^^^^^
+ 13 | 
+ 14 | "use client";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:20:1]
+ 17 | import ReportDisplay from "@/components/ReportDisplay";
+ 18 | import LoadingSpinner from "@/components/LoadingSpinner";
+ 19 | import type { UserReportData } from "@/types"; // Changed from UserReport, UserMeta removed
+ 20 | >>>>>>> master
+    : ^^^^^^^
+ 21 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+ 22 | import { Button } from "@/components/ui/button";
+ 23 | import Link from "next/link";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:26:1]
+ 23 | import Link from "next/link";
+ 24 | import { AlertTriangle } from "lucide-react";
+ 25 | 
+ 26 | <<<<<<< HEAD
+    : ^^^^^^^
+ 27 | const reportCheck = (meta: UserMeta | null) => {
+ 28 |   return !!meta && meta.hasPaid && meta.hasGeneratedReport;
+ 29 | };
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:34:1]
+ 31 | export default function ReportPage() {
+ 32 |   const { currentUser, userMeta, loading: authLoading } = useAuth();
+ 33 |   const [report, setReport] = useState<UserReport | null>(null);
+ 34 | =======
+    : ^^^^^^^
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/report/page.tsx:37:1]
+ 34 | =======
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    : ^^^^^^
+ 38 |   const [reportData, setReportData] = useState<UserReportData | null>(null);
+ 39 | >>>>>>> master
+ 40 |   const [isLoadingReport, setIsLoadingReport] = useState(true);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/report/page.tsx
+
+
+[info] 
+> Build failed because of webpack errors
+
+[debug] [2025-05-26T12:49:08.848Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/server/middleware-manifest.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-05-26T12:55:50.355Z] ----------------------------------------------------------------------
+[debug] [2025-05-26T12:55:50.372Z] Command:       /nix/store/rbdrkcs5kkwpalxcd7c6bnm33lk2955n-nodejs-20.19.0/bin/node /home/user/.global_modules/bin/firebase deploy
+[debug] [2025-05-26T12:55:50.374Z] CLI Version:   14.4.0
+[debug] [2025-05-26T12:55:50.374Z] Platform:      linux
+[debug] [2025-05-26T12:55:50.374Z] Node Version:  v20.19.0
+[debug] [2025-05-26T12:55:50.375Z] Time:          Mon May 26 2025 12:55:50 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-05-26T12:55:50.375Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-26T12:55:51.837Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:55:51.839Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:55:51.839Z] [iam] checking project perfectly-styled for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-05-26T12:55:51.842Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:51.842Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:51.843Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:55:51.843Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:55:51.845Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions [none]
+[debug] [2025-05-26T12:55:51.846Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions x-goog-quota-user=projects/perfectly-styled
+[debug] [2025-05-26T12:55:51.846Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T12:55:52.722Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions 200
+[debug] [2025-05-26T12:55:52.723Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T12:55:52.724Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:52.725Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:52.725Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:55:52.725Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:55:52.725Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-05-26T12:55:52.732Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T12:55:53.420Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-05-26T12:55:53.425Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T12:55:53.430Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:53.431Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:53.431Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:55:53.431Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:55:53.434Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled [none]
+[debug] [2025-05-26T12:55:53.728Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled 200
+[debug] [2025-05-26T12:55:53.729Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled {"projectId":"perfectly-styled","projectNumber":"377334244117","displayName":"Perfectly Styled","name":"projects/perfectly-styled","resources":{"hostingSite":"perfectly-styled"},"state":"ACTIVE","etag":"1_c3964132-e093-42c9-b5ed-f26f80206b9f"}
+[debug] [2025-05-26T12:55:57.788Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:57.788Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:57.789Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:55:57.789Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:55:57.790Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites pageToken=&pageSize=10
+[debug] [2025-05-26T12:55:58.888Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites 200
+[debug] [2025-05-26T12:55:58.888Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites {"sites":[{"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}]}
+[debug] [2025-05-26T12:55:58.891Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:58.891Z] No OAuth tokens found
+[debug] [2025-05-26T12:55:58.891Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:55:58.894Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:55:58.894Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config [none]
+[debug] [2025-05-26T12:55:59.642Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config 200
+[debug] [2025-05-26T12:55:59.642Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config {"projectId":"perfectly-styled","appId":"1:377334244117:web:3fff766d728fd838a83f1c","storageBucket":"perfectly-styled.firebasestorage.app","apiKey":"AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk","authDomain":"perfectly-styled.firebaseapp.com","messagingSenderId":"377334244117","measurementId":"G-LLZ1XNNXET"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-05-26T12:56:06.711Z] No OAuth tokens found
+[debug] [2025-05-26T12:56:06.711Z] No OAuth tokens found
+[debug] [2025-05-26T12:56:06.712Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T12:56:06.712Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T12:56:06.712Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled [none]
+[debug] [2025-05-26T12:56:07.661Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled 200
+[debug] [2025-05-26T12:56:07.661Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled {"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.0.4
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info] Failed to compile.
+
+./src/ai/flows/generate-style-recommendations.ts
+Error:   x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:15:1]
+ 12 |  * - StyleRecommendationsOutput - The return type for the generateStyleRecommendations function.
+ 13 |  */
+ 14 | 
+ 15 | <<<<<<< HEAD
+    : ^^^^^^^
+ 16 | import {ai} from '@/ai/genkit';
+ 17 | import {z} from 'genkit';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:24:1]
+ 21 |   dominantLine: z.string().describe('The user\u2019s dominant line (e.g., straight, curved).'),
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+    : ^^^^^^^
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+ 26 | import {z} from 'genkit';
+    `----
+  x Expected a semicolon
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+  x Expected ',', got '{'
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/ai/flows/generate-style-recommendations.ts
+./src/app/login/page.tsx
+
+./src/app/layout.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/layout.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | import type {Metadata} from 'next';
+ 3 | import { Geist, Geist_Mono } from 'next/font/google';
+ 4 | import './globals.css';
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:18:1]
+ 15 |   variable: '--font-geist-mono',
+ 16 |   subsets: ['latin'],
+ 17 | });
+ 18 | =======
+    : ^^^^^^^
+ 19 | 
+ 20 | import type {Metadata} from 'next';
+ 21 | import { GeistSans } from 'geist/font/sans';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:46:1]
+ 43 |     console.error("**********************************************************************************");
+ 44 |   }
+ 45 | }
+ 46 | >>>>>>> master
+    : ^^^^^^^
+ 47 | 
+ 48 | export const metadata: Metadata = {
+ 49 |   title: 'Perfectly Styled',
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/layout.tsx:59:1]
+ 56 |   children: React.ReactNode;
+ 57 | }>) {
+ 58 |   return (
+ 59 | <<<<<<< HEAD
+    : ^^^^^^^
+ 60 |     <html lang="en">
+ 61 |       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+ 62 |         <AuthProvider>
+    `----
+  x Expression expected
+    ,-[/home/user/studio/src/app/layout.tsx:60:1]
+ 57 | }>) {
+ 58 |   return (
+ 59 | <<<<<<< HEAD
+ 60 |     <html lang="en">
+    :                    ^
+ 61 |       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+ 62 |         <AuthProvider>
+ 63 |           <Header />
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    : ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :  ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :   ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :    ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :     ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :      ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'>'}` or `&gt;`?
+    ,-[/home/user/studio/src/app/layout.tsx:77:1]
+ 74 |           {children}
+ 75 |         </main>
+ 76 |         {/* Toaster component was previously removed */}
+ 77 | >>>>>>> master
+    :       ^
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+    `----
+  x Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+    ,-[/home/user/studio/src/app/layout.tsx:81:1]
+ 78 |       </body>
+ 79 |     </html>
+ 80 |   );
+ 81 | }
+    : ^
+    `----
+  x Unexpected eof
+    ,-[/home/user/studio/src/app/layout.tsx:81:3]
+ 79 |     </html>
+ 80 |   );
+ 81 | }
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/layout.tsx
+
+./src/app/payment/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/payment/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import PaymentComponent from "@/components/PaymentComponent";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/payment/page.tsx:64:1]
+ 61 |   }
+ 62 | 
+ 63 |   if (userMeta && !userMeta.questionnaireComplete) {
+ 64 | =======
+    : ^^^^^^^
+ 65 | 
+ 66 | "use client";
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/payment/page.tsx:68:1]
+ 65 | 
+ 66 | "use client";
+ 67 | 
+ 68 | import { useEffect, useState } from "react";
+    : ^^^^^^
+ 69 | import PaymentComponent from "@/components/PaymentComponent";
+ 70 | import { useToast } from "@/hooks/use-toast";
+ 71 | import { processPaymentAndGenerateReport } from "@/actions/questionnaireActions";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/payment/page.tsx
+
+./src/app/questionnaire/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/questionnaire/page.tsx:4:1]
+ 1 | "use client";
+ 2 | 
+ 3 | import QuestionnaireForm from "@/components/QuestionnaireForm";
+ 4 | <<<<<<< HEAD
+   : ^^^^^^^
+ 5 | import ProtectedRoute from "@/components/ProtectedRoute";
+ 6 | import { useAuth } from "@/hooks/useAuth";
+ 7 | import { useToast } from "@/hooks/use-toast";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 | 
+ 15 | export default function QuestionnairePage() {
+ 16 |   const { currentUser, userMeta } = useAuth();
+ 17 | =======
+    : ^^^^^^^
+ 18 | // useAuth removed
+ 19 | import { useToast } from "@/hooks/use-toast";
+ 20 | // saveQuestionnaireData action removed, will be handled by payment action
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 |     
+ 15 |     export default function QuestionnairePage() {
+ 16 |       const { currentUser, userMeta } = useAuth();
+ 17 | ,-> =======
+ 18 | |   // useAuth removed
+ 19 | `-> import { useToast } from "@/hooks/use-toast";
+ 20 |     // saveQuestionnaireData action removed, will be handled by payment action
+ 21 |     import { useRouter } from "next/navigation";
+ 22 |     import type { QuestionnaireData } from "@/types";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/questionnaire/page.tsx
+
+./src/app/report/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/report/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import { useEffect, useState } from "react";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:12:1]
+  9 | import { db } from "@/config/firebase";
+ 10 | import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+ 11 | import type { UserReport, UserMeta } from "@/types";
+ 12 | =======
+    : ^^^^^^^
+ 13 | 
+ 14 | "use client";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:20:1]
+ 17 | import ReportDisplay from "@/components/ReportDisplay";
+ 18 | import LoadingSpinner from "@/components/LoadingSpinner";
+ 19 | import type { UserReportData } from "@/types"; // Changed from UserReport, UserMeta removed
+ 20 | >>>>>>> master
+    : ^^^^^^^
+ 21 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+ 22 | import { Button } from "@/components/ui/button";
+ 23 | import Link from "next/link";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:26:1]
+ 23 | import Link from "next/link";
+ 24 | import { AlertTriangle } from "lucide-react";
+ 25 | 
+ 26 | <<<<<<< HEAD
+    : ^^^^^^^
+ 27 | const reportCheck = (meta: UserMeta | null) => {
+ 28 |   return !!meta && meta.hasPaid && meta.hasGeneratedReport;
+ 29 | };
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:34:1]
+ 31 | export default function ReportPage() {
+ 32 |   const { currentUser, userMeta, loading: authLoading } = useAuth();
+ 33 |   const [report, setReport] = useState<UserReport | null>(null);
+ 34 | =======
+    : ^^^^^^^
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/report/page.tsx:37:1]
+ 34 | =======
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    : ^^^^^^
+ 38 |   const [reportData, setReportData] = useState<UserReportData | null>(null);
+ 39 | >>>>>>> master
+ 40 |   const [isLoadingReport, setIsLoadingReport] = useState(true);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/report/page.tsx
+
+
+[info] 
+
+[info] > Build failed because of webpack errors
+
+[debug] [2025-05-26T12:56:14.723Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/server/middleware-manifest.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-05-26T13:25:29.992Z] ----------------------------------------------------------------------
+[debug] [2025-05-26T13:25:29.996Z] Command:       /nix/store/rbdrkcs5kkwpalxcd7c6bnm33lk2955n-nodejs-20.19.0/bin/node /home/user/.global_modules/bin/firebase deploy
+[debug] [2025-05-26T13:25:29.998Z] CLI Version:   14.4.0
+[debug] [2025-05-26T13:25:29.998Z] Platform:      linux
+[debug] [2025-05-26T13:25:29.998Z] Node Version:  v20.19.0
+[debug] [2025-05-26T13:25:29.999Z] Time:          Mon May 26 2025 13:25:29 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-05-26T13:25:29.999Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-26T13:25:30.570Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:25:30.571Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:25:30.572Z] [iam] checking project perfectly-styled for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-05-26T13:25:30.573Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:30.574Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:30.574Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:25:30.574Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:25:30.576Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions [none]
+[debug] [2025-05-26T13:25:30.576Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions x-goog-quota-user=projects/perfectly-styled
+[debug] [2025-05-26T13:25:30.576Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T13:25:30.827Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions 200
+[debug] [2025-05-26T13:25:30.827Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T13:25:30.831Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:30.833Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:30.833Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:25:30.834Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:25:30.834Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-05-26T13:25:30.836Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T13:25:31.494Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-05-26T13:25:31.495Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T13:25:31.502Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:31.503Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:31.503Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:25:31.503Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:25:31.504Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled [none]
+[debug] [2025-05-26T13:25:31.901Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled 200
+[debug] [2025-05-26T13:25:31.905Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled {"projectId":"perfectly-styled","projectNumber":"377334244117","displayName":"Perfectly Styled","name":"projects/perfectly-styled","resources":{"hostingSite":"perfectly-styled"},"state":"ACTIVE","etag":"1_c3964132-e093-42c9-b5ed-f26f80206b9f"}
+[debug] [2025-05-26T13:25:35.622Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:35.623Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:35.623Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:25:35.623Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:25:35.624Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites pageToken=&pageSize=10
+[debug] [2025-05-26T13:25:36.763Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites 200
+[debug] [2025-05-26T13:25:36.763Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites {"sites":[{"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}]}
+[debug] [2025-05-26T13:25:36.764Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:36.765Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:36.765Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:25:36.765Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:25:36.765Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config [none]
+[debug] [2025-05-26T13:25:37.444Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config 200
+[debug] [2025-05-26T13:25:37.444Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config {"projectId":"perfectly-styled","appId":"1:377334244117:web:3fff766d728fd838a83f1c","storageBucket":"perfectly-styled.firebasestorage.app","apiKey":"AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk","authDomain":"perfectly-styled.firebaseapp.com","messagingSenderId":"377334244117","measurementId":"G-LLZ1XNNXET"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-05-26T13:25:44.713Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:44.714Z] No OAuth tokens found
+[debug] [2025-05-26T13:25:44.714Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:25:44.714Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:25:44.714Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled [none]
+[debug] [2025-05-26T13:25:45.684Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled 200
+[debug] [2025-05-26T13:25:45.685Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled {"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.3.2
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info] Failed to compile.
+
+./src/ai/flows/generate-style-recommendations.ts
+Error:   x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:15:1]
+ 12 |  * - StyleRecommendationsOutput - The return type for the generateStyleRecommendations function.
+ 13 |  */
+ 14 | 
+ 15 | <<<<<<< HEAD
+    : ^^^^^^^
+ 16 | import {ai} from '@/ai/genkit';
+ 17 | import {z} from 'genkit';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:24:1]
+ 21 |   dominantLine: z.string().describe('The user\u2019s dominant line (e.g., straight, curved).'),
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+    : ^^^^^^^
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+ 26 | import {z} from 'genkit';
+    `----
+  x Expected a semicolon
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+  x Expected ',', got '{'
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/ai/flows/generate-style-recommendations.ts
+./src/app/login/page.tsx
+
+./src/app/payment/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/payment/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import PaymentComponent from "@/components/PaymentComponent";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/payment/page.tsx:64:1]
+ 61 |   }
+ 62 | 
+ 63 |   if (userMeta && !userMeta.questionnaireComplete) {
+ 64 | =======
+    : ^^^^^^^
+ 65 | 
+ 66 | "use client";
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/payment/page.tsx:68:1]
+ 65 | 
+ 66 | "use client";
+ 67 | 
+ 68 | import { useEffect, useState } from "react";
+    : ^^^^^^
+ 69 | import PaymentComponent from "@/components/PaymentComponent";
+ 70 | import { useToast } from "@/hooks/use-toast";
+ 71 | import { processPaymentAndGenerateReport } from "@/actions/questionnaireActions";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/payment/page.tsx
+
+./src/app/questionnaire/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/questionnaire/page.tsx:4:1]
+ 1 | "use client";
+ 2 | 
+ 3 | import QuestionnaireForm from "@/components/QuestionnaireForm";
+ 4 | <<<<<<< HEAD
+   : ^^^^^^^
+ 5 | import ProtectedRoute from "@/components/ProtectedRoute";
+ 6 | import { useAuth } from "@/hooks/useAuth";
+ 7 | import { useToast } from "@/hooks/use-toast";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 | 
+ 15 | export default function QuestionnairePage() {
+ 16 |   const { currentUser, userMeta } = useAuth();
+ 17 | =======
+    : ^^^^^^^
+ 18 | // useAuth removed
+ 19 | import { useToast } from "@/hooks/use-toast";
+ 20 | // saveQuestionnaireData action removed, will be handled by payment action
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 |     
+ 15 |     export default function QuestionnairePage() {
+ 16 |       const { currentUser, userMeta } = useAuth();
+ 17 | ,-> =======
+ 18 | |   // useAuth removed
+ 19 | `-> import { useToast } from "@/hooks/use-toast";
+ 20 |     // saveQuestionnaireData action removed, will be handled by payment action
+ 21 |     import { useRouter } from "next/navigation";
+ 22 |     import type { QuestionnaireData } from "@/types";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/questionnaire/page.tsx
+
+./src/app/report/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/report/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import { useEffect, useState } from "react";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:12:1]
+  9 | import { db } from "@/config/firebase";
+ 10 | import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+ 11 | import type { UserReport, UserMeta } from "@/types";
+ 12 | =======
+    : ^^^^^^^
+ 13 | 
+ 14 | "use client";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:20:1]
+ 17 | import ReportDisplay from "@/components/ReportDisplay";
+ 18 | import LoadingSpinner from "@/components/LoadingSpinner";
+ 19 | import type { UserReportData } from "@/types"; // Changed from UserReport, UserMeta removed
+ 20 | >>>>>>> master
+    : ^^^^^^^
+ 21 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+ 22 | import { Button } from "@/components/ui/button";
+ 23 | import Link from "next/link";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:26:1]
+ 23 | import Link from "next/link";
+ 24 | import { AlertTriangle } from "lucide-react";
+ 25 | 
+ 26 | <<<<<<< HEAD
+    : ^^^^^^^
+ 27 | const reportCheck = (meta: UserMeta | null) => {
+ 28 |   return !!meta && meta.hasPaid && meta.hasGeneratedReport;
+ 29 | };
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:34:1]
+ 31 | export default function ReportPage() {
+ 32 |   const { currentUser, userMeta, loading: authLoading } = useAuth();
+ 33 |   const [report, setReport] = useState<UserReport | null>(null);
+ 34 | =======
+    : ^^^^^^^
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/report/page.tsx:37:1]
+ 34 | =======
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    : ^^^^^^
+ 38 |   const [reportData, setReportData] = useState<UserReportData | null>(null);
+ 39 | >>>>>>> master
+ 40 |   const [isLoadingReport, setIsLoadingReport] = useState(true);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/report/page.tsx
+
+./src/app/signup/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/signup/page.tsx:2:1]
+ 1 | 
+ 2 | <<<<<<< HEAD
+   : ^^^^^^^
+ 3 | "use client";
+ 4 | 
+ 5 | import AuthForm from "@/components/AuthForm";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/signup/page.tsx:91:1]
+ 88 |   );
+ 89 | }
+ 90 | 
+ 91 | =======
+    : ^^^^^^^
+ 92 | 'use client'; // <--- ADD THIS LINE
+ 93 | 
+ 94 | import { Suspense } from 'react';
+    `----
+  x Merge conflict marker encountered.
+     ,-[/home/user/studio/src/app/signup/page.tsx:121:1]
+ 118 |     </Suspense>
+ 119 |   );
+ 120 | }
+ 121 | >>>>>>> master
+     : ^^^^^^^
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/signup/page.tsx
+
+
+[info] 
+
+[info] > Build failed because of webpack errors
+
+[debug] [2025-05-26T13:26:01.782Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/server/middleware-manifest.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-05-26T13:27:28.912Z] ----------------------------------------------------------------------
+[debug] [2025-05-26T13:27:28.916Z] Command:       /nix/store/rbdrkcs5kkwpalxcd7c6bnm33lk2955n-nodejs-20.19.0/bin/node /home/user/.global_modules/bin/firebase deploy
+[debug] [2025-05-26T13:27:28.917Z] CLI Version:   14.4.0
+[debug] [2025-05-26T13:27:28.917Z] Platform:      linux
+[debug] [2025-05-26T13:27:28.917Z] Node Version:  v20.19.0
+[debug] [2025-05-26T13:27:28.917Z] Time:          Mon May 26 2025 13:27:28 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-05-26T13:27:28.917Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-26T13:27:29.477Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:27:29.478Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:27:29.478Z] [iam] checking project perfectly-styled for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-05-26T13:27:29.480Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:29.480Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:29.481Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:27:29.481Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:27:29.483Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions [none]
+[debug] [2025-05-26T13:27:29.483Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions x-goog-quota-user=projects/perfectly-styled
+[debug] [2025-05-26T13:27:29.484Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T13:27:30.203Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions 200
+[debug] [2025-05-26T13:27:30.204Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T13:27:30.205Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:30.205Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:30.205Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:27:30.205Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:27:30.206Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-05-26T13:27:30.206Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T13:27:30.862Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-05-26T13:27:30.869Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/perfectly-styled/serviceAccounts/perfectly-styled@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-26T13:27:30.875Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:30.875Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:30.876Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:27:30.876Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:27:30.878Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled [none]
+[debug] [2025-05-26T13:27:31.255Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled 200
+[debug] [2025-05-26T13:27:31.256Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled {"projectId":"perfectly-styled","projectNumber":"377334244117","displayName":"Perfectly Styled","name":"projects/perfectly-styled","resources":{"hostingSite":"perfectly-styled"},"state":"ACTIVE","etag":"1_c3964132-e093-42c9-b5ed-f26f80206b9f"}
+[debug] [2025-05-26T13:27:34.915Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:34.916Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:34.916Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:27:34.916Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:27:34.917Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites pageToken=&pageSize=10
+[debug] [2025-05-26T13:27:36.001Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites 200
+[debug] [2025-05-26T13:27:36.002Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites {"sites":[{"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}]}
+[debug] [2025-05-26T13:27:36.005Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:36.005Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:36.005Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:27:36.006Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:27:36.006Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config [none]
+[debug] [2025-05-26T13:27:36.540Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config 200
+[debug] [2025-05-26T13:27:36.540Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config {"projectId":"perfectly-styled","appId":"1:377334244117:web:3fff766d728fd838a83f1c","storageBucket":"perfectly-styled.firebasestorage.app","apiKey":"AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk","authDomain":"perfectly-styled.firebaseapp.com","messagingSenderId":"377334244117","measurementId":"G-LLZ1XNNXET"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-05-26T13:27:44.125Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:44.126Z] No OAuth tokens found
+[debug] [2025-05-26T13:27:44.126Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T13:27:44.126Z] > authorizing via signed-in user (vickyks@hotmail.com)
+[debug] [2025-05-26T13:27:44.126Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled [none]
+[debug] [2025-05-26T13:27:45.123Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled 200
+[debug] [2025-05-26T13:27:45.123Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled {"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.4.0-canary.52
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info] Failed to compile.
+
+./src/ai/flows/generate-style-recommendations.ts
+Error:   x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:15:1]
+ 12 |  * - StyleRecommendationsOutput - The return type for the generateStyleRecommendations function.
+ 13 |  */
+ 14 | 
+ 15 | <<<<<<< HEAD
+    : ^^^^^^^
+ 16 | import {ai} from '@/ai/genkit';
+ 17 | import {z} from 'genkit';
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:24:1]
+ 21 |   dominantLine: z.string().describe('The user\u2019s dominant line (e.g., straight, curved).'),
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+    : ^^^^^^^
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+ 26 | import {z} from 'genkit';
+    `----
+  x Expected a semicolon
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+  x Expected ',', got '{'
+    ,-[/home/user/studio/src/ai/flows/generate-style-recommendations.ts:25:1]
+ 22 |   bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
+ 23 |   scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
+ 24 | =======
+ 25 | import {ai} from '@/ai/genkit'; // This 'ai' can be null
+    :        ^
+ 26 | import {z} from 'genkit';
+ 27 | 
+ 28 | const LineDetailSchema = z.object({
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/ai/flows/generate-style-recommendations.ts
+./src/app/login/page.tsx
+
+./src/app/payment/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/payment/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import PaymentComponent from "@/components/PaymentComponent";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/payment/page.tsx:64:1]
+ 61 |   }
+ 62 | 
+ 63 |   if (userMeta && !userMeta.questionnaireComplete) {
+ 64 | =======
+    : ^^^^^^^
+ 65 | 
+ 66 | "use client";
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/payment/page.tsx:68:1]
+ 65 | 
+ 66 | "use client";
+ 67 | 
+ 68 | import { useEffect, useState } from "react";
+    : ^^^^^^
+ 69 | import PaymentComponent from "@/components/PaymentComponent";
+ 70 | import { useToast } from "@/hooks/use-toast";
+ 71 | import { processPaymentAndGenerateReport } from "@/actions/questionnaireActions";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/payment/page.tsx
+
+./src/app/questionnaire/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/questionnaire/page.tsx:4:1]
+ 1 | "use client";
+ 2 | 
+ 3 | import QuestionnaireForm from "@/components/QuestionnaireForm";
+ 4 | <<<<<<< HEAD
+   : ^^^^^^^
+ 5 | import ProtectedRoute from "@/components/ProtectedRoute";
+ 6 | import { useAuth } from "@/hooks/useAuth";
+ 7 | import { useToast } from "@/hooks/use-toast";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 | 
+ 15 | export default function QuestionnairePage() {
+ 16 |   const { currentUser, userMeta } = useAuth();
+ 17 | =======
+    : ^^^^^^^
+ 18 | // useAuth removed
+ 19 | import { useToast } from "@/hooks/use-toast";
+ 20 | // saveQuestionnaireData action removed, will be handled by payment action
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/questionnaire/page.tsx:17:1]
+ 14 |     
+ 15 |     export default function QuestionnairePage() {
+ 16 |       const { currentUser, userMeta } = useAuth();
+ 17 | ,-> =======
+ 18 | |   // useAuth removed
+ 19 | `-> import { useToast } from "@/hooks/use-toast";
+ 20 |     // saveQuestionnaireData action removed, will be handled by payment action
+ 21 |     import { useRouter } from "next/navigation";
+ 22 |     import type { QuestionnaireData } from "@/types";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/questionnaire/page.tsx
+
+./src/app/report/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/report/page.tsx:1:1]
+ 1 | <<<<<<< HEAD
+   : ^^^^^^^
+ 2 | "use client";
+ 3 | 
+ 4 | import { useEffect, useState } from "react";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:12:1]
+  9 | import { db } from "@/config/firebase";
+ 10 | import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+ 11 | import type { UserReport, UserMeta } from "@/types";
+ 12 | =======
+    : ^^^^^^^
+ 13 | 
+ 14 | "use client";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:20:1]
+ 17 | import ReportDisplay from "@/components/ReportDisplay";
+ 18 | import LoadingSpinner from "@/components/LoadingSpinner";
+ 19 | import type { UserReportData } from "@/types"; // Changed from UserReport, UserMeta removed
+ 20 | >>>>>>> master
+    : ^^^^^^^
+ 21 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+ 22 | import { Button } from "@/components/ui/button";
+ 23 | import Link from "next/link";
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:26:1]
+ 23 | import Link from "next/link";
+ 24 | import { AlertTriangle } from "lucide-react";
+ 25 | 
+ 26 | <<<<<<< HEAD
+    : ^^^^^^^
+ 27 | const reportCheck = (meta: UserMeta | null) => {
+ 28 |   return !!meta && meta.hasPaid && meta.hasGeneratedReport;
+ 29 | };
+    `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/report/page.tsx:34:1]
+ 31 | export default function ReportPage() {
+ 32 |   const { currentUser, userMeta, loading: authLoading } = useAuth();
+ 33 |   const [report, setReport] = useState<UserReport | null>(null);
+ 34 | =======
+    : ^^^^^^^
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[/home/user/studio/src/app/report/page.tsx:37:1]
+ 34 | =======
+ 35 | const REPORT_SESSION_KEY = "generatedReportData";
+ 36 | 
+ 37 | export default function ReportPage() {
+    : ^^^^^^
+ 38 |   const [reportData, setReportData] = useState<UserReportData | null>(null);
+ 39 | >>>>>>> master
+ 40 |   const [isLoadingReport, setIsLoadingReport] = useState(true);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/report/page.tsx
+
+./src/app/signup/page.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[/home/user/studio/src/app/signup/page.tsx:2:1]
+ 1 | 
+ 2 | <<<<<<< HEAD
+   : ^^^^^^^
+ 3 | "use client";
+ 4 | 
+ 5 | import AuthForm from "@/components/AuthForm";
+   `----
+  x Merge conflict marker encountered.
+    ,-[/home/user/studio/src/app/signup/page.tsx:91:1]
+ 88 |   );
+ 89 | }
+ 90 | 
+ 91 | =======
+    : ^^^^^^^
+ 92 | 'use client'; // <--- ADD THIS LINE
+ 93 | 
+ 94 | import { Suspense } from 'react';
+    `----
+  x Merge conflict marker encountered.
+     ,-[/home/user/studio/src/app/signup/page.tsx:121:1]
+ 118 |     </Suspense>
+ 119 |   );
+ 120 | }
+ 121 | >>>>>>> master
+     : ^^^^^^^
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/signup/page.tsx
+
+[info] 
+
+[info] 
+> Build failed because of webpack errors
+
+[debug] [2025-05-26T13:27:59.846Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/server/middleware-manifest.json'
+[error] 
+[error] Error: An unexpected error has occurred.
