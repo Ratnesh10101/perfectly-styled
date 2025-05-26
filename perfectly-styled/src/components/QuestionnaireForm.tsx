@@ -157,7 +157,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   };
   
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(combinedSchema), // Use combined schema for the whole form
+    resolver: zodResolver(combinedSchema), 
     defaultValues: {
       shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || undefined,
       waist_answer: transformInitialDataToFormValues(initialData).waist_answer || undefined,
@@ -355,7 +355,6 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                 )}
               />
             )}
-            {/* Hidden submit button for the last step, triggered by the footer button */}
             {currentStep === stepSchemas.length - 1 && <button type="submit" style={{display: "none"}} disabled={isLoading} />}
           </form>
         </Form>
