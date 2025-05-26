@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+<<<<<<< HEAD
 import { Shirt, LogIn, LogOut, UserPlus, DraftingCompass, FileText, Diamond } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,13 @@ const Header = () => {
       toast({ title: "Logout failed", description: (error as Error).message, variant: "destructive" });
     }
   };
+=======
+import { Shirt, DraftingCompass } from "lucide-react";
+// Removed useAuth, Button, useRouter, useToast, Skeleton, and other auth-related imports
+
+const Header = () => {
+  // Removed all auth-related state and logic
+>>>>>>> master
 
   return (
     <header className="bg-card shadow-md">
@@ -30,6 +38,7 @@ const Header = () => {
           <span>Perfectly Styled</span>
         </Link>
         <nav className="flex items-center gap-2 sm:gap-4">
+<<<<<<< HEAD
           {currentUser ? (
             <>
               {userMeta?.questionnaireComplete && !userMeta?.hasGeneratedReport && (
@@ -70,6 +79,12 @@ const Header = () => {
               </Button>
             </>
           )}
+=======
+          {/* Simplified navigation, as there's no user login state */}
+          <Link href="/questionnaire" className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary">
+            <DraftingCompass className="mr-2 h-4 w-4" /> Questionnaire
+          </Link>
+>>>>>>> master
         </nav>
       </div>
     </header>

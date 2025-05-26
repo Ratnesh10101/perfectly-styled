@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+<<<<<<< HEAD
 # dependencies
 /node_modules
 /.pnp
@@ -44,3 +45,94 @@ next-env.d.ts
 firebase-debug.log
 firestore-debug.log
 firebase.ts
+=======
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+*.local
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+
+# Next.js cache
+.next/cache/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in your root directory
+ehthumbs.db
+Thumbs.db
+
+# Optional Editor directories/files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+
+# Optional: Other files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+node_modules/@next/swc-linux-x64-musl/next-swc.linux-x64-musl.node
+node_modules/@next/swc-linux-x64-gnu/next-swc.linux-x64-gnu.node
+.firebase/perfectly-styled/functions/node_modules/@next/swc-linux-x64-musl/next-swc.linux-x64-musl.node
+.firebase/perfectly-styled/functions/node_modules/@next/swc-linux-x64-gnu/next-swc.linux-x64-gnu.node
+.firebase/perfectly-styled/functions/.next/cache/webpack/server-production/6.pack
+.firebase/perfectly-styled/functions/.next/cache/webpack/server-production/0.pack
+.firebase/perfectly-styled/functions/.next/cache/webpack/server-production/8.pack
+.firebase/perfectly-styled/functions/.next/cache/webpack/server-production/11.pack
+.git/objects/pack/pack-4b7a0e757276a4409b5864a6399b3509f29b8367.pack
+.next/cache/webpack/server-production/6.pack
+.next/cache/webpack/server-production/0.pack
+.next/cache/webpack/server-production/8.pack
+.next/cache/webpack/server-production/11.pack ./node_modules/@next/swc-linux-x64-musl/next-swc.linux-x64-musl.node 
+node_modules/@next/swc-linux-x64-musl/next-swc.linux-x64-musl.node 
+
+# Dependency directories
+node_modules/
+.firebase/
+.next/
+
+# Build/cache files
+*.pack
+*.node
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+node_modules/
+.firebase/
+.next/
+*.pack
+*.node
+*.log
+>>>>>>> master

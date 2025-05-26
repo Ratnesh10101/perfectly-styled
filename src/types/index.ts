@@ -1,24 +1,36 @@
-import type { Timestamp } from "firebase/firestore";
+
+// No longer using Firebase Timestamps directly for these transient types
+// import type { Timestamp } from "firebase/firestore";
+
+export interface LineAnswer {
+  bodyPart: 'Shoulders' | 'Waist' | 'Hips' | 'Face' | 'Jawline';
+  answer: string;
+  classification: 'straight' | 'curved';
+}
+
+export interface ScaleAnswer {
+  category: 'Wrist Circumference' | 'Height' | 'Shoe Size';
+  answer: string;
+}
 
 export interface QuestionnaireData {
-  dominantLine: string;
-  bodyShape: string;
-  scale: string;
-  preferences: string;
-  userId?: string;
-  createdAt?: Timestamp;
+  lineAnswers: LineAnswer[];
+  scaleAnswers: ScaleAnswer[];
+  bodyShape: 'Pear Shape' | 'Inverted Triangle' | 'Straight' | 'Round/Apple' | 'Hourglass' | '';
+  // preferences removed as per previous request
 }
 
-export interface UserReport {
+export interface UserReportData { // Renamed to avoid confusion with User-specific reports
   recommendations: string;
   questionnaireData: QuestionnaireData;
-  generatedAt?: Timestamp;
-  userId?: string;
+  recipientEmail?: string; // Email for sending the report
+  generatedAtClient?: string; // Client-side timestamp
 }
 
-export interface UserMeta {
-  hasPaid: boolean;
-  hasGeneratedReport: boolean;
-  email?: string | null;
-  questionnaireComplete?: boolean;
-}
+// UserMeta is no longer needed
+// export interface UserMeta {
+//   hasPaid: boolean;
+//   hasGeneratedReport: boolean;
+//   email?: string | null;
+//   questionnaireComplete?: boolean;
+//   active
