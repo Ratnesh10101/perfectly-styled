@@ -1,131 +1,129 @@
+"use server";
 
-'use client';
+import { generateStyleRecommendations, type StyleRecommendationsInput } from "@/ai/flows/generate-style-recommendations";
+import type { QuestionnaireData, UserReportData } from "@/types";
 
-import { auth } from "@/config/firebase";
-import { signInWithEmailAndPassword, type User } from "firebase/auth";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-// import { saveQuestionnaireData } from "@/actions/questionnaireActions"; // Removed import
-import type { QuestionnaireData } from "@/types";
-import { Suspense } from "react";
-import dynamic from "next/dynamic";
+// This module is loaded on the server when an action is invoked.
+console.log("questionnaireActions.ts module loaded on server.");
 
-const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2";
+// Placeholder for actual email sending logic
+async function sendReportByEmail(email: string, reportContent: string, questionnaireData: QuestionnaireData) {
+  console.log(`--- sendReportByEmail action entered (SIMULATED) ---`);
+  console.log(`Recipient Email: ${email}`);
+  console.log(`Report Content Length: ${reportContent.length > 0 ? reportContent.length : 'N/A (empty)'}`);
+  console.log(`Questionnaire Data Body Shape (from sendReportByEmail):`, questionnaireData?.bodyShape);
+  // In a real application, this would use an email service.
+  // For now, just log and return success.
+  console.log(`SIMULATED: Email with style report would be sent to ${email}.`);
+  return { success: true, message: `Report (simulated) would be sent to ${email}.` };
+}
 
-// Dynamically import AuthForm and wrap it in a client component
-const ClientLoginPage = dynamic(() =>
-  import("@/components/AuthForm").then((mod) => {
-    const AuthForm = mod.default;
+export async function processPaymentAndGenerateReport(
+  questionnaireData: QuestionnaireData | null, // Allow null for validation
+  email: string | null // Allow null for validation
+): Promise<{ success: boolean; message: string; reportData?: UserReportData }> {
+  console.log("--- processPaymentAndGenerateReport action entered on server (no auth flow) ---");
 
-    return function WrappedLogin() {
-      const router = useRouter();
-      const searchParams = useSearchParams();
-      const { toast } = useToast();
+  if (!questionnaireData) {
+    const errorMsg = "processPaymentAndGenerateReport ERRORED: No questionnaire data provided. This should have been caught client-side.";
+    console.error(errorMsg);
+    return { success: false, message: "Questionnaire data is missing. Cannot generate report." };
+  }
+  if (!email || !email.includes('@') || typeof email !== 'string') {
+    const errorMsg = `processPaymentAndGenerateReport ERRORED: Invalid or missing email provided: ${String(email)}. This should have been caught client-side.`;
+    console.error(errorMsg);
+    return { success: false, message: "A valid email address is required to send the report." };
+  }
+  console.log("Received Questionnaire Data Body Shape:", questionnaireData.bodyShape);
+  console.log("Received Email:", email);
 
-      const handleLogin = async (values: { email: string; password: string }) => {
-        if (!auth) {
-          toast({
-            title: "Login Failed: Firebase Not Ready",
-            description: "CRITICAL: Firebase Authentication service is not available. This usually means critical environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are missing or incorrect in your deployment environment. Please check server logs and contact support. Also verify API key restrictions (HTTP referrers, API restrictions) and enabled services (like Identity Toolkit API) in Google Cloud Console.",
-            variant: "destructive",
-          });
-          throw new Error("Firebase auth service not available when attempting login.");
-        }
+  try {
+    // Simulate payment processing success
+    console.log(`Simulated payment successful for email: ${email}`);
 
-        try {
-          const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-          // const user = userCredential.user as User; // user variable not used after removing saveQuestionnaireData
-
-          toast({ title: "Login Successful", description: "Welcome back!" });
-
-          // Check for pending questionnaire data - logic to save it to user account removed
-          const pendingDataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
-          if (pendingDataString) {
-            // The 'saveQuestionnaireData' action was removed as part of the no-accounts refactor.
-            // Questionnaire data from localStorage is now handled by the payment page.
-            // We can still clear it here if desired, or let the payment page handle it.
-            // For now, we will not process it here to keep login focused.
-            // If the user proceeds to payment, that page will pick up this localStorage item.
-            console.log("Pending questionnaire data found in localStorage after login, will be handled by payment page if user proceeds there.");
-            // Optionally, clear it if login implies a different context:
-            // localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
-          }
-
-          // Redirect logic if no pending data (or after removing pending data processing)
-          const fromQuestionnaire = searchParams.get("fromQuestionnaire") === "true";
-          const redirectToPayment = searchParams.get("redirectToPayment") === "true";
-
-          if (redirectToPayment || fromQuestionnaire) {
-            // If coming from questionnaire, always redirect to payment page after login
-            // as the data is in localStorage and needs to be processed by payment page.
-            router.push("/payment");
-          } else {
-            router.push("/"); // Default redirect after login if not from questionnaire
-          }
-        } catch (error: any) {
-          console.error("Login error:", error);
-          if (auth && auth.app && auth.app.options) {
-            // console.error("DEBUG: Auth options at point of login failure:", JSON.stringify(auth.app.options));
-          }
-          let errorMessage = "Failed to login. Please check your credentials.";
-
-          if (error.code === "auth/user-not-found" ||
-              error.code === "auth/wrong-password" ||
-              error.code === "auth/invalid-credential") {
-            errorMessage = "Invalid email or password.";
-          } else if (error.code === "auth/configuration-not-found") {
-            errorMessage = "CRITICAL: Firebase Authentication failed (auth/configuration-not-found). This indicates a problem with your Firebase/Google Cloud project setup. Please meticulously re-check your API Key settings (HTTP referrers, API restrictions, enabled 'Identity Toolkit API') and ensure environment variables (like NEXT_PUBLIC_FIREBASE_API_KEY) are correctly set and propagated in your deployment environment. Refer to Firebase/Google Cloud console documentation.";
-            console.error("LOGIN FAILED - CRITICAL CONFIGURATION ISSUE (auth/configuration-not-found): This indicates a problem with your Firebase/Google Cloud project setup. Verify API Key restrictions, ensure 'Identity Toolkit API' is enabled, and check environment variable propagation in your Firebase deployment.", error);
-          } else if (error.message?.includes("auth/network-request-failed")) {
-            errorMessage = "Network error. Please check your internet connection and try again.";
-          } else if (error.message) {
-            errorMessage = error.message;
-          }
-
-          toast({
-            title: "Login Failed",
-            description: errorMessage,
-            variant: "destructive",
-          });
-
-          throw new Error(errorMessage);
-        }
-      };
-
-      return (
-        <>
-          <AuthForm
-            mode="login"
-            onSubmit={handleLogin}
-            title="Welcome Back!"
-            description="Log in to access your style profile."
-            buttonText="Login"
-          />
-          <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Button variant="link" asChild className="p-0 h-auto">
-              <Link
-                href={`/signup${
-                  searchParams.get("fromQuestionnaire") ? "?fromQuestionnaire=true" : ""
-                }`}
-              >
-                Sign up
-              </Link>
-            </Button>
-          </p>
-        </>
-      );
+    const aiInput: StyleRecommendationsInput = {
+      lineDetails: questionnaireData.lineAnswers,
+      scaleDetails: questionnaireData.scaleAnswers,
+      bodyShape: questionnaireData.bodyShape,
+      preferences: "", // Preferences were removed from the questionnaire
     };
-  }),
-  { ssr: false }
-);
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={<div>Loading login form...</div>}>
-      <ClientLoginPage />
-    </Suspense>
-  );
+    console.log(`Attempting to call generateStyleRecommendations for email: ${email}. Input bodyShape: ${aiInput.bodyShape}`);
+    
+    let aiOutput;
+    try {
+      aiOutput = await generateStyleRecommendations(aiInput);
+      if (!aiOutput || !aiOutput.recommendations) {
+        console.error(`AI generateStyleRecommendations returned null or no recommendations for email: ${email}. AI Output:`, aiOutput);
+        return { success: false, message: "Failed to generate style recommendations. The AI model did not return a report." };
+      }
+      console.log(`AI recommendations received successfully for email: ${email}. Recommendations length: ${aiOutput.recommendations.length}`);
+    } catch (aiError: any) {
+      console.error("--- ERROR DURING AI CALL (generateStyleRecommendations) ---");
+      console.error(`AI Error for email: ${email}`);
+      let errorMessage = "An unknown AI error occurred while generating the report.";
+      if (aiError instanceof Error) {
+        errorMessage = aiError.message;
+        console.error("AI Error message:", aiError.message);
+        console.error("AI Error stack:", aiError.stack);
+        if ((aiError as any).cause) console.error("AI Error cause:", (aiError as any).cause);
+      } else {
+        console.error("AI Error (not an Error object):", aiError);
+        try {
+          errorMessage = JSON.stringify(aiError);
+        } catch {
+          errorMessage = "Could not stringify AI error object.";
+        }
+      }
+      console.error(`Returning AI failure for ${email}: ${errorMessage}`);
+      return { 
+        success: false, 
+        message: `An error occurred while generating the style report with AI. Please try again later. Details: ${errorMessage}`
+      };
+    }
+
+    const reportData: UserReportData = {
+      recommendations: aiOutput.recommendations,
+      questionnaireData: questionnaireData,
+      recipientEmail: email,
+      generatedAtClient: new Date().toISOString(), 
+    };
+    
+    console.log(`Report content generated for email: ${email}. Attempting to send (simulated) email.`);
+    const emailResult = await sendReportByEmail(email, reportData.recommendations, reportData.questionnaireData);
+    if (!emailResult.success) {
+      console.warn(`Failed to send email (simulated) to ${email}: ${emailResult.message}`);
+      // Decide if this should be a partial failure or not. For now, proceed with success message as report is generated.
+    }
+    
+    console.log(`Report generated and (simulated) email process completed for: ${email}. Returning success.`);
+    
+    return { success: true, message: "Report generated successfully! It will also be (simulated) sent to your email.", reportData };
+
+  } catch (error: any) {
+    // This catch block is for unexpected errors outside the AI call itself.
+    console.error("--- processPaymentAndGenerateReport UNEXPECTED CRITICAL ERROR ---");
+    console.error("Critical Error during payment/report processing for email:", email);
+    let criticalErrorMessage = "An unknown server error occurred during report processing.";
+    if (error instanceof Error) {
+        criticalErrorMessage = error.message;
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        if ((error as any).cause) {
+          console.error("Error cause:", (error as any).cause);
+        }
+    } else {
+        console.error("Critical Error (not an Error object):", error);
+        try {
+            criticalErrorMessage = JSON.stringify(error);
+        } catch {
+            criticalErrorMessage = "Could not stringify critical error object.";
+        }
+    }
+    console.error(`Returning critical failure for ${email}: ${criticalErrorMessage}`);
+    return { 
+      success: false, 
+      message: `An unexpected server error occurred. Please try again later. Details: ${criticalErrorMessage}` 
+    };
+  }
 }

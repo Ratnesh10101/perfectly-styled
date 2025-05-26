@@ -1,108 +1,129 @@
-"use client";
+"use server";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
-import LoadingSpinner from "./LoadingSpinner";
+import { generateStyleRecommendations, type StyleRecommendationsInput } from "@/ai/flows/generate-style-recommendations";
+import type { QuestionnaireData, UserReportData } from "@/types";
 
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-});
+// This module is loaded on the server when an action is invoked.
+console.log("questionnaireActions.ts module loaded on server.");
 
-type AuthFormValues = z.infer<typeof formSchema>;
-
-interface AuthFormProps {
-  mode: "login" | "signup";
-  onSubmit: (values: AuthFormValues) => Promise<void>;
-  title: string;
-  description: string;
-  buttonText: string;
+// Placeholder for actual email sending logic
+async function sendReportByEmail(email: string, reportContent: string, questionnaireData: QuestionnaireData) {
+  console.log(`--- sendReportByEmail action entered (SIMULATED) ---`);
+  console.log(`Recipient Email: ${email}`);
+  console.log(`Report Content Length: ${reportContent.length > 0 ? reportContent.length : 'N/A (empty)'}`);
+  console.log(`Questionnaire Data Body Shape (from sendReportByEmail):`, questionnaireData?.bodyShape);
+  // In a real application, this would use an email service.
+  // For now, just log and return success.
+  console.log(`SIMULATED: Email with style report would be sent to ${email}.`);
+  return { success: true, message: `Report (simulated) would be sent to ${email}.` };
 }
 
-const AuthForm = ({ mode, onSubmit, title, description, buttonText }: AuthFormProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export async function processPaymentAndGenerateReport(
+  questionnaireData: QuestionnaireData | null, // Allow null for validation
+  email: string | null // Allow null for validation
+): Promise<{ success: boolean; message: string; reportData?: UserReportData }> {
+  console.log("--- processPaymentAndGenerateReport action entered on server (no auth flow) ---");
 
-  const form = useForm<AuthFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  if (!questionnaireData) {
+    const errorMsg = "processPaymentAndGenerateReport ERRORED: No questionnaire data provided. This should have been caught client-side.";
+    console.error(errorMsg);
+    return { success: false, message: "Questionnaire data is missing. Cannot generate report." };
+  }
+  if (!email || !email.includes('@') || typeof email !== 'string') {
+    const errorMsg = `processPaymentAndGenerateReport ERRORED: Invalid or missing email provided: ${String(email)}. This should have been caught client-side.`;
+    console.error(errorMsg);
+    return { success: false, message: "A valid email address is required to send the report." };
+  }
+  console.log("Received Questionnaire Data Body Shape:", questionnaireData.bodyShape);
+  console.log("Received Email:", email);
 
-  const handleFormSubmit = async (values: AuthFormValues) => {
-    setIsLoading(true);
-    setError(null);
+  try {
+    // Simulate payment processing success
+    console.log(`Simulated payment successful for email: ${email}`);
+
+    const aiInput: StyleRecommendationsInput = {
+      lineDetails: questionnaireData.lineAnswers,
+      scaleDetails: questionnaireData.scaleAnswers,
+      bodyShape: questionnaireData.bodyShape,
+      preferences: "", // Preferences were removed from the questionnaire
+    };
+
+    console.log(`Attempting to call generateStyleRecommendations for email: ${email}. Input bodyShape: ${aiInput.bodyShape}`);
+    
+    let aiOutput;
     try {
-      await onSubmit(values);
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
-    } finally {
-      setIsLoading(false);
+      aiOutput = await generateStyleRecommendations(aiInput);
+      if (!aiOutput || !aiOutput.recommendations) {
+        console.error(`AI generateStyleRecommendations returned null or no recommendations for email: ${email}. AI Output:`, aiOutput);
+        return { success: false, message: "Failed to generate style recommendations. The AI model did not return a report." };
+      }
+      console.log(`AI recommendations received successfully for email: ${email}. Recommendations length: ${aiOutput.recommendations.length}`);
+    } catch (aiError: any) {
+      console.error("--- ERROR DURING AI CALL (generateStyleRecommendations) ---");
+      console.error(`AI Error for email: ${email}`);
+      let errorMessage = "An unknown AI error occurred while generating the report.";
+      if (aiError instanceof Error) {
+        errorMessage = aiError.message;
+        console.error("AI Error message:", aiError.message);
+        console.error("AI Error stack:", aiError.stack);
+        if ((aiError as any).cause) console.error("AI Error cause:", (aiError as any).cause);
+      } else {
+        console.error("AI Error (not an Error object):", aiError);
+        try {
+          errorMessage = JSON.stringify(aiError);
+        } catch {
+          errorMessage = "Could not stringify AI error object.";
+        }
+      }
+      console.error(`Returning AI failure for ${email}: ${errorMessage}`);
+      return { 
+        success: false, 
+        message: `An error occurred while generating the style report with AI. Please try again later. Details: ${errorMessage}`
+      };
     }
-  };
 
-  return (
-    <div className="flex items-center justify-center py-12">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-primary">{title}</CardTitle>
-          <CardDescription className="text-center text-muted-foreground">{description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="you@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {error && <p className="text-sm font-medium text-destructive">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <LoadingSpinner size={20} className="mr-2"/> : null}
-                {buttonText}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
+    const reportData: UserReportData = {
+      recommendations: aiOutput.recommendations,
+      questionnaireData: questionnaireData,
+      recipientEmail: email,
+      generatedAtClient: new Date().toISOString(), 
+    };
+    
+    console.log(`Report content generated for email: ${email}. Attempting to send (simulated) email.`);
+    const emailResult = await sendReportByEmail(email, reportData.recommendations, reportData.questionnaireData);
+    if (!emailResult.success) {
+      console.warn(`Failed to send email (simulated) to ${email}: ${emailResult.message}`);
+      // Decide if this should be a partial failure or not. For now, proceed with success message as report is generated.
+    }
+    
+    console.log(`Report generated and (simulated) email process completed for: ${email}. Returning success.`);
+    
+    return { success: true, message: "Report generated successfully! It will also be (simulated) sent to your email.", reportData };
 
-export default AuthForm;
+  } catch (error: any) {
+    // This catch block is for unexpected errors outside the AI call itself.
+    console.error("--- processPaymentAndGenerateReport UNEXPECTED CRITICAL ERROR ---");
+    console.error("Critical Error during payment/report processing for email:", email);
+    let criticalErrorMessage = "An unknown server error occurred during report processing.";
+    if (error instanceof Error) {
+        criticalErrorMessage = error.message;
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        if ((error as any).cause) {
+          console.error("Error cause:", (error as any).cause);
+        }
+    } else {
+        console.error("Critical Error (not an Error object):", error);
+        try {
+            criticalErrorMessage = JSON.stringify(error);
+        } catch {
+            criticalErrorMessage = "Could not stringify critical error object.";
+        }
+    }
+    console.error(`Returning critical failure for ${email}: ${criticalErrorMessage}`);
+    return { 
+      success: false, 
+      message: `An unexpected server error occurred. Please try again later. Details: ${criticalErrorMessage}` 
+    };
+  }
+}
