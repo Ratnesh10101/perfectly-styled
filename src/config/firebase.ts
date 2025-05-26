@@ -1,60 +1,77 @@
-// src/config/firebase.ts
-"use client"; // Ensure this runs on the client where process.env is available
 
-import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
-import { getFirestore, type Firestore } from "firebase/firestore";
-import { getAnalytics, type Analytics, isSupported as isAnalyticsSupported } from "firebase/analytics";
-
-// Explicitly log required environment variables for client-side Firebase
-// These are critical for the SDK to even attempt to connect to your project.
-if (typeof window !== 'undefined') { // Only run these checks/logs in the client-side context
-  console.log("CLIENT_SIDE_ENV_CHECK: GOOGLE_API_KEY:", process.env.GOOGLE_API_KEY ? "SET" : "MISSING_OR_EMPTY");
-  console.log("CLIENT_SIDE_ENV_CHECK: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? "SET" : "MISSING_OR_EMPTY");
-  console.log("CLIENT_SIDE_ENV_CHECK: NEXT_PUBLIC_FIREBASE_PROJECT_ID:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? "SET" : "MISSING_OR_EMPTY");
-}
-
-const firebaseConfig = {
-  apiKey: process.env.GOOGLE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
+import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
+import { getAnalytics, isSupported as isAnalyticsSupported, type Analytics } from 'firebase/analytics';
+import { getFirestore, type Firestore } from 'firebase/firestore';
+// Auth is no longer used, so getAuth is removed
+// import { getAuth, type Auth } from 'firebase/auth';
 
 let app: FirebaseApp | null = null;
+// let auth: Auth | null = null; // Auth removed
 let db: Firestore | null = null;
 let analytics: Analytics | null = null;
-
-let firebaseInitError: string | null = null;
 let firebaseInitialized = false;
+let firebaseInitError: string | null = null;
+let currentFirebaseConfigValues: any = {}; // For debugging
 
-function initializeFirebaseServices() {
-  if (firebaseInitialized) return;
+console.log("firebase.ts module evaluation started (Client or Server).");
+
+// --- IMMEDIATE TOP-LEVEL CHECK FOR SERVER ENVIRONMENT ---
+const criticalEnvVars = {
+  NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+};
+
+const missingVars = Object.entries(criticalEnvVars)
+  .filter(([key, value]) => !value || typeof value !== 'string' || value.trim() === '')
+  .map(([key]) => key);
+
+if (missingVars.length > 0) {
+  firebaseInitError = `CRITICAL SERVER STARTUP ERROR: The following critical Firebase environment variables are missing or invalid: ${missingVars.join(', ')}. Firebase SDK WILL NOT initialize. This will lead to runtime errors on both client and server (e.g., 'Internal Server Error' or 'missing required error components'). CHECK YOUR DEPLOYMENT ENVIRONMENT'S VARIABLE CONFIGURATION AND RE-DEPLOY.`;
+  console.error("**********************************************************************************");
+  console.error(firebaseInitError);
+  console.error("**********************************************************************************");
+}
+// --- END OF IMMEDIATE TOP-LEVEL CHECK ---
+
+
+function initializeFirebase() {
+  // Prevent re-initialization if already done or if critical vars missing
+  if (firebaseInitialized || firebaseInitError) {
+    if (firebaseInitError) {
+      console.warn("Firebase initialization skipped due to critical environment variable errors detected at module load.");
+    } else {
+      console.log("Firebase already initialized.");
+    }
+    return;
+  }
 
   try {
-    // Log raw values for critical config parts
-    if (typeof window !== 'undefined') {
-      console.log("Raw GOOGLE_API_KEY:", JSON.stringify(process.env.GOOGLE_API_KEY), typeof process.env.GOOGLE_API_KEY, process.env.GOOGLE_API_KEY?.length);
-      console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN), typeof process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN, process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.length);
-      console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID), typeof process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID, process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.length);
-    }
-    
-    const criticalEnvVars = {
-      apiKey: process.env.GOOGLE_API_KEY,
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    console.log("Attempting Firebase initialization...");
+
+    const firebaseConfig = {
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim() || undefined,
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.trim() || undefined,
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim() || undefined,
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET?.trim() || undefined,
+      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID?.trim() || undefined,
+      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID?.trim() || undefined,
+      measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID?.trim() || undefined,
     };
+    currentFirebaseConfigValues = { ...firebaseConfig }; // Store for debugging
 
-    const missingVars = Object.entries(criticalEnvVars)
-      .filter(([key, value]) => !value || typeof value !== 'string' || value.trim() === "")
-      .map(([key]) => `NEXT_PUBLIC_FIREBASE_${key.toUpperCase()}`);
+    // Log raw env var values for easier debugging
+    console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_API_KEY), typeof process.env.NEXT_PUBLIC_FIREBASE_API_KEY, process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.length);
+    console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN), typeof process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN, process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.length);
+    console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID), typeof process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID, process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.length);
+    
+    console.log("Firebase config object being used for initializeApp:", currentFirebaseConfigValues);
 
-    if (missingVars.length > 0) {
-      firebaseInitError = `CRITICAL Firebase Client SDK Initialization Error: The following critical environment variables are missing or empty: ${missingVars.join(", ")}. Firebase will not be initialized. This impacts BOTH client-side and server-side rendering/actions if they import this config. Ensure these are correctly set in your build and runtime environments. This can lead to 'missing required error components' or 'Internal Server Error'.`;
+
+    if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
+      firebaseInitError = `Firebase Error: Critical configuration properties (apiKey, authDomain, projectId) are missing or empty AFTER attempting to read from process.env. Values: apiKey='${firebaseConfig.apiKey}', authDomain='${firebaseConfig.authDomain}', projectId='${firebaseConfig.projectId}'. Firebase will not be initialized. This usually means NEXT_PUBLIC_ environment variables are not set correctly in your build/deployment environment.`;
       console.error(firebaseInitError);
-      firebaseInitialized = true; // Mark as "initialized" to prevent repeated attempts, even though it failed.
+      firebaseInitialized = true; // Mark as "initialized" to prevent re-attempts, even though it failed.
       return;
     }
 
@@ -63,54 +80,43 @@ function initializeFirebaseServices() {
       console.log("Firebase app initialized successfully.");
     } else {
       app = getApps()[0];
-      console.log("Firebase app already initialized.");
+      console.log("Firebase app already exists, using existing instance.");
     }
 
-    if (app) {
-      db = getFirestore(app);
-      console.log("Firebase Firestore service obtained successfully.");
+    // auth = getAuth(app); // Auth removed
+    // console.log("Firebase Auth service obtained. Configured with projectId:", auth.app.options.projectId);
 
-      // Initialize Analytics only on client-side and if supported
-      if (typeof window !== 'undefined') {
-        isAnalyticsSupported().then(supported => {
-          if (supported) {
-            analytics = getAnalytics(app as FirebaseApp);
-            console.log("Firebase Analytics initialized.");
-          } else {
-            console.log("Firebase Analytics is not supported in this environment.");
-          }
-        }).catch(err => console.error("Error checking analytics support:", err));
-      }
-    } else {
-      throw new Error("Firebase app object is null after initialization attempt.");
+    db = getFirestore(app);
+    console.log("Firebase Firestore service obtained.");
+
+
+    if (typeof window !== 'undefined' && app) {
+      isAnalyticsSupported().then(supported => {
+        if (supported && firebaseConfig.measurementId) {
+          analytics = getAnalytics(app);
+          console.log("Firebase Analytics initialized.");
+        } else {
+          console.log("Firebase Analytics is not supported in this environment or measurementId is missing.");
+        }
+      }).catch(err => console.error("Error checking analytics support:", err));
     }
-    
+    firebaseInitialized = true;
+
   } catch (error: any) {
-    firebaseInitError = `Firebase initializeApp error: ${error.message}. Check API key restrictions, enabled APIs (Identity Toolkit API), and environment variables in Google Cloud Console & your deployment settings.`;
-    console.error(firebaseInitError, error);
+    firebaseInitError = `Firebase initializeApp error: ${error.message}. Check your Firebase project configuration and API key settings in Google Cloud Console. Details: ${error.stack}`;
+    console.error(firebaseInitError);
     // Ensure services are null if init fails
     app = null;
+    // auth = null; // Auth removed
     db = null;
     analytics = null;
-  } finally {
-    firebaseInitialized = true;
+    firebaseInitialized = true; // Mark as "initialized" to prevent re-attempts
   }
 }
 
-// Initialize Firebase automatically when this module is loaded.
-// This is important for client-side components that import db directly.
-if (typeof window !== 'undefined') { // Only run auto-init on client
-    initializeFirebaseServices();
-}
+// Call initialization when the module is loaded
+initializeFirebase();
 
-
-// Export a function that components/actions can call if they need to ensure init,
-// especially for server-side contexts where auto-init might not run or be desired.
-export function ensureFirebaseInitialized() {
-    if (!firebaseInitialized) {
-        console.log("ensureFirebaseInitialized: Manually triggering Firebase initialization (likely server-side).");
-        initializeFirebaseServices();
-    }
-}
-
-export { app, db, analytics, firebaseInitError, firebaseInitialized };
+export { app, db, analytics, firebaseInitialized, firebaseInitError, currentFirebaseConfigValues };
+// Auth removed from exports
+// export { app, auth, db, analytics, firebaseInitialized, firebaseInitError, currentFirebaseConfigValues };

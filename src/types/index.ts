@@ -24,13 +24,7 @@ export interface UserReportData { // Renamed to avoid confusion with User-specif
   recommendations: string;
   questionnaireData: QuestionnaireData;
   recipientEmail?: string; // Email for sending the report
-  generatedAtClient?: string; // Client-side timestamp
+  generatedAtClient?: string; // Client-side timestamp for display, since no server timestamp is stored
 }
 
-// UserMeta is no longer needed
-// export interface UserMeta {
-//   hasPaid: boolean;
-//   hasGeneratedReport: boolean;
-//   email?: string | null;
-//   questionnaireComplete?: boolean;
-//   active
+// UserMeta and UserReport (Firestore specific) are no longer needed

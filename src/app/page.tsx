@@ -8,6 +8,8 @@ import { DraftingCompass } from "lucide-react";
 import Image from "next/image";
 
 export default function HomePage() {
+  // Removed useAuth and related logic
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
       <Card className="w-full max-w-2xl shadow-xl">

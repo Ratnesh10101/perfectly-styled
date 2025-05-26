@@ -1,8 +1,5 @@
-// src/ai/flows/generate-style-recommendations.ts
-'use server';
-/**
- * @fileOverview Generates personalized styling recommendations based on user inputs.
 
+// src/ai/flows/generate-style-recommendations.ts
 'use server';
 /**
  * @fileOverview Generates personalized styling recommendations based on detailed user inputs.
@@ -12,17 +9,7 @@
  * - StyleRecommendationsOutput - The return type for the generateStyleRecommendations function.
  */
 
-<<<<<<< HEAD
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const StyleRecommendationsInputSchema = z.object({
-  questionnaireResponses: z.string().describe('The user\u2019s responses to the style questionnaire.'),
-  dominantLine: z.string().describe('The user\u2019s dominant line (e.g., straight, curved).'),
-  bodyShape: z.string().describe('The user\u2019s body shape (e.g., hourglass, pear).'),
-  scale: z.string().describe('The user\u2019s scale (e.g., small, medium, large).'),
-=======
-import {ai} from '@/ai/genkit'; // This 'ai' can be null
+import {ai, genkitServiceInitError} from '@/ai/genkit'; // ai can be null
 import {z} from 'genkit';
 
 const LineDetailSchema = z.object({
@@ -36,66 +23,30 @@ const ScaleDetailSchema = z.object({
   answer: z.string().describe("The user's selected answer for that scale category."),
 });
 
-const StyleRecommendationsInputSchema = z.object({
+// Internal schema, not exported
+const StyleRecommendationsInputSchemaInternal = z.object({
   lineDetails: z.array(LineDetailSchema).describe("Detailed answers for line analysis, providing characteristics for different body parts."),
   scaleDetails: z.array(ScaleDetailSchema).describe("Detailed answers for scale analysis across different measurements."),
   bodyShape: z.string().describe('The user\u2019s overall body shape (e.g., Pear Shape, Hourglass).'),
   preferences: z.string().optional().describe('The user\u2019s general style preferences, likes, dislikes, and style goals (optional).'),
->>>>>>> master
 });
-export type StyleRecommendationsInput = z.infer<typeof StyleRecommendationsInputSchema>;
+export type StyleRecommendationsInput = z.infer<typeof StyleRecommendationsInputSchemaInternal>;
 
-const StyleRecommendationsOutputSchema = z.object({
-<<<<<<< HEAD
-  recommendations: z.string().describe('Personalized styling recommendations for clothing and accessories.'),
-});
-export type StyleRecommendationsOutput = z.infer<typeof StyleRecommendationsOutputSchema>;
-
-export async function generateStyleRecommendations(
-  input: StyleRecommendationsInput
-): Promise<StyleRecommendationsOutput> {
-  return generateStyleRecommendationsFlow(input);
-}
-
-const prompt = ai.definePrompt({
-  name: 'styleRecommendationsPrompt',
-  input: {schema: StyleRecommendationsInputSchema},
-  output: {schema: StyleRecommendationsOutputSchema},
-  prompt: `You are a personal style consultant. Generate personalized styling recommendations based on the following information:
-
-Questionnaire Responses: {{{questionnaireResponses}}}
-Dominant Line: {{{dominantLine}}}
-Body Shape: {{{bodyShape}}}
-Scale: {{{scale}}}
-
-Focus on clothing and accessories that suit the user's characteristics. Return the answer as a string.`,
-});
-
-const generateStyleRecommendationsFlow = ai.defineFlow(
-  {
-    name: 'generateStyleRecommendationsFlow',
-    inputSchema: StyleRecommendationsInputSchema,
-    outputSchema: StyleRecommendationsOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
-=======
+// Internal schema, not exported
+const StyleRecommendationsOutputSchemaInternal = z.object({
   recommendations: z.string().describe('Personalized styling recommendations for clothing and accessories, formatted as a comprehensive, easy-to-read report. Use markdown for formatting if appropriate, like headings, bullet points, and bold text for emphasis.'),
 });
-export type StyleRecommendationsOutput = z.infer<typeof StyleRecommendationsOutputSchema>;
+export type StyleRecommendationsOutput = z.infer<typeof StyleRecommendationsOutputSchemaInternal>;
 
 // Define prompt and flow conditionally based on whether 'ai' was initialized
-let promptInstance: any = null; 
+let promptInstance: any = null;
 let definedGenerateStyleRecommendationsFlow: (input: StyleRecommendationsInput) => Promise<StyleRecommendationsOutput>;
 
-if (ai) {
+if (ai) { // ai is the initialized Genkit instance
   promptInstance = ai.definePrompt({
     name: 'styleRecommendationsPrompt',
-    input: {schema: StyleRecommendationsInputSchema},
-    output: {schema: StyleRecommendationsOutputSchema},
+    input: {schema: StyleRecommendationsInputSchemaInternal}, // Use internal schema
+    output: {schema: StyleRecommendationsOutputSchemaInternal}, // Use internal schema
     prompt: `You are a professional personal style consultant. Your task is to generate detailed and personalized styling recommendations for clothing and accessories.
 Use the following information about the user:
 
@@ -133,23 +84,25 @@ Return the complete set of recommendations as a single string.
   definedGenerateStyleRecommendationsFlow = ai.defineFlow(
     {
       name: 'generateStyleRecommendationsFlow',
-      inputSchema: StyleRecommendationsInputSchema,
-      outputSchema: StyleRecommendationsOutputSchema,
+      inputSchema: StyleRecommendationsInputSchemaInternal, // Use internal schema
+      outputSchema: StyleRecommendationsOutputSchemaInternal, // Use internal schema
     },
     async input => {
       const {output} = await promptInstance(input);
       if (!output) {
         console.error("AI prompt returned null or undefined output for style recommendations. Input was:", JSON.stringify(input));
-        throw new Error("AI failed to generate recommendations (empty output).");
+        // It's better to throw an error here which can be caught by the calling server action.
+        throw new Error("AI failed to generate recommendations (empty output from prompt).");
       }
       return output;
     }
   );
 } else {
-  // If ai is null, define a stub for definedGenerateStyleRecommendationsFlow that throws an error
+  // If ai is null (meaning Genkit failed to initialize), define a stub for definedGenerateStyleRecommendationsFlow that throws an error
   definedGenerateStyleRecommendationsFlow = async (input: StyleRecommendationsInput): Promise<StyleRecommendationsOutput> => {
-    console.error("CRITICAL: Genkit 'ai' object is not initialized. Cannot execute generateStyleRecommendationsFlow. This is likely due to missing GOOGLE_API_KEY or other Genkit configuration issues.");
-    throw new Error("AI Service Uninitialized: Genkit failed to initialize. Check server logs (especially for GOOGLE_API_KEY issues).");
+    const errorMessage = genkitServiceInitError || "Genkit 'ai' object is not initialized. Cannot execute generateStyleRecommendationsFlow.";
+    console.error("CRITICAL (generateStyleRecommendationsFlow stub):", errorMessage, "This is likely due to missing GOOGLE_API_KEY or other Genkit configuration issues during server startup.");
+    throw new Error(`AI Service Uninitialized: ${errorMessage} Check server logs for details (especially for GOOGLE_API_KEY problems).`);
   };
 }
 
@@ -159,4 +112,3 @@ export async function generateStyleRecommendations(
   // This function will now call either the real flow or the stub that throws an error.
   return definedGenerateStyleRecommendationsFlow(input);
 }
->>>>>>> master

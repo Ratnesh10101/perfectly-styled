@@ -1,95 +1,5 @@
 
-<<<<<<< HEAD
-"use client";
-
-import AuthForm from "@/components/AuthForm";
-import { auth, db } from "@/config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import Link from "next/link";
-import type { UserMeta } from "@/types";
-import { Button } from "@/components/ui/button";
-
-export default function SignupPage() {
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const handleSignup = async (values: { email: string; password: string }) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-
-      // Create user meta document
-      const userMetaRef = doc(db, "users", user.uid, "meta", "data");
-      const initialMeta: UserMeta = {
-        email: user.email,
-        hasPaid: false,
-        hasGeneratedReport: false,
-        questionnaireComplete: false,
-      };
-      await setDoc(userMetaRef, initialMeta);
-      
-      toast({ title: "Signup Successful", description: "Welcome to Perfectly Styled!" });
-      router.push("/questionnaire"); // Redirect to questionnaire after signup
-    } catch (error: any) {
-      console.error("Signup error:", error); // Log the full error for debugging
-      let errorMessage = "An unexpected error occurred during sign up. Please try again.";
-      
-      if (error && typeof error.code === 'string') {
-        switch (error.code) {
-          case "auth/email-already-in-use":
-            errorMessage = "This email address is already in use. Please try logging in or use a different email.";
-            break;
-          case "auth/invalid-email":
-            errorMessage = "The email address you entered is not valid. Please check and try again.";
-            break;
-          case "auth/operation-not-allowed":
-            errorMessage = "Email/password sign-up is not enabled for this project. Please contact support.";
-            break;
-          case "auth/weak-password":
-            errorMessage = "The password is too weak. Please choose a stronger password (at least 6 characters).";
-            break;
-          default:
-            if (error.message) {
-                 errorMessage = `Signup failed: ${error.message}`;
-            }
-            // Check if it might be a Firestore error after successful auth
-            if (error.message && error.message.toLowerCase().includes("firestore")) {
-                 errorMessage = "Account created, but failed to save user profile information. Please try logging in or contact support.";
-            }
-        }
-      } else if (error instanceof Error && error.message) {
-        errorMessage = error.message;
-      }
-
-      toast({ title: "Signup Failed", description: errorMessage, variant: "destructive" });
-      throw new Error(errorMessage); // Propagate error to AuthForm
-    }
-  };
-
-  return (
-    <>
-      <AuthForm
-        mode="signup"
-        onSubmit={handleSignup}
-        title="Create Your Account"
-        description="Join Perfectly Styled to discover your unique style."
-        buttonText="Sign Up"
-      />
-      <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Button variant="link" asChild className="p-0 h-auto">
-          <Link href="/login">Login</Link>
-        </Button>
-      </p>
-    </>
-  );
-}
-
-=======
-'use client'; // <--- ADD THIS LINE
+'use client'; 
 
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
@@ -98,7 +8,7 @@ import dynamic from 'next/dynamic';
 const SignupPageContent = dynamic(
   () => import('@/components/SignupPageContent').then(mod => mod.default),
   {
-    ssr: false,
+    ssr: false, // This component uses client-side hooks like useSearchParams
     loading: () => (
       <div className="flex items-center justify-center py-12">
         <div className="w-full max-w-md p-6 text-center">Loading signup form...</div>
@@ -108,14 +18,27 @@ const SignupPageContent = dynamic(
 );
 
 export default function SignupPage() {
+  // This page is largely deprecated with the new "no-account" flow.
+  // It's kept for routing integrity but directs users to the main flow.
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center py-12">
         <div className="w-full max-w-md p-6 text-center">Loading page...</div>
       </div>
     }>
-      <SignupPageContent />
+      {/* <SignupPageContent /> // Intentionally commented out, as this page is being phased out */}
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="w-full max-w-md p-6 text-center bg-card rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold mb-4">Account Creation Not Required</h1>
+          <p className="mb-6 text-muted-foreground">
+            Perfectly Styled now operates without user accounts. You can directly complete the
+            questionnaire and receive your report.
+          </p>
+          <dynamic(() => import('@/components/ui/button').then(mod => mod.Button), {ssr: false}) asChild>
+            <dynamic(() => import('next/link').then(mod => mod.default), {ssr: false}) href="/questionnaire">Start Questionnaire</dynamic(() => import('next/link').then(mod => mod.default), {ssr: false})>
+          </dynamic(() => import('@/components/ui/button').then(mod => mod.Button), {ssr: false})>
+        </div>
+      </div>
     </Suspense>
   );
 }
->>>>>>> master

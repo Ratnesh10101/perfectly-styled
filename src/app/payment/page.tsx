@@ -1,67 +1,3 @@
-<<<<<<< HEAD
-"use client";
-
-import PaymentComponent from "@/components/PaymentComponent";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { processPaymentAndGenerateReport } from "@/actions/questionnaireActions";
-import { useRouter } from "next/navigation";
-import type { UserMeta } from "@/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-
-const paymentCheck = (meta: UserMeta | null) => {
-  // Allow access if questionnaire is complete AND (user hasn't paid OR payment failed and report not generated)
-  return !!meta && meta.questionnaireComplete && (!meta.hasPaid || !meta.hasGeneratedReport);
-};
-
-export default function PaymentPage() {
-  const { currentUser, userMeta } = useAuth();
-  const { toast } = useToast();
-  const router = useRouter();
-
-  const handlePaymentSuccess = async () => {
-    if (!currentUser) {
-      toast({ title: "Error", description: "You must be logged in.", variant: "destructive" });
-      router.push("/login");
-      return;
-    }
-
-    try {
-      const result = await processPaymentAndGenerateReport(currentUser.uid);
-      if (result.success) {
-        toast({ title: "Payment Successful!", description: "Your style report is being generated." });
-        router.push("/report");
-      } else {
-        toast({ title: "Report Generation Failed", description: result.message, variant: "destructive" });
-      }
-    } catch (error) {
-      toast({ title: "Error", description: "Could not process payment or generate report.", variant: "destructive" });
-    }
-  };
-
-  if (userMeta?.hasGeneratedReport) {
-     return (
-      <div className="flex items-center justify-center py-12">
-        <Card className="w-full max-w-md text-center">
-          <CardHeader>
-            <CardTitle>Report Already Generated!</CardTitle>
-            <CardDescription>You have already paid and your report is available.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild size="lg">
-              <Link href="/report">View Your Report</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (userMeta && !userMeta.questionnaireComplete) {
-=======
 
 "use client";
 
@@ -87,7 +23,7 @@ export default function PaymentPage() {
   const [email, setEmail] = useState("");
   const [questionnaireData, setQuestionnaireData] = useState<QuestionnaireData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(true); // For loading questionnaire data
 
   useEffect(() => {
     setIsLoadingData(true);
@@ -102,6 +38,7 @@ export default function PaymentPage() {
         router.push("/questionnaire");
       }
     } else {
+      // This case might happen if the user navigates here directly without completing the questionnaire
       toast({ title: "Questionnaire Data Missing", description: "Please complete the questionnaire first to proceed to payment.", variant: "destructive" });
       router.push("/questionnaire");
     }
@@ -122,37 +59,44 @@ export default function PaymentPage() {
     setIsLoading(true);
     console.log("Client: Initiating payment and report generation for email:", email);
     try {
+      // Call the server action
       const result = await processPaymentAndGenerateReport(questionnaireData, email.trim());
       console.log("Client: Received response from server action:", result);
 
       if (result.success && result.reportData) {
         toast({ title: "Payment Successful!", description: "Your style report has been generated." });
+        // Store data in sessionStorage for the report page
         sessionStorage.setItem(REPORT_SESSION_KEY, JSON.stringify(result.reportData));
+        // Clear localStorage as data is now processed
         localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
         router.push("/report");
       } else {
+        // Handle failure from server action
         console.error("Client: Report generation failed. Server message:", result.message);
-        toast({ 
-          title: "Report Generation Failed", 
-          description: result.message || "An unknown error occurred on the server.", 
+        toast({
+          title: "Report Generation Failed",
+          description: result.message || "An unknown error occurred on the server. Please check server logs for more details, especially regarding Genkit initialization and GOOGLE_API_KEY.",
           variant: "destructive",
           duration: 10000, // Show longer for server errors
         });
       }
     } catch (error: any) {
+      // Handle unexpected errors during the server action call itself (e.g., network issues)
       console.error("Client: Critical error during handlePaymentSuccess:", error);
       let description = "Could not process payment or generate report due to a client-side or network error.";
       if (error instanceof Error) {
         description = error.message;
+      } else if (typeof error === 'string') {
+        description = error;
       }
-      toast({ 
-        title: "Processing Error", 
-        description: description, 
+      toast({
+        title: "Processing Error",
+        description: description,
         variant: "destructive",
-        duration: 10000, 
+        duration: 10000,
       });
     } finally {
-      console.log("Client: Setting isLoading to false.");
+      console.log("Client: Setting isLoading to false in finally block.");
       setIsLoading(false);
     }
   };
@@ -161,19 +105,13 @@ export default function PaymentPage() {
     return <LoadingSpinner fullPage />;
   }
 
-  if (!questionnaireData && !isLoadingData) {
->>>>>>> master
+  if (!questionnaireData && !isLoadingData) { // Should be caught by useEffect, but good as a fallback
      return (
       <div className="flex items-center justify-center py-12">
         <Card className="w-full max-w-md text-center">
           <CardHeader>
-<<<<<<< HEAD
-            <CardTitle>Questionnaire Not Completed</CardTitle>
-            <CardDescription>Please complete your style questionnaire before proceeding to payment.</CardDescription>
-=======
             <CardTitle>Questionnaire Not Found</CardTitle>
             <CardDescription>We couldn't find your questionnaire answers. Please complete it first.</CardDescription>
->>>>>>> master
           </CardHeader>
           <CardContent>
             <Button asChild size="lg">
@@ -185,15 +123,6 @@ export default function PaymentPage() {
     );
   }
 
-<<<<<<< HEAD
-
-  return (
-    <ProtectedRoute checkMeta={paymentCheck} redirectPath="/questionnaire">
-      <div className="max-w-4xl mx-auto py-8">
-        <PaymentComponent onPaymentSuccess={handlePaymentSuccess} />
-      </div>
-    </ProtectedRoute>
-=======
   return (
     <div className="max-w-4xl mx-auto py-8 flex flex-col items-center">
       <Card className="w-full max-w-md mb-8">
@@ -204,22 +133,20 @@ export default function PaymentPage() {
         <CardContent>
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="you@example.com" 
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)} 
+              onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
             />
           </div>
         </CardContent>
       </Card>
-      {/* Pass email to PaymentComponent if it needs it, or handle email submission before calling onPaymentSuccess */}
       <PaymentComponent onPaymentSuccess={handlePaymentSuccess} />
       {isLoading && <LoadingSpinner fullPage />} {/* Show full page spinner when processing */}
     </div>
->>>>>>> master
   );
 }
