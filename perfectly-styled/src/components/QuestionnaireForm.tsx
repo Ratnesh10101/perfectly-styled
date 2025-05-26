@@ -20,7 +20,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
 import type { QuestionnaireData, LineAnswer, ScaleAnswer } from "@/types";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Image from "next/image";
 
 // Schemas for individual form fields
@@ -157,7 +157,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   };
   
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(combinedSchema),
+    resolver: zodResolver(combinedSchema), // Use combined schema for the whole form
     defaultValues: {
       shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || undefined,
       waist_answer: transformInitialDataToFormValues(initialData).waist_answer || undefined,
@@ -208,6 +208,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       lineAnswers,
       scaleAnswers,
       bodyShape: data.bodyShape as QuestionnaireData['bodyShape'],
+      // preferences field removed
     };
     await onSubmit(fullData);
     setIsLoading(false);
@@ -377,3 +378,5 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
     </Card>
   );
 }
+
+    
