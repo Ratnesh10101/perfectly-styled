@@ -8,13 +8,13 @@ import { getAnalytics, type Analytics, isSupported as isAnalyticsSupported } fro
 // Explicitly log required environment variables for client-side Firebase
 // These are critical for the SDK to even attempt to connect to your project.
 if (typeof window !== 'undefined') { // Only run these checks/logs in the client-side context
-  console.log("CLIENT_SIDE_ENV_CHECK: NEXT_PUBLIC_FIREBASE_API_KEY:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? "SET" : "MISSING_OR_EMPTY");
+  console.log("CLIENT_SIDE_ENV_CHECK: GOOGLE_API_KEY:", process.env.GOOGLE_API_KEY ? "SET" : "MISSING_OR_EMPTY");
   console.log("CLIENT_SIDE_ENV_CHECK: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? "SET" : "MISSING_OR_EMPTY");
   console.log("CLIENT_SIDE_ENV_CHECK: NEXT_PUBLIC_FIREBASE_PROJECT_ID:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? "SET" : "MISSING_OR_EMPTY");
 }
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  apiKey: process.env.GOOGLE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
@@ -36,13 +36,13 @@ function initializeFirebaseServices() {
   try {
     // Log raw values for critical config parts
     if (typeof window !== 'undefined') {
-      console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_API_KEY), typeof process.env.NEXT_PUBLIC_FIREBASE_API_KEY, process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.length);
+      console.log("Raw GOOGLE_API_KEY:", JSON.stringify(process.env.GOOGLE_API_KEY), typeof process.env.GOOGLE_API_KEY, process.env.GOOGLE_API_KEY?.length);
       console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN), typeof process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN, process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.length);
       console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID:", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID), typeof process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID, process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.length);
     }
     
     const criticalEnvVars = {
-      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+      apiKey: process.env.GOOGLE_API_KEY,
       authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
     };
