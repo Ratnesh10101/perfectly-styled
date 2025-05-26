@@ -1922,3 +1922,175 @@ Import trace for requested module:
 [debug] [2025-05-26T13:27:59.846Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/server/middleware-manifest.json'
 [error] 
 [error] Error: An unexpected error has occurred.
+[debug] [2025-05-26T15:07:11.666Z] ----------------------------------------------------------------------
+[debug] [2025-05-26T15:07:11.676Z] Command:       /nix/store/rbdrkcs5kkwpalxcd7c6bnm33lk2955n-nodejs-20.19.0/bin/node /home/user/.global_modules/bin/firebase deploy
+[debug] [2025-05-26T15:07:11.677Z] CLI Version:   14.4.0
+[debug] [2025-05-26T15:07:11.678Z] Platform:      linux
+[debug] [2025-05-26T15:07:11.678Z] Node Version:  v20.19.0
+[debug] [2025-05-26T15:07:11.678Z] Time:          Mon May 26 2025 15:07:11 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-05-26T15:07:11.679Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-26T15:07:13.365Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-26T15:07:22.274Z] Running auto auth
+[debug] [2025-05-26T15:07:22.315Z] [iam] checking project perfectly-styled for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-05-26T15:07:22.317Z] No OAuth tokens found
+[debug] [2025-05-26T15:07:22.325Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions [none]
+[debug] [2025-05-26T15:07:22.326Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions x-goog-quota-user=projects/perfectly-styled
+[debug] [2025-05-26T15:07:22.326Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T15:07:23.075Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions 200
+[debug] [2025-05-26T15:07:23.075Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/perfectly-styled:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-05-26T15:07:23.077Z] No OAuth tokens found
+[debug] [2025-05-26T15:07:23.078Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled [none]
+[debug] [2025-05-26T15:07:23.450Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled 200
+[debug] [2025-05-26T15:07:23.450Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/perfectly-styled {"projectId":"perfectly-styled","projectNumber":"377334244117","displayName":"Perfectly Styled","name":"projects/perfectly-styled","resources":{"hostingSite":"perfectly-styled"},"state":"ACTIVE","etag":"1_c3964132-e093-42c9-b5ed-f26f80206b9f"}
+[debug] [2025-05-26T15:07:27.404Z] No OAuth tokens found
+[debug] [2025-05-26T15:07:27.405Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites pageToken=&pageSize=10
+[debug] [2025-05-26T15:07:28.606Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites 200
+[debug] [2025-05-26T15:07:28.606Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites {"sites":[{"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}]}
+[debug] [2025-05-26T15:07:28.607Z] No OAuth tokens found
+[debug] [2025-05-26T15:07:28.608Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config [none]
+[debug] [2025-05-26T15:07:29.340Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config 200
+[debug] [2025-05-26T15:07:29.342Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:377334244117:web:3fff766d728fd838a83f1c/config {"projectId":"perfectly-styled","appId":"1:377334244117:web:3fff766d728fd838a83f1c","storageBucket":"perfectly-styled.firebasestorage.app","apiKey":"AIzaSyDxycR2hu4dXoJnScRbRc3UZviWdEyVHYk","authDomain":"perfectly-styled.firebaseapp.com","messagingSenderId":"377334244117","measurementId":"G-LLZ1XNNXET"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-05-26T15:07:37.584Z] No OAuth tokens found
+[debug] [2025-05-26T15:07:37.585Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled [none]
+[debug] [2025-05-26T15:07:38.533Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled 200
+[debug] [2025-05-26T15:07:38.533Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/perfectly-styled/sites/perfectly-styled {"name":"projects/perfectly-styled/sites/perfectly-styled","defaultUrl":"https://perfectly-styled.web.app","appId":"1:377334244117:web:3fff766d728fd838a83f1c","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.0.4
+   - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info]  ⚠ Compiled with warnings
+
+
+[info] ./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/node/index.js
+./node_modules/@opentelemetry/instrumentation/build/esm/platform/index.js
+./node_modules/@opentelemetry/instrumentation/build/esm/index.js
+./node_modules/@opentelemetry/sdk-node/build/src/sdk.js
+./node_modules/@opentelemetry/sdk-node/build/src/index.js
+./node_modules/@genkit-ai/core/lib/tracing.js
+./node_modules/genkit/lib/tracing.js
+./node_modules/@genkit-ai/googleai/lib/gemini.js
+./node_modules/@genkit-ai/googleai/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/actions/questionnaireActions.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/actions/questionnaireActions.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/actions/questionnaireActions.ts
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+./node_modules/handlebars/lib/index.js
+require.extensions is not supported by webpack. Use a loader instead.
+
+Import trace for requested module:
+./node_modules/handlebars/lib/index.js
+./node_modules/dotprompt/dist/index.js
+./node_modules/@genkit-ai/core/lib/registry.js
+./node_modules/genkit/lib/registry.js
+./node_modules/genkit/lib/genkit.js
+./node_modules/genkit/lib/index.mjs
+./src/ai/genkit.ts
+./src/app/layout.tsx
+
+[info] 
+
+[info]  ✓ Compiled successfully
+
+[info]    Skipping linting
+
+[info]    Checking validity of types ...
+
+[info] Failed to compile.
+
+
+[info] ./src/components/ProtectedRoute.tsx:5:25
+Type error: File '/home/user/studio/src/hooks/useAuth.ts' is not a module.
+
+  3 | import { useEffect, type ComponentType, type ReactNode } from 'react';
+  4 | import { useRouter } from 'next/navigation';
+> 5 | import { useAuth } from '@/hooks/useAuth';
+    |                         ^
+  6 | import LoadingSpinner from './LoadingSpinner';
+  7 | import type { UserMeta } from '@/types';
+  8 |
+
+[debug] [2025-05-26T15:08:25.083Z] Error: ENOENT: no such file or directory, open '/home/user/studio/.next/export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.

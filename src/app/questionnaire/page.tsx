@@ -2,7 +2,9 @@
 "use client";
 
 import QuestionnaireForm from "@/components/QuestionnaireForm";
+// useAuth removed
 import { useToast } from "@/hooks/use-toast";
+// saveQuestionnaireData action removed, will be handled by payment action
 import { useRouter } from "next/navigation";
 import type { QuestionnaireData } from "@/types";
 
@@ -11,9 +13,11 @@ const PENDING_QUESTIONNAIRE_KEY = "pendingQuestionnaireData_v2";
 export default function QuestionnairePage() {
   const { toast } = useToast();
   const router = useRouter();
+  // Removed currentUser and userMeta from useAuth
 
   const handleSubmit = async (data: QuestionnaireData) => {
     // Always save to localStorage and redirect to payment.
+    // No user-specific saving here anymore.
     try {
       localStorage.setItem(PENDING_QUESTIONNAIRE_KEY, JSON.stringify(data));
       toast({ title: "Questionnaire Completed!", description: "Please proceed to payment to get your report." });
