@@ -1,11 +1,10 @@
-
 // This page is now obsolete due to removal of user authentication
 // Kept for routing integrity but directs users to main flow.
 'use client';
 
 import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
-// Link and Button imports were used for the redirect button, keeping them for dynamic import.
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
   return (
@@ -17,9 +16,9 @@ export default function LoginPage() {
             Perfectly Styled now operates without user accounts. You can directly complete the
             questionnaire and receive your report.
           </p>
-          <dynamic(() => import('@/components/ui/button').then(mod => mod.Button), {ssr: false}) asChild>
-            <dynamic(() => import('next/link').then(mod => mod.default), {ssr: false}) href="/questionnaire">Start Questionnaire</dynamic(() => import('next/link').then(mod => mod.default), {ssr: false})>
-          </dynamic(() => import('@/components/ui/button').then(mod => mod.Button), {ssr: false})>
+          <Button asChild>
+            <Link href="/questionnaire">Start Questionnaire</Link>
+          </Button>
         </div>
       </div>
     </Suspense>
