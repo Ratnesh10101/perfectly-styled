@@ -1,10 +1,10 @@
 
 "use server";
 
-import { generateStyleRecommendations, type StyleRecommendationsInput } from "@/ai/flows/generate-style-recommendations";
-import type { QuestionnaireData, UserReportData } from "@/types";
 import { firebaseInitialized, firebaseInitError } from "@/config/firebase"; 
 import { ai as genkitInstance, genkitServiceInitError } from "@/ai/genkit"; 
+import { generateStyleRecommendations, type StyleRecommendationsInput } from "@/ai/flows/generate-style-recommendations";
+import type { QuestionnaireData, UserReportData } from "@/types";
 
 // This module is loaded on the server when an action is invoked.
 console.log("questionnaireActions.ts module loaded on server.");

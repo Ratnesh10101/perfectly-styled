@@ -1,4 +1,5 @@
 
+
 export interface LineAnswer {
   bodyPart: 'Shoulders' | 'Waist' | 'Hips' | 'Face' | 'Jawline';
   answer: string;

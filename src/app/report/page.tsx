@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -57,7 +58,7 @@ export default function ReportPage() {
     );
   }
 
-  if (!reportData && !isLoadingReport) { // If no error but also no report data
+  if (!reportData && !isLoadingReport) { 
      return (
         <div className="flex items-center justify-center py-12">
             <Card className="w-full max-w-md text-center">
@@ -85,7 +86,6 @@ export default function ReportPage() {
           generatedAtClient: reportData.generatedAtClient,
          }} />
       ) : (
-         // Fallback if reportData is somehow null after loading and no error state, though unlikely with current logic
          <div className="flex items-center justify-center py-12">
            <Card className="w-full max-w-md text-center">
              <CardHeader>

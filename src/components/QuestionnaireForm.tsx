@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -27,7 +28,6 @@ const lineAnswerSchema = z.string().min(1, "Please select an option.");
 const scaleAnswerSchema = z.string().min(1, "Please select an option.");
 const bodyShapeSchema = z.string().min(1, "Please select your body shape.");
 
-// This combined schema is used for resolver with react-hook-form
 const combinedSchema = z.object({
   shoulders_answer: lineAnswerSchema,
   waist_answer: lineAnswerSchema,
@@ -42,23 +42,22 @@ const combinedSchema = z.object({
 
 type QuestionnaireFormValues = z.infer<typeof combinedSchema>;
 
-// Schemas for validating individual steps
 const stepSchemas: z.ZodObject<any, any, any, any, any>[] = [
-  z.object({ // Step 1: Shoulders, Waist, Hips
+  z.object({ 
     shoulders_answer: lineAnswerSchema,
     waist_answer: lineAnswerSchema,
     hips_answer: lineAnswerSchema,
   }),
-  z.object({ // Step 2: Face, Jawline
+  z.object({ 
     face_answer: lineAnswerSchema,
     jawline_answer: lineAnswerSchema,
   }),
-  z.object({ // Step 3: Wrist, Height, Shoe Size
+  z.object({ 
     wrist_answer: scaleAnswerSchema,
     height_answer: scaleAnswerSchema,
     shoeSize_answer: scaleAnswerSchema,
   }),
-  z.object({ // Step 4: Body Shape
+  z.object({ 
     bodyShape: bodyShapeSchema,
   }),
 ];
@@ -66,7 +65,7 @@ const stepSchemas: z.ZodObject<any, any, any, any, any>[] = [
 
 interface QuestionnaireFormProps {
   onSubmit: (data: QuestionnaireData) => Promise<void>;
-  initialData?: Partial<QuestionnaireData>;
+  initialData?: Partial<QuestionnaireData>; // Kept for potential future use
 }
 
 const lineOptions = {
@@ -187,7 +186,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
 
   const getClassification = (bodyPartKey: keyof typeof lineOptions, answer: string): 'straight' | 'curved' => {
     const option = lineOptions[bodyPartKey].find(opt => opt.value === answer);
-    return option ? option.classification as 'straight' | 'curved' : 'straight'; // Default to straight if somehow not found
+    return option ? option.classification as 'straight' | 'curved' : 'straight';
   };
 
   const onFinalSubmit = async (data: QuestionnaireFormValues) => {

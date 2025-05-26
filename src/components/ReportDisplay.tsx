@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -72,6 +73,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
               ))}
             </div>
             <p className="text-sm"><strong>Body Shape:</strong> {questionnaireData.bodyShape}</p>
+            {/* Preferences were removed, so no need to display them */}
           </div>
         </div>
         
@@ -79,10 +81,10 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
 
         <div>
           <h3 className="text-xl font-semibold mb-2 text-secondary-foreground">Styling Recommendations</h3>
-          <ScrollArea className="h-96 p-4 border rounded-lg bg-background"> {/* Increased height for report */}
+          <ScrollArea className="h-96 p-4 border rounded-lg bg-background">
             <div 
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: report.recommendations.replace(/\n/g, '<br />') }} // Basic markdown newline to <br>
+              dangerouslySetInnerHTML={{ __html: report.recommendations.replace(/\n/g, '<br />') }} 
             />
           </ScrollArea>
         </div>

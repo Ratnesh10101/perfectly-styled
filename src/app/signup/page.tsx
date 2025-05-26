@@ -1,11 +1,11 @@
+
 // This page is now obsolete due to removal of user authentication
 // Kept for routing integrity but directs users to main flow.
 'use client';
 
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
-// Button removed as SignupPageContent (AuthForm) is no longer rendered here
+// Link and Button imports were used for the redirect button, keeping them for dynamic import.
 
 export default function SignupPage() {
   return (

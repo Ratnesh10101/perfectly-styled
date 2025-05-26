@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -26,18 +27,20 @@ export default function PaymentPage() {
 
   useEffect(() => {
     setIsLoadingData(true);
+    console.log("PaymentPage: Attempting to load questionnaire data from localStorage.");
     const dataString = localStorage.getItem(PENDING_QUESTIONNAIRE_KEY);
     if (dataString) {
       try {
         const parsedData = JSON.parse(dataString);
+        console.log("PaymentPage: Successfully parsed questionnaire data:", parsedData);
         setQuestionnaireData(parsedData);
       } catch (e) {
-        console.error("Error parsing questionnaire data from localStorage:", e);
+        console.error("PaymentPage: Error parsing questionnaire data from localStorage:", e);
         toast({ title: "Error Loading Data", description: "Could not load your questionnaire answers. Please complete the questionnaire again.", variant: "destructive" });
         router.push("/questionnaire");
       }
     } else {
-      // This case might happen if the user navigates here directly without completing the questionnaire
+      console.warn("PaymentPage: No questionnaire data found in localStorage. Redirecting to questionnaire.");
       toast({ title: "Questionnaire Data Missing", description: "Please complete the questionnaire first to proceed to payment.", variant: "destructive" });
       router.push("/questionnaire");
     }
@@ -58,29 +61,24 @@ export default function PaymentPage() {
     setIsLoading(true);
     console.log("Client: Initiating payment and report generation for email:", email);
     try {
-      // Call the server action
       const result = await processPaymentAndGenerateReport(questionnaireData, email.trim());
       console.log("Client: Received response from server action:", result);
 
       if (result.success && result.reportData) {
         toast({ title: "Payment Successful!", description: "Your style report has been generated." });
-        // Store data in sessionStorage for the report page
         sessionStorage.setItem(REPORT_SESSION_KEY, JSON.stringify(result.reportData));
-        // Clear localStorage as data is now processed
         localStorage.removeItem(PENDING_QUESTIONNAIRE_KEY);
         router.push("/report");
       } else {
-        // Handle failure from server action
         console.error("Client: Report generation failed. Server message:", result.message);
         toast({
           title: "Report Generation Failed",
           description: result.message || "An unknown error occurred on the server. Please check server logs for more details, especially regarding Genkit initialization and GOOGLE_API_KEY.",
           variant: "destructive",
-          duration: 10000, // Show longer for server errors
+          duration: 10000, 
         });
       }
     } catch (error: any) {
-      // Handle unexpected errors during the server action call itself (e.g., network issues)
       console.error("Client: Critical error during handlePaymentSuccess:", error);
       let description = "Could not process payment or generate report due to a client-side or network error.";
       if (error instanceof Error) {
@@ -104,7 +102,7 @@ export default function PaymentPage() {
     return <LoadingSpinner fullPage />;
   }
 
-  if (!questionnaireData && !isLoadingData) { // Should be caught by useEffect, but good as a fallback
+  if (!questionnaireData && !isLoadingData) {
      return (
       <div className="flex items-center justify-center py-12">
         <Card className="w-full max-w-md text-center">
@@ -145,7 +143,7 @@ export default function PaymentPage() {
         </CardContent>
       </Card>
       <PaymentComponent onPaymentSuccess={handlePaymentSuccess} />
-      {isLoading && <LoadingSpinner fullPage />} {/* Show full page spinner when processing */}
+      {isLoading && <LoadingSpinner fullPage />}
     </div>
   );
 }
