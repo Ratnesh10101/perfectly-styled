@@ -2,18 +2,6 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAnalytics, isSupported as isAnalyticsSupported, type Analytics } from 'firebase/analytics';
 
-// --- IMMEDIATE TOP-LEVEL CHECK FOR CRITICAL ENVIRONMENT VARIABLES ---
-// This check runs when the module is first loaded, on server or client.
-const criticalEnvVarNames = [
-  'NEXT_PUBLIC_FIREBASE_API_KEY',
-  'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-  'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-];
-const missingCriticalVars = criticalEnvVarNames.filter(varName => {
-  const value = process.env[varName];
-  return !value || typeof value !== 'string' || value.trim() === '';
-});
-
 let app: FirebaseApp | null = null;
 let analytics: Analytics | null = null;
 // Auth and Firestore are no longer directly used/exported from this module in the no-auth flow
@@ -30,17 +18,29 @@ let currentFirebaseConfigValues: any = {};
 
 console.log("firebase.ts module evaluation started (Client or Server).");
 
+// --- IMMEDIATE TOP-LEVEL CHECK FOR CRITICAL ENVIRONMENT VARIABLES ---
+// This check runs when the module is first loaded, on server or client.
+const criticalEnvVarNames = [
+  'NEXT_PUBLIC_FIREBASE_API_KEY',
+  'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
+  'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
+];
+const missingCriticalVars = criticalEnvVarNames.filter(varName => {
+  const value = process.env[varName];
+  return !value || typeof value !== 'string' || value.trim() === '';
+});
+
 if (missingCriticalVars.length > 0) {
-  firebaseInitError = `CRITICAL ${typeof window === 'undefined' ? 'SERVER' : 'CLIENT'} STARTUP ERROR: The following critical Firebase environment variables are missing or empty: ${missingCriticalVars.join(', ')}. Firebase SDK WILL NOT initialize. This application will not function correctly. CHECK YOUR ${typeof window === 'undefined' ? 'SERVER DEPLOYMENT' : 'BUILD'} ENVIRONMENT'S VARIABLE CONFIGURATION AND RE-DEPLOY. Ensure NEXT_PUBLIC_ variables are correctly set and accessible. This can lead to 'Internal Server Error' or 'missing required error components'.`;
+  firebaseInitError = `CRITICAL ${typeof window === 'undefined' ? 'SERVER' : 'CLIENT'} STARTUP ERROR: The following critical Firebase environment variables are missing or empty in the execution environment: ${missingCriticalVars.join(', ')}. Firebase SDK WILL NOT initialize. This application will not function correctly. CHECK YOUR ${typeof window === 'undefined' ? 'SERVER DEPLOYMENT/FUNCTION' : 'BUILD'} ENVIRONMENT'S VARIABLE CONFIGURATION AND RE-DEPLOY. This can lead to 'Internal Server Error' or 'missing required error components' on deployed site.`;
   console.error("**********************************************************************************");
   console.error(firebaseInitError);
-  console.error("Current process.env values for Firebase keys (if available - only shown on server for security):");
+  console.error("Current process.env values for these specific Firebase keys (if available - only shown on server for security):");
   if (typeof window === 'undefined') { // Only log process.env on server
     criticalEnvVarNames.forEach(varName => {
       console.error(`${varName}: ${JSON.stringify(process.env[varName])}`);
     });
   } else {
-    console.error("Client-side: Cannot log process.env directly for security. Check browser's source or Next.js build logs if variables are inlined.");
+    console.error("Client-side: Cannot log process.env directly for security. Check browser's source or Next.js build logs if variables are inlined, or use browser dev tools to inspect 'window.process.env' if available (not typical for Next.js client). The error above indicates they were missing when this script ran.");
   }
   console.error("**********************************************************************************");
 }
@@ -60,7 +60,7 @@ function initializeFirebase() {
   // If critical vars were missing at module load, don't even attempt actual initialization.
   // The firebaseInitError from top-level check is already set.
   if (firebaseInitError) {
-    console.error("Skipping Firebase SDK initializeApp() call due to pre-existing critical environment variable errors.");
+    console.error("Skipping Firebase SDK initializeApp() call due to pre-existing critical environment variable errors from module load.");
     firebaseInitialized = true; // Mark as "attempted" to prevent re-attempts
     return;
   }
