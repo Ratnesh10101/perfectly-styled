@@ -7,9 +7,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { UserReportData } from "@/types";
-import { ClipboardCopy, Mail } from "lucide-react"; // Removed Printer
+import { Mail, Download } from "lucide-react"; 
 import { format } from "date-fns";
 import { marked } from "marked";
+import html2pdf from 'html2pdf.js';
 
 
 interface ReportDisplayProps {
@@ -19,21 +20,25 @@ interface ReportDisplayProps {
 export default function ReportDisplay({ report }: ReportDisplayProps) {
   const { toast } = useToast();
 
-  const handleCopyToClipboard = () => {
-    if (report?.recommendations) {
-      navigator.clipboard.writeText(report.recommendations)
-        .then(() => {
-          toast({ title: "Copied to clipboard!", description: "Report content copied." });
-        })
-        .catch(() => {
-          toast({ title: "Copy failed", description: "Could not copy report to clipboard.", variant: "destructive" });
-        });
+  const handleDownloadPdf = () => {
+    const reportContentElement = document.getElementById('report-content-for-pdf');
+    if (reportContentElement) {
+      const opt = {
+        margin:       [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right
+        filename:     'PerfectlyStyled_Report.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false }, // Increased scale for better quality
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+      html2pdf().from(reportContentElement).set(opt).save().catch((err: any) => {
+        console.error("PDF generation error:", err);
+        toast({ title: "PDF Download Failed", description: "Could not generate PDF. Please try again.", variant: "destructive" });
+      });
     } else {
-      toast({ title: "Nothing to copy", description: "Report content is empty.", variant: "destructive" });
+      toast({ title: "Error", description: "Report content not found for PDF generation.", variant: "destructive" });
     }
   };
-
-  // handlePrint function removed
 
   const { questionnaireData, recipientEmail, generatedAtClient } = report;
 
@@ -91,21 +96,21 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
 
         <section>
           <h2 className="text-2xl font-bold text-secondary-foreground mb-2">Styling Recommendations</h2>
-          <p className="text-sm text-muted-foreground mb-2">Scroll down within the box below to read your full report.</p>
           <ScrollArea className="h-96 p-4 border rounded-lg bg-background">
             <div
+              id="report-content-for-pdf" // Added ID for PDF generation
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
               dangerouslySetInnerHTML={{ __html: marked(report.recommendations || "") }}
             />
           </ScrollArea>
+           <p className="text-xs text-muted-foreground mt-2 text-center">Scroll down within the box above to read your full report.</p>
         </section>
       </CardContent>
 
       <CardFooter className="flex flex-col sm:flex-row justify-center gap-3 print:hidden">
-        <Button onClick={handleCopyToClipboard} variant="outline">
-          <ClipboardCopy className="mr-2 h-4 w-4" /> Copy Report Text
+        <Button onClick={handleDownloadPdf} variant="outline">
+          <Download className="mr-2 h-4 w-4" /> Download as PDF
         </Button>
-        {/* Print button removed */}
         {recipientEmail && (
           <Button variant="outline" asChild>
             <a href={`mailto:${recipientEmail}?subject=Your%20Perfectly%20Styled%20Report&body=Here%20is%20your%20personalised%20style%20report!`} target="_blank" rel="noopener noreferrer">
