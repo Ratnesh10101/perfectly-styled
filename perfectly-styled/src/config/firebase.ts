@@ -2,15 +2,6 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAnalytics, isSupported as isAnalyticsSupported, type Analytics } from 'firebase/analytics';
 
-let app: FirebaseApp | null = null;
-let analytics: Analytics | null = null;
-let firebaseInitialized = false;
-let firebaseInitError: string | null = null;
-// For debugging what values are actually seen by this module
-let currentFirebaseConfigValues: any = {};
-
-console.log("firebase.ts module evaluation started (Client or Server).");
-
 // --- IMMEDIATE TOP-LEVEL CHECK FOR CRITICAL ENVIRONMENT VARIABLES ---
 // This check runs when the module is first loaded, on server or client.
 const criticalEnvVarNames = [
@@ -23,36 +14,58 @@ const missingCriticalVars = criticalEnvVarNames.filter(varName => {
   return !value || typeof value !== 'string' || value.trim() === '';
 });
 
+let app: FirebaseApp | null = null;
+let analytics: Analytics | null = null;
+// Auth and Firestore are no longer directly used/exported from this module in the no-auth flow
+// import { getAuth, type Auth } from 'firebase/auth';
+// import { getFirestore, type Firestore } from 'firebase/firestore';
+// let auth: Auth | null = null;
+// let db: Firestore | null = null;
+
+let firebaseInitialized = false;
+let firebaseInitError: string | null = null;
+
+// For debugging what values are actually seen by this module
+let currentFirebaseConfigValues: any = {};
+
+console.log("firebase.ts module evaluation started (Client or Server).");
+
 if (missingCriticalVars.length > 0) {
-  firebaseInitError = `CRITICAL ${typeof window === 'undefined' ? 'SERVER' : 'CLIENT'} STARTUP ERROR: The following critical Firebase environment variables are missing or empty: ${missingCriticalVars.join(', ')}. Firebase SDK WILL NOT initialize. This can lead to 'Internal Server Error' or 'missing required error components'. CHECK YOUR DEPLOYMENT ENVIRONMENT'S VARIABLE CONFIGURATION AND RE-DEPLOY. Ensure NEXT_PUBLIC_ variables are available during build and runtime.`;
+  firebaseInitError = `CRITICAL ${typeof window === 'undefined' ? 'SERVER' : 'CLIENT'} STARTUP ERROR: The following critical Firebase environment variables are missing or empty: ${missingCriticalVars.join(', ')}. Firebase SDK WILL NOT initialize. This can lead to 'Internal Server Error' or 'missing required error components'. CHECK YOUR DEPLOYMENT ENVIRONMENT'S VARIABLE CONFIGURATION AND RE-DEPLOY. Ensure NEXT_PUBLIC_ variables are available during build and server runtime.`;
   console.error("**********************************************************************************");
   console.error(firebaseInitError);
-  console.error("Current process.env values for Firebase keys (if available):");
-  criticalEnvVarNames.forEach(varName => {
-    console.error(`${varName}: ${JSON.stringify(process.env[varName])}`);
-  });
+  console.error("Current process.env values for Firebase keys (if available - only shown on server for security):");
+  if (typeof window === 'undefined') { // Only log process.env on server
+    criticalEnvVarNames.forEach(varName => {
+      console.error(`${varName}: ${JSON.stringify(process.env[varName])}`);
+    });
+  } else {
+    console.error("Client-side: Cannot log process.env directly for security. Check browser's source or Next.js build logs if variables are inlined.");
+  }
   console.error("**********************************************************************************");
 }
 // --- END OF IMMEDIATE TOP-LEVEL CHECK ---
 
 function initializeFirebase() {
-  if (firebaseInitialized) {
+  if (firebaseInitialized) { // If already attempted (successfully or not)
     if (firebaseInitError) {
-      console.warn("Firebase already attempted initialization and previously failed with: ", firebaseInitError);
+      // Already logged the detailed error, maybe a simpler one here or just return
+      console.warn("Firebase initialization previously attempted and failed with: ", firebaseInitError);
     } else {
       // console.log("Firebase already successfully initialized.");
     }
     return;
   }
 
-  // If critical vars were missing at module load, don't even attempt.
+  // If critical vars were missing at module load, don't even attempt actual initialization.
+  // The firebaseInitError from top-level check is already set.
   if (firebaseInitError) {
-    console.error("Skipping Firebase initialization due to pre-existing critical environment variable errors.");
-    firebaseInitialized = true; // Mark as "attempted"
+    console.error("Skipping Firebase SDK initializeApp() call due to pre-existing critical environment variable errors.");
+    firebaseInitialized = true; // Mark as "attempted" to prevent re-attempts
     return;
   }
 
-  console.log("Attempting Firebase initialization...");
+  console.log("Attempting Firebase SDK initializeApp()...");
   try {
     const firebaseConfig = {
       apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim() || undefined,
@@ -65,62 +78,81 @@ function initializeFirebase() {
     };
     currentFirebaseConfigValues = { ...firebaseConfig }; // For debugging
 
-    // Log raw values being read (useful for client-side verification)
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') { // Client-side specific logging
         console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY (client):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_API_KEY));
         console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN (client):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN));
         console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID (client):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID));
     }
     
-    // This check is somewhat redundant due to the top-level check, but provides finer-grained error for config object construction
+    // Redundant check but good for confirming what initializeApp will receive
     if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
       const missingProps = [];
       if (!firebaseConfig.apiKey) missingProps.push('apiKey (from NEXT_PUBLIC_FIREBASE_API_KEY)');
       if (!firebaseConfig.authDomain) missingProps.push('authDomain (from NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN)');
       if (!firebaseConfig.projectId) missingProps.push('projectId (from NEXT_PUBLIC_FIREBASE_PROJECT_ID)');
-      firebaseInitError = `Firebase Config Construction Error: Critical properties (${missingProps.join(', ')}) are missing or empty AFTER attempting to read from process.env. Firebase will not be initialized. This usually means NEXT_PUBLIC_ environment variables are not set correctly in your build/deployment environment or are not being passed to the client correctly. Review deployment settings.`;
-      console.error(firebaseInitError);
+      // This specific error might not be set to firebaseInitError if the top-level check already caught it.
+      // However, it's good to log it for clarity if it reaches here.
+      const configConstructionError = `Firebase Config Construction Error during initializeFirebase(): Critical properties (${missingProps.join(', ')}) are missing or empty AFTER attempting to read from process.env.`;
+      console.error(configConstructionError);
+      if (!firebaseInitError) firebaseInitError = configConstructionError; // Set if not already set by top-level
       firebaseInitialized = true; // Mark as attempted
       return;
     }
 
+    console.log("Firebase config object to be used by initializeApp():", JSON.stringify(firebaseConfig, null, 2));
+
     if (!getApps().length) {
       app = initializeApp(firebaseConfig);
-      console.log("Firebase app initialized successfully.");
+      console.log("Firebase app initialized successfully via initializeApp().");
     } else {
       app = getApps()[0];
       console.log("Firebase app already exists, using existing instance.");
     }
     
-    if (typeof window !== 'undefined' && firebaseConfig.measurementId) {
+    // auth = getAuth(app);
+    // db = getFirestore(app);
+    // console.log("Firebase Auth and Firestore services obtained.");
+
+    if (typeof window !== 'undefined' && firebaseConfig.measurementId && app) {
       isAnalyticsSupported().then(supported => {
-        if (supported && app) { // Added explicit 'app' check here
+        if (supported && app) { 
           analytics = getAnalytics(app);
           console.log("Firebase Analytics initialized.");
         } else {
           if (!app) {
-            console.log("Firebase Analytics not initialized because Firebase app instance is null.");
+            console.log("Firebase Analytics not initialized because Firebase app instance is null (should not happen if initializeApp succeeded).");
           } else {
-            console.log("Firebase Analytics is not supported in this environment or app is null.");
+            console.log("Firebase Analytics is not supported in this environment.");
           }
         }
       }).catch(err => console.error("Error checking analytics support:", err));
     } else if (typeof window !== 'undefined' && !firebaseConfig.measurementId) {
-        console.log("Firebase Analytics not initialized because measurementId is missing in config.");
+        console.log("Firebase Analytics not initialized: measurementId is missing in config.");
+    } else if (typeof window !== 'undefined' && !app) {
+        console.log("Firebase Analytics not initialized: Firebase app is null.");
     }
-    firebaseInitialized = true; // Mark as successfully attempted or completed
+    // If no error by this point, mark as successfully initialized (or attempted without fatal error)
     
   } catch (error: any) {
-    firebaseInitError = `Firebase initializeApp() call critical error: ${error.message}. This is a severe issue. Details: ${error.stack || error}`;
+    firebaseInitError = `Firebase initializeApp() call critical error: ${error.message}. Details: ${error.stack || error}`;
     console.error("**********************************************************************************");
     console.error(firebaseInitError);
-    console.error("Firebase config that was attempted:", JSON.stringify(currentFirebaseConfigValues, null, 2));
+    console.error("Firebase config that was attempted with initializeApp():", JSON.stringify(currentFirebaseConfigValues, null, 2));
     console.error("**********************************************************************************");
     app = null;
     analytics = null;
-    firebaseInitialized = true; // Mark as attempted, even if failed
+    // auth = null;
+    // db = null;
   } finally {
-    console.log(`Firebase initialization attempt complete. Status: ${firebaseInitError ? 'FAILED' : 'SUCCESS'}. Error: ${firebaseInitError || 'None'}`);
+    firebaseInitialized = true; // Mark as initialization attempt completed
+    if (!firebaseInitError && app) {
+      console.log(`Firebase initialization completed. Status: SUCCESS. Error: None`);
+    } else if (firebaseInitError) {
+      console.log(`Firebase initialization completed. Status: FAILED. Error: ${firebaseInitError}`);
+    } else if (!app) {
+      console.log(`Firebase initialization completed. Status: FAILED (app is null, but no specific error caught).`);
+      if (!firebaseInitError) firebaseInitError = "Firebase app is null after initialization attempt without a caught error.";
+    }
   }
 }
 
@@ -128,3 +160,5 @@ function initializeFirebase() {
 initializeFirebase();
 
 export { app, analytics, firebaseInitialized, firebaseInitError, currentFirebaseConfigValues };
+// No longer exporting auth and db as they are not used in the no-auth flow from this central config
+// export { auth, db };
