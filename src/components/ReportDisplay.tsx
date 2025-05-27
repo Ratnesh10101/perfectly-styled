@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import type { UserReportData } from "@/types"; 
 import { ClipboardCopy, Printer, Mail } from "lucide-react";
 import { format } from 'date-fns';
+import { marked } from "marked";
+
 
 interface ReportDisplayProps {
   report: UserReportData; 
@@ -84,7 +86,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
           <ScrollArea className="h-96 p-4 border rounded-lg bg-background">
             <div 
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: report.recommendations.replace(/\n/g, '<br />') }} 
+              dangerouslySetInnerHTML={{ __html: marked(report.recommendations || "") }}
             />
           </ScrollArea>
         </div>
