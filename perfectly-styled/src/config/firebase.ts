@@ -1,6 +1,9 @@
 
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAnalytics, isSupported as isAnalyticsSupported, type Analytics } from 'firebase/analytics';
+// Auth and Firestore are no longer directly used/exported from this module in the no-auth flow
+// import { getAuth, type Auth } from 'firebase/auth';
+// import { getFirestore, type Firestore } from 'firebase/firestore';
 
 // --- IMMEDIATE TOP-LEVEL CHECK FOR CRITICAL ENVIRONMENT VARIABLES ---
 // This check runs when the module is first loaded, on server or client.
@@ -17,7 +20,7 @@ const missingCriticalVars = criticalEnvVarNames.filter(varName => {
 });
 
 if (missingCriticalVars.length > 0) {
-  initialFirebaseInitError = `CRITICAL ${typeof window === 'undefined' ? 'SERVER' : 'CLIENT'} STARTUP ERROR: The following critical Firebase environment variables are missing or empty: ${missingCriticalVars.join(', ')}. Firebase SDK WILL NOT initialize. This can lead to severe application instability, including 'Internal Server Error' or 'missing required error components' on the deployed site. CHECK YOUR ${typeof window === 'undefined' ? 'SERVER DEPLOYMENT/FUNCTION' : 'BUILD'} ENVIRONMENT'S VARIABLE CONFIGURATION AND RE-DEPLOY. Ensure NEXT_PUBLIC_ variables are available during build and runtime. This error is from src/config/firebase.ts.`;
+  initialFirebaseInitError = `CRITICAL ${typeof window === 'undefined' ? 'SERVER' : 'CLIENT'} STARTUP ERROR: The following critical Firebase environment variables are missing or empty: ${missingCriticalVars.join(', ')}. Firebase SDK WILL NOT initialize. This can lead to severe application instability, including 'Internal Server Error' or 'missing required error components' on the deployed site. CHECK YOUR ${typeof window === 'undefined' ? 'SERVER DEPLOYMENT/FUNCTION' : 'BUILD'} ENVIRONMENT'S VARIABLE CONFIGURATION AND RE-DEPLOY. This error is from src/config/firebase.ts.`;
   console.error("**********************************************************************************");
   console.error(initialFirebaseInitError);
   if (typeof window === 'undefined') { // Only log process.env details on server
@@ -32,6 +35,8 @@ if (missingCriticalVars.length > 0) {
 
 let app: FirebaseApp | null = null;
 let analytics: Analytics | null = null;
+// let auth: Auth | null = null; // No longer exporting auth directly
+// let db: Firestore | null = null; // No longer exporting db directly
 
 let firebaseInitialized = false;
 // Initialize firebaseInitError with error from top-level check
@@ -66,22 +71,16 @@ function initializeFirebase() {
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID?.trim() || undefined,
       measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID?.trim() || undefined,
     };
-    currentFirebaseConfigValues = { ...firebaseConfig }; // For debugging
+    currentFirebaseConfigValues = { ...firebaseConfig }; 
 
-    // Log raw values being read for diagnostics
-    if (typeof window !== 'undefined') { // Client-side
+    if (typeof window !== 'undefined') {
         console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY (client, from firebase.ts):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_API_KEY));
         console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN (client, from firebase.ts):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN));
         console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID (client, from firebase.ts):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID));
-    } else { // Server-side
-        console.log("Raw NEXT_PUBLIC_FIREBASE_API_KEY (server, from firebase.ts):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_API_KEY));
-        console.log("Raw NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN (server, from firebase.ts):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN));
-        console.log("Raw NEXT_PUBLIC_FIREBASE_PROJECT_ID (server, from firebase.ts):", JSON.stringify(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID));
     }
     
     console.log("Firebase config object being constructed (from firebase.ts):", JSON.stringify(currentFirebaseConfigValues, null, 2));
 
-    // Secondary check inside function, more robust
     const missingConfigPropsInFunc = criticalEnvVarNames.filter(varName => {
       const key = varName.replace('NEXT_PUBLIC_FIREBASE_', '').toLowerCase();
       const mappedKey =
@@ -98,7 +97,7 @@ function initializeFirebase() {
     });
 
     if (missingConfigPropsInFunc.length > 0) {
-        const configConstructionError = `Firebase Config Construction Error during initializeFirebase() (from firebase.ts): Critical properties derived from (${missingConfigPropsInFunc.join(', ')}) are missing or empty. This usually means NEXT_PUBLIC_ environment variables are not set correctly in your build/deployment environment or are not being passed to the client/server runtime correctly.`;
+        const configConstructionError = `Firebase Config Construction Error during initializeFirebase() (from firebase.ts): Critical properties derived from (${missingConfigPropsInFunc.join(', ')}) are missing or empty. This usually means NEXT_PUBLIC_ environment variables are not set correctly.`;
         console.error(configConstructionError);
         if (!firebaseInitError) firebaseInitError = configConstructionError; 
     }
@@ -144,7 +143,7 @@ function initializeFirebase() {
     console.error("**********************************************************************************");
     app = null;
   } finally {
-    firebaseInitialized = true; // Mark as initialization attempt completed
+    firebaseInitialized = true; 
     if (!firebaseInitError && app) {
       console.log(`Firebase initialization completed (from firebase.ts). Status: SUCCESS. App ID: ${app.name}. Error: None`);
     } else if (firebaseInitError) {
@@ -157,8 +156,10 @@ function initializeFirebase() {
   }
 }
 
-// Initialize Firebase when the module is loaded.
 initializeFirebase();
 
 export { app, analytics, firebaseInitialized, firebaseInitError, currentFirebaseConfigValues };
+// Removed direct export of auth and db as they are no longer central to this simplified app
+// Other parts of the app that might need them (like actions) should import them as needed
+// and handle their potential null state if firebase isn't initialized.
     

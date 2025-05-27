@@ -29,9 +29,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themecolour: [
-    { media: '(prefers-colour-scheme: light)', colour: '#ffffff' },
-    { media: '(prefers-colour-scheme: dark)', colour: '#000000' },
+  themeColor: [ 
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
   ],
 };
 
@@ -45,14 +45,14 @@ export default function RootLayout({
   if (typeof window === 'undefined') { // Running on the server
     console.log("RootLayout Server Component: Rendering started.");
     console.log(`RootLayout Server Component: Imported firebaseInitialized: ${firebaseInitialized}, firebaseInitError: ${firebaseInitError || 'None'}`);
-    
+
     // Check for Firebase init error or if Firebase is not initialized
-    // This check is crucial to prevent the "missing required error components" error.
     if (firebaseInitError || !firebaseInitialized) {
       const errorMessage = firebaseInitError || "Firebase services are not initialized. Critical environment variables (e.g., NEXT_PUBLIC_FIREBASE_PROJECT_ID) may be missing in the server deployment environment.";
       console.error("--- ROOT LAYOUT CRITICAL FAILURE (COMPONENT RENDER) ---");
       console.error(`RootLayout Server Component: Firebase Initialization Failed or Incomplete. Error: ${errorMessage}`);
       console.error("--- Rendering basic static error page. Check server logs for details, especially for 'CRITICAL SERVER STARTUP ERROR' from firebase.ts regarding missing Firebase environment variables. ---");
+      
       // Render a very basic static HTML page
       return (
         <html lang="en">
@@ -60,7 +60,7 @@ export default function RootLayout({
             <title>Critical Configuration Error</title>
             <meta charSet="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <style>{`body { font-family: sans-serif; padding: 20px; colour: #333; background-colour: #fef2f2; } h1 { colour: #b91c1c; } pre { background-colour: #fee2e2; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; overflow-x: auto; }`}</style>
+            <style>{`body { font-family: sans-serif; padding: 20px; color: #333; background-color: #fef2f2; } h1 { color: #b91c1c; } pre { background-color: #fee2e2; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; overflow-x: auto; }`}</style>
           </head>
           <body>
             <h1>Critical Server Configuration Error</h1>
