@@ -5,6 +5,9 @@ import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import Header from '@/components/Header';
 import { firebaseInitialized, firebaseInitError } from '@/config/firebase'; // For server-side check
+// Genkit service init error is no longer relevant as Genkit was removed
+// import { genkitServiceInitError } from '@/ai/genkit';
+
 
 // --- IMMEDIATE TOP-LEVEL CHECK FOR SERVER ENVIRONMENT (module scope) ---
 // This is primarily for logging during server startup or initial module load.
@@ -20,6 +23,7 @@ if (typeof window === 'undefined') { // Running on the server
   } else {
     console.log("RootLayout Server (module scope): Firebase appears initialized according to firebase.ts (firebaseInitialized=true, firebaseInitError=null).");
   }
+  // Genkit check removed
 }
 // --- END OF IMMEDIATE TOP-LEVEL CHECK ---
 
@@ -45,6 +49,7 @@ export default function RootLayout({
   if (typeof window === 'undefined') { // Running on the server
     console.log("RootLayout Server Component: Rendering started.");
     console.log(`RootLayout Server Component: Imported firebaseInitialized: ${firebaseInitialized}, firebaseInitError: ${firebaseInitError || 'None'}`);
+    // Genkit service init error check removed
 
     // Check for Firebase init error or if Firebase is not initialized
     // This check is crucial to prevent the "missing required error components" error.
