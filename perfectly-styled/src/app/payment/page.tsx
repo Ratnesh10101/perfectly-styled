@@ -73,7 +73,7 @@ export default function GetReportPage() {
         console.error("Client: Report generation failed. Server message:", result.message);
         toast({
           title: "Report Generation Failed",
-          description: result.message || "An unknown error occurred on the server. Please check server logs for more details, especially regarding Genkit initialization and GOOGLE_API_KEY.",
+          description: result.message || "An unknown error occurred on the server. Please check server logs for more details.",
           variant: "destructive",
           duration: 10000, 
         });
@@ -124,7 +124,7 @@ export default function GetReportPage() {
     <div className="max-w-lg mx-auto py-12 flex flex-col items-center">
       <Card className="w-full shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold text-primary">Get Your Personalized Style Report</CardTitle>
+          <CardTitle className="text-3xl font-bold text-primary">Get Your Personalised Style Report</CardTitle>
           <CardDescription className="text-lg pt-1">
             Enter your email address below to receive your comprehensive style analysis.
           </CardDescription>

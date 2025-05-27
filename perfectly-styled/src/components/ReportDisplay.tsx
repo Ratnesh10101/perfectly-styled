@@ -57,7 +57,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
   return (
     <Card className="w-full max-w-3xl mx-auto shadow-xl">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold text-primary">Your Personalized Style Report</CardTitle>
+        <CardTitle className="text-3xl font-bold text-primary">Your Personalised Style Report</CardTitle>
         <CardDescription>
           {recipientEmail && <p className="text-sm mb-1">For: {recipientEmail}</p>}
           Generated on: {displayDate}
@@ -91,14 +91,13 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
 
         <div>
           <h3 className="text-xl font-semibold mb-2 text-secondary-foreground">Styling Recommendations</h3>
-          <h2 className="text-xl font-semibold mb-2 text-secondary-foreground">Please use the scroll bar within the report box to view your full report.</h2>
+          <p className="text-sm text-muted-foreground mb-2">Scroll down within the box below to read your full report.</p>
           <ScrollArea className="h-96 p-4 border rounded-lg bg-background">
             <div 
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
               dangerouslySetInnerHTML={{ __html: report.recommendations ? report.recommendations.replace(/\n/g, '<br />') : "" }} 
             />
           </ScrollArea>
-          <p className="text-xs text-muted-foreground text-center mt-2">Scroll down to read the full report.</p>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col sm:flex-row justify-center gap-3">
@@ -110,7 +109,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
         </Button>
         {recipientEmail && (
           <Button variant="outline" asChild>
-            <a href={`mailto:${recipientEmail}?subject=Your Perfectly Styled Report&body=Here is your personalized style report!`} target="_blank" rel="noopener noreferrer">
+            <a href={`mailto:${recipientEmail}?subject=Your Perfectly Styled Report&body=Here is your personalised style report!`} target="_blank" rel="noopener noreferrer">
               <Mail className="mr-2 h-4 w-4" /> Email Again (Draft)
             </a>
           </Button>

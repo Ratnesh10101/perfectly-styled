@@ -4,7 +4,7 @@ import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import Header from '@/components/Header';
-import { firebaseInitialized, firebaseInitError, currentFirebaseConfigValues } from '@/config/firebase';
+import { firebaseInitialized, firebaseInitError } from '@/config/firebase'; // For server-side check
 
 // --- IMMEDIATE TOP-LEVEL CHECK FOR SERVER ENVIRONMENT (module scope) ---
 // This is primarily for logging during server startup or initial module load.
@@ -12,14 +12,11 @@ if (typeof window === 'undefined') { // Running on the server
   console.log("RootLayout: Server-side module evaluation started.");
   if (firebaseInitError) {
     console.error("--- ROOT LAYOUT DETECTED FIREBASE INIT ERROR (FROM IMPORTED firebase.ts) ---");
-    console.error(`RootLayout Server (module scope): Firebase Initialization Failed as reported by firebase.ts. Error: ${firebaseInitError}`);
+    console.error(`RootLayout Server (module scope): Firebase Initialization Failed as reported by firebase.ts: ${firebaseInitError}`);
     console.error("--- This will likely lead to RootLayout rendering a static error page. ---");
   } else if (!firebaseInitialized) {
-    // This case means firebase.ts loaded, no init error reported, but not initialized.
-    // This could happen if the top-level env var checks in firebase.ts didn't run or were bypassed.
-    // Or if initializeFirebase() was never called or completed without setting firebaseInitialized=true and without error.
-    // This is a less common state but worth noting.
-    console.warn("RootLayout Server (module scope): Firebase not initialized, and no specific error reported by firebase.ts. This might indicate an issue with firebase.ts execution flow or that essential env vars were missing for its checks to run. currentFirebaseConfigValues:", JSON.stringify(currentFirebaseConfigValues));
+    // This case might occur if firebase.ts itself had an issue even before setting firebaseInitialized
+    console.warn("RootLayout Server (module scope): Firebase not initialized (firebaseInitialized=false), and no specific error reported by firebase.ts. This might still indicate issues if essential env vars were missing for firebase.ts's top-level checks to run or if firebase.ts module evaluation failed silently.");
   } else {
     console.log("RootLayout Server (module scope): Firebase appears initialized according to firebase.ts (firebaseInitialized=true, firebaseInitError=null).");
   }
@@ -28,7 +25,7 @@ if (typeof window === 'undefined') { // Running on the server
 
 export const metadata: Metadata = {
   title: 'Perfectly Styled',
-  description: 'Get your personalized style analysis.',
+  description: 'Get your personalised style analysis.',
 };
 
 export const viewport: Viewport = {
@@ -49,13 +46,12 @@ export default function RootLayout({
     console.log("RootLayout Server Component: Rendering started.");
     console.log(`RootLayout Server Component: Imported firebaseInitialized: ${firebaseInitialized}, firebaseInitError: ${firebaseInitError || 'None'}`);
 
-    // Check for Firebase init error from the config module.
-    // If firebaseInitError is set, it means something went critically wrong during firebase.ts evaluation or initialization.
-    if (firebaseInitError) {
-      const errorMessage = firebaseInitError; // The error message is already comprehensive from firebase.ts
+    // Check for Firebase init error or if Firebase is not initialized
+    if (firebaseInitError || !firebaseInitialized) {
+      const errorMessage = firebaseInitError || "Firebase services are not initialized. Critical environment variables (e.g., NEXT_PUBLIC_FIREBASE_PROJECT_ID) may be missing in the server deployment environment.";
       console.error("--- ROOT LAYOUT CRITICAL FAILURE (COMPONENT RENDER) ---");
       console.error(`RootLayout Server Component: Firebase Initialization Failed or Incomplete. Error: ${errorMessage}`);
-      console.error("--- Rendering basic static error page. Check server logs for details, especially for 'CRITICAL SERVER STARTUP ERROR' from firebase.ts regarding missing Firebase environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID). ---");
+      console.error("--- Rendering basic static error page. Check server logs for details, especially for 'CRITICAL SERVER STARTUP ERROR' from firebase.ts regarding missing Firebase environment variables. ---");
       // Render a very basic static HTML page
       return (
         <html lang="en">
