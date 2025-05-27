@@ -165,7 +165,7 @@ function generateLogicBasedReport(questionnaireData: QuestionnaireData): string 
         if(shapeAdviceData.styling.fabrics.recommended) recommendations += `- Recommended Fabrics: ${shapeAdviceData.styling.fabrics.recommended}\n`;
         if(shapeAdviceData.styling.fabrics.avoidIfLarger) recommendations += `- Avoid if Larger: ${shapeAdviceData.styling.fabrics.avoidIfLarger}\n`;
         if(shapeAdviceData.styling.fabrics.patterns) recommendations += `- Patterns: ${shapeAdviceData.styling.fabrics.patterns}\n`;
-        if(shapeAdviceData.styling.fabrics.colours) recommendations += `- colours: ${shapeAdviceData.styling.fabrics.colours}\n\n`;
+        if(shapeAdviceData.styling.fabrics.colors) recommendations += `- Colors: ${shapeAdviceData.styling.fabrics.colors}\n\n`; // Corrected from 'colours'
       }
       
       if(shapeAdviceData.styling?.clothing) {
@@ -273,9 +273,10 @@ export async function processPaymentAndGenerateReport(
         try { errorMessage = JSON.stringify(error); } catch { errorMessage = "Could not stringify critical error object."; }
     }
     console.error(`Returning critical failure for ${email}: ${errorMessage}`);
+    // Return a simplified error message to the client
     return {
       success: false,
-      message: "An unexpected server error occurred while generating your report. Please try again later."
+      message: "An unexpected server error occurred while generating your report. Please check server logs for details or try again later."
     };
   }
 }
