@@ -326,7 +326,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                         className="space-y-4"
                       >
                         {bodyShapeOptions.map((option) => (
-                          <FormItem key={option.name} className="border p-4 rounded-lg hover:bg-muted/50 transition-colours">
+                          <FormItem key={option.name} className="border p-4 rounded-lg hover:bg-muted/50 transition-colors">
                             <div className="flex items-start space-x-3">
                                <FormControl>
                                 <RadioGroupItem value={option.name} id={option.name.replace(/\s+/g, '')} />

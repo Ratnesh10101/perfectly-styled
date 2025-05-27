@@ -11,8 +11,8 @@
 
 ## Style Guidelines:
 
-- Primary colour: Neutral grays for a sophisticated and clean feel.
-- Secondary colour: Soft pastels to complement the neutral grays and add a touch of femininity.
+- Primary color: Neutral grays for a sophisticated and clean feel.
+- Secondary color: Soft pastels to complement the neutral grays and add a touch of femininity.
 - Accent: Teal (#008080) to create a modern and stylish focal point.
 - Clean and readable sans-serif fonts for a modern aesthetic.
 - Minimalist and elegant icons to represent different style categories.

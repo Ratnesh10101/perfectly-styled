@@ -9,7 +9,7 @@ export default {
   ],
   theme: {
     extend: {
-      colours: {
+      colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -84,13 +84,13 @@ export default {
         DEFAULT: {
           css: {
             h2: {
-              colour: theme('colours.secondary.foreground'),
+              color: theme('colors.secondary.foreground'),
               fontSize: theme('fontSize.2xl'),
               fontWeight: theme('fontWeight.bold'),
               marginBottom: theme('spacing.4')
             },
             h3: {
-              colour: theme('colours.primary.DEFAULT'),
+              color: theme('colors.primary.DEFAULT'),
               fontSize: theme('fontSize.xl'),
               fontWeight: theme('fontWeight.semibold'),
               marginTop: theme('spacing.6'),

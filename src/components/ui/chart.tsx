@@ -15,8 +15,8 @@ export type ChartConfig = {
     label?: React.ReactNode
     icon?: React.ComponentType
   } & (
-    | { colour?: string; theme?: never }
-    | { colour?: never; theme: Record<keyof typeof THEMES, string> }
+    | { color?: string; theme?: never }
+    | { color?: never; theme: Record<keyof typeof THEMES, string> }
   )
 }
 
@@ -70,11 +70,11 @@ const ChartContainer = React.forwardRef<
 ChartContainer.displayName = "Chart"
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  const colourConfig = Object.entries(config).filter(
-    ([, config]) => config.theme || config.colour
+  const colorConfig = Object.entries(config).filter(
+    ([, config]) => config.theme || config.color
   )
 
-  if (!colourConfig.length) {
+  if (!colorConfig.length) {
     return null
   }
 
@@ -85,12 +85,12 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
           .map(
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
-${colourConfig
+${colorConfig
   .map(([key, itemConfig]) => {
-    const colour =
+    const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.colour
-    return colour ? `  --colour-${key}: ${colour};` : null
+      itemConfig.color
+    return color ? `  --color-${key}: ${color};` : null
   })
   .join("\n")}
 }
@@ -190,7 +190,7 @@ const ChartTooltipContent = React.forwardRef<
           {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorcolour = colour || item.payload.fill || item.colour
+            const indicatorcolor = color || item.payload.fill || item.color
 
             return (
               <div
@@ -210,7 +210,7 @@ const ChartTooltipContent = React.forwardRef<
                       !hideIndicator && (
                         <div
                           className={cn(
-                            "shrink-0 rounded-[2px] border-[--colour-border] bg-[--colour-bg]",
+                            "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
                             {
                               "h-2.5 w-2.5": indicator === "dot",
                               "w-1": indicator === "line",
@@ -221,8 +221,8 @@ const ChartTooltipContent = React.forwardRef<
                           )}
                           style={
                             {
-                              "--colour-bg": indicatorcolour,
-                              "--colour-border": indicatorcolour,
+                              "--color-bg": indicatorcolor,
+                              "--color-border": indicatorcolor,
                             } as React.CSSProperties
                           }
                         />
@@ -304,7 +304,7 @@ const ChartLegendContent = React.forwardRef<
                 <div
                   className="h-2 w-2 shrink-0 rounded-[2px]"
                   style={{
-                    backgroundcolour: item.colour,
+                    backgroundcolor: item.color,
                   }}
                 />
               )}
