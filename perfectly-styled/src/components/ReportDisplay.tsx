@@ -96,7 +96,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
 
         <section>
           <h2 className="text-2xl font-bold text-secondary-foreground mb-2">Styling Recommendations</h2>
-          <ScrollArea className="h-96 p-4 border rounded-lg bg-background">
+          <ScrollArea className="h-96 p-4 border rounded-lg bg-white">
             <div
               id="report-content-for-pdf" // ID for PDF generation target
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"

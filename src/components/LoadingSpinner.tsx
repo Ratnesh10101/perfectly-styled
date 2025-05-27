@@ -11,7 +11,7 @@ interface LoadingSpinnerProps {
 const LoadingSpinner = ({ fullPage = false, className, size = 48 }: LoadingSpinnerProps) => {
   if (fullPage) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background/80 z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
         <Loader2 className={cn("animate-spin text-primary", className)} size={size} />
       </div>
     );

@@ -24,15 +24,15 @@ export default function HomePage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-            <div className="p-4 border rounded-lg bg-background">
+            <div className="p-4 border rounded-lg bg-white">
               <h3 className="font-semibold text-lg mb-1">Personalized Insights</h3>
               <p className="text-sm text-muted-foreground">Unlock recommendations tailored to your specific features.</p>
             </div>
-             <div className="p-4 border rounded-lg bg-background">
+             <div className="p-4 border rounded-lg bg-white">
               <h3 className="font-semibold text-lg mb-1">AI-Powered Precision</h3>
               <p className="text-sm text-muted-foreground">Leverage cutting-edge AI to analyse your style inputs effectively.</p>
             </div>
-             <div className="p-4 border rounded-lg bg-background">
+             <div className="p-4 border rounded-lg bg-white">
               <h3 className="font-semibold text-lg mb-1">Boost Confidence</h3>
               <p className="text-sm text-muted-foreground">Dress with confidence knowing your outfits are perfectly styled for you.</p>
             </div>
