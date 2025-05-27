@@ -5,7 +5,7 @@ import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import Header from '@/components/Header';
 import { firebaseInitialized, firebaseInitError } from '@/config/firebase'; // For server-side check
-import { genkitServiceInitError } from '@/ai/genkit'; // For server-side check
+// Genkit related import removed
 
 // Explicit check for critical environment variables and service initialization status on the server
 // This block runs when the module is loaded on the server.
@@ -20,14 +20,7 @@ if (typeof window === 'undefined') { // Only run this check on the server
     console.error("Please verify your Firebase deployment's environment variable settings.");
     console.error("**********************************************************************************");
   }
-  if (!process.env.GOOGLE_API_KEY) {
-    console.error("**********************************************************************************");
-    console.error("CRITICAL SERVER-SIDE ERROR in RootLayout: GOOGLE_API_KEY for Genkit is missing or undefined in the server environment.");
-    console.error("This indicates a fundamental problem with environment variable configuration for Genkit on the server.");
-    console.error("This can lead to 'missing required error components' or other severe errors if Genkit services fail to initialize.");
-    console.error("Please verify your Firebase deployment's environment variable settings for Genkit.");
-    console.error("**********************************************************************************");
-  }
+  // GOOGLE_API_KEY check removed as Genkit is removed
 }
 
 export const metadata: Metadata = {
@@ -44,25 +37,21 @@ export default function RootLayout({
   if (typeof window === 'undefined') {
     console.log("--- RootLayout Component Render: SERVER-SIDE ---");
     console.log(`RootLayout Server: Firebase Initialized Status: ${firebaseInitialized}, Firebase Init Error: ${firebaseInitError || 'None'}`);
-    console.log(`RootLayout Server: Genkit Service Init Error: ${genkitServiceInitError || 'None'}`);
+    // Genkit service error log removed
 
-    if (firebaseInitError || genkitServiceInitError) {
+    if (firebaseInitError) { // Only check for Firebase error now
       let errorMessages: string[] = [];
       if (firebaseInitError) {
         errorMessages.push(`Firebase Initialization Failed: ${firebaseInitError}`);
       }
-      if (genkitServiceInitError) {
-        errorMessages.push(`Genkit AI Service Initialization Failed: ${genkitServiceInitError}`);
-      }
+      // Genkit error message construction removed
       
-      const fullErrorMessage = `A critical server configuration error occurred preventing the application from starting. ${errorMessages.join('; ')}. Please check server logs and ensure all required environment variables (Firebase client SDK config and Google API Key for Genkit) are correctly set in your deployment environment.`;
+      const fullErrorMessage = `A critical server configuration error occurred preventing the application from starting. ${errorMessages.join('; ')}. Please check server logs and ensure all required environment variables (Firebase client SDK config) are correctly set in your deployment environment.`;
       
       console.error("--- ROOT LAYOUT CRITICAL FAILURE ---");
       console.error(fullErrorMessage);
       console.error("--- Rendering basic static error page. Check server logs for details. ---");
 
-      // Return a very basic HTML structure if critical services failed to initialize
-      // This aims to bypass Next.js's own error rendering if it's also failing
       return (
         <html lang="en">
           <head>
@@ -75,12 +64,12 @@ export default function RootLayout({
             <h1>Critical Server Configuration Error</h1>
             <p>The application cannot start due to a server-side configuration issue.</p>
             <pre>{fullErrorMessage}</pre>
-            <p>Administrator: Please check the server deployment logs for more details, especially for messages about missing Firebase or Genkit environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID or GOOGLE_API_KEY).</p>
+            <p>Administrator: Please check the server deployment logs for more details, especially for messages about missing Firebase environment variables (like NEXT_PUBLIC_FIREBASE_PROJECT_ID).</p>
           </body>
         </html>
       );
     }
-    console.log("RootLayout Server: Firebase and Genkit services appear to be initialized or no init errors reported.");
+    console.log("RootLayout Server: Firebase services appear to be initialized or no init errors reported.");
   }
 
   return (
