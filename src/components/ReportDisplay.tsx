@@ -64,7 +64,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
       const html = await marked(report.recommendations || "");
       setRecommendationsHtml(html as string); // Cast to string as marked can return Promise<string> or string
     };
-    processMarkdown();
+    if (report.recommendations) processMarkdown();
   }, [report.recommendations]);
 
   const { questionnaireData, recipientEmail, generatedAtClient } = report;
@@ -133,7 +133,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
             <div
               id="report-content-for-pdf"
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: marked(report.recommendations || "") }}
+              dangerouslySetInnerHTML={{ __html: recommendationsHtml }}
             />
           </ScrollArea>
           <p className="text-xs text-muted-foreground mt-2 text-center">
