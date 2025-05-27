@@ -26,9 +26,9 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
       const opt = {
         margin:       [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right
         filename:     'PerfectlyStyled_Report.pdf',
-        image:        { type: 'jpeg' as 'jpeg' | 'png' | 'webp', quality: 0.98 }, // Explicitly cast type
+        image:        { type: 'jpeg' as 'jpeg' | 'png' | 'webp', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, logging: false }, // Increased scale for better quality
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+        jsPDF:        { unit: 'in' as 'in' | 'pt' | 'mm' | 'cm', format: 'letter', orientation: 'portrait' as 'portrait' | 'p' | 'landscape' | 'l' },
         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
       };
       html2pdf().from(reportContentElement).set(opt).save().catch((err: any) => {
