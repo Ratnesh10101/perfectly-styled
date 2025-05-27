@@ -47,6 +47,7 @@ export default function RootLayout({
     console.log(`RootLayout Server Component: Imported firebaseInitialized: ${firebaseInitialized}, firebaseInitError: ${firebaseInitError || 'None'}`);
 
     // Check for Firebase init error or if Firebase is not initialized
+    // This check is crucial to prevent the "missing required error components" error.
     if (firebaseInitError || !firebaseInitialized) {
       const errorMessage = firebaseInitError || "Firebase services are not initialized. Critical environment variables (e.g., NEXT_PUBLIC_FIREBASE_PROJECT_ID) may be missing in the server deployment environment.";
       console.error("--- ROOT LAYOUT CRITICAL FAILURE (COMPONENT RENDER) ---");
@@ -80,8 +81,9 @@ export default function RootLayout({
         <main className="flex-grow container mx-auto px-4 py-8">
           {children}
         </main>
-        {/* Toaster component was removed */}
+        {/* Toaster component was previously removed */}
       </body>
     </html>
   );
 }
+    

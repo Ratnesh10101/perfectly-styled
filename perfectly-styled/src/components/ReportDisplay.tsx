@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { UserReportData } from "@/types";
-import { ClipboardCopy, Printer, Mail } from "lucide-react";
+import { ClipboardCopy, Mail } from "lucide-react"; // Removed Printer
 import { format } from "date-fns";
 import { marked } from "marked";
 
@@ -32,9 +33,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
     }
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+  // handlePrint function removed
 
   const { questionnaireData, recipientEmail, generatedAtClient } = report;
 
@@ -106,12 +105,10 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
         <Button onClick={handleCopyToClipboard} variant="outline">
           <ClipboardCopy className="mr-2 h-4 w-4" /> Copy Report Text
         </Button>
-        <Button onClick={handlePrint} variant="outline">
-          <Printer className="mr-2 h-4 w-4" /> Print Report
-        </Button>
+        {/* Print button removed */}
         {recipientEmail && (
           <Button variant="outline" asChild>
-            <a href={`mailto:${recipientEmail}?subject=Your Perfectly Styled Report&body=Here is your personalised style report!`} target="_blank" rel="noopener noreferrer">
+            <a href={`mailto:${recipientEmail}?subject=Your%20Perfectly%20Styled%20Report&body=Here%20is%20your%20personalised%20style%20report!`} target="_blank" rel="noopener noreferrer">
               <Mail className="mr-2 h-4 w-4" /> Email Again (Draft)
             </a>
           </Button>
