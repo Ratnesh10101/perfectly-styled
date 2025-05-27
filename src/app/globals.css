@@ -81,7 +81,7 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border border-gray-300;
   }
   body {
     @apply bg-background text-foreground;
@@ -110,11 +110,11 @@ body {
   }
 
   .section-divider {
-    @apply border-t border-border my-6;
+    @apply border-t border border-gray-300 my-6;
   }
 
   .pdf-block {
-    @apply p-6 bg-card border border-border rounded-xl shadow-sm;
+    @apply p-6 bg-card border border border-gray-300 rounded-xl shadow-sm;
   }
 
   .pdf-wrapper {
