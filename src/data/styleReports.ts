@@ -34,12 +34,12 @@ export const bodyShapeAdvice: Record<string, any> = { // Added type for better s
         recommended:
           "Use fabrics with more bulk on top and softer, looser woven fabrics on bottom. Add texture and layers on top with darker, less bulky fabrics below.",
         patterns:
-          "Bold patterns restricted to top half, with subtle patterns and darker/monochromatic colors on bottom. Try horizontal stripes on top but avoid them on bottom.",
-        colors:
-          "Lighter colors for tops with darker colors for bottoms to create visual balance.",
+          "Bold patterns restricted to top half, with subtle patterns and darker/monochromatic colours on bottom. Try horizontal stripes on top but avoid them on bottom.",
+        colours:
+          "Lighter colours for tops with darker colours for bottoms to create visual balance.",
       },
       clothing: {
-        tops: "Use shoulder pads, puff sleeves, bolero jackets, scarves, and jewelry around neckline. Choose wide lapels, high-necked tops (crew, polo, slash), and semi-fitted styles that end at the right length.",
+        tops: "Use shoulder pads, puff sleeves, bolero jackets, scarves, and jewellery around neckline. Choose wide lapels, high-necked tops (crew, polo, slash), and semi-fitted styles that end at the right length.",
         bottoms:
           "Opt for slightly dropped waist or low-rise trousers, wider-legged styles falling straight from hip, A-line skirts, and side-zipped flat-front trousers without pleats or side pockets.",
         dresses:
@@ -73,8 +73,8 @@ export const bodyShapeAdvice: Record<string, any> = { // Added type for better s
           "Soft and drapey fabrics around curvy parts, with tighter woven/stiffer materials on straighter areas or to provide structure around the middle.",
         patterns:
           "Contoured patterns that relate to scale. Avoid big geometric patterns.",
-        colors:
-          "Interesting colors on top with darker/monochromatic colors on bottom half.",
+        colours:
+          "Interesting colours on top with darker/monochromatic colours on bottom half.",
       },
       clothing: {
         tops: "Clothing with shape that emphasizes the waist. Try shaped single-breasted jackets with 2-3 buttons (be careful with single buttons as they can gape at chest). Jackets with no lapels or narrow ones. Can tuck in tops or use tops that end around the hip bone, fitted or semi-fitted.",
@@ -111,14 +111,14 @@ export const bodyShapeAdvice: Record<string, any> = { // Added type for better s
         "Minimize emphasis on waist while showing off bust and/or hips and legs. Weight gain tends to accumulate in the middle, creating a goblet shape.",
       fabrics: {
         recommended:
-          "Simple colors, straight lines, structure without too much pattern. Fabrics should generally have structure and be stiffer/tightly woven, with potentially softer material over a full bust.",
+          "Simple colours, straight lines, structure without too much pattern. Fabrics should generally have structure and be stiffer/tightly woven, with potentially softer material over a full bust.",
         patterns:
           "Vertical patterns on top half (or avoid patterns altogether). Can use horizontal patterns or checks on bottom.",
-        colors:
-          "Darker and monochromatic on top to break up shoulder width and bust. Lighter colors on bottom half.",
+        colours:
+          "Darker and monochromatic on top to break up shoulder width and bust. Lighter colours on bottom half.",
       },
       clothing: {
-        tops: "Simple lines, sharp, structured, crisp styles - avoid fussy details that make you look heavy. Tailoring is good. Lower necklines to reduce the heavy effect of solid color blocks. V, square, wrap, and sweetheart necklines work well. Wide straps on vest tops and 3/4 length or interesting cuff details.",
+        tops: "Simple lines, sharp, structured, crisp styles - avoid fussy details that make you look heavy. Tailoring is good. Lower necklines to reduce the heavy effect of solid colour blocks. V, square, wrap, and sweetheart necklines work well. Wide straps on vest tops and 3/4 length or interesting cuff details.",
         bottoms:
           "Narrow/straight/boot cut trousers are good, as are jeans. Try straight, short skirts with interesting hems (flippy, tulip, fishtail).",
         dresses:
@@ -149,8 +149,8 @@ export const bodyShapeAdvice: Record<string, any> = { // Added type for better s
         recommended: "Structured, stiff and/or tightly woven fabrics.",
         patterns:
           "Angular patterns - stripes, zig zags, geometric shapes. Size depends on scale (avoid narrow pin-stripe suits if very tall/thin).",
-        colors:
-          "Can mix colors except in problem areas (e.g., avoid contrasting colors on stomach).",
+        colours:
+          "Can mix colours except in problem areas (e.g., avoid contrasting colours on stomach).",
       },
       clothing: {
         tops: "Skimming dresses, smock tops, empire line styles, unstructured/one-button jackets with angular lapels. High necked tops (polos, slash, shirts, crew) work well.",
@@ -168,7 +168,7 @@ export const bodyShapeAdvice: Record<string, any> = { // Added type for better s
           "With significant weight gain, can become a 'Barrel' or 'Rectangle' shape - when bust, waist and hips have little distinction but straight shoulders and good legs remain.",
       },
       barrelSpecific: [
-        "Use the 'column of color' technique",
+        "Use the 'column of colour' technique",
         "Contain top half in tops/jackets reaching crotch level",
         "Try straight cut trousers/skirts and drawstring trousers",
       ],
@@ -195,8 +195,8 @@ export const bodyShapeAdvice: Record<string, any> = { // Added type for better s
           "Shiny fabrics, flimsy/floaty materials, and bulky textures.",
         patterns:
           "Pattern size should relate to body scale (not too tiny). Vertical or asymmetric patterns work well.",
-        colors:
-          "Avoid contrasting colors in middle area. Use monochromatic looks, darker tone-on-tone, or 'column of color'. Dark colors are generally slimming - use color around face or in accessories.",
+        colours:
+          "Avoid contrasting colours in middle area. Use monochromatic looks, darker tone-on-tone, or 'column of colour'. Dark colours are generally slimming - use colour around face or in accessories.",
       },
       clothing: {
         general:
@@ -222,11 +222,11 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
   small: {
     title: "Small Scale",
     description:
-      "Your scale refers to your physical dimensions and proportions. Recognizing your scale is essential for selecting clothing and accessories that flatter your figure. These recommendations serve as guidelines to help you choose details, fabrics, colors, and accessories that complement your natural scale. Remember, these are guidelines—not strict rules. Your personal style and bodyline should also be considered. If you're a small scale client (typically under 5'3\" or 1.6m tall, not overweight, with a small shoe size and slender wrists), you'll want to avoid details, patterns, accessories or textures that could overwhelm your frame.",
+      "Your scale refers to your physical dimensions and proportions. Recognizing your scale is essential for selecting clothing and accessories that flatter your figure. These recommendations serve as guidelines to help you choose details, fabrics, colours, and accessories that complement your natural scale. Remember, these are guidelines—not strict rules. Your personal style and bodyline should also be considered. If you're a small scale client (typically under 5'3\" or 1.6m tall, not overweight, with a small shoe size and slender wrists), you'll want to avoid details, patterns, accessories or textures that could overwhelm your frame.",
     elements: {
       clothingDetails: [
         "Choose smaller/finer details such as delicate buttons, subtle lapels, small buckles and bows, refined pocket flaps, and slim zips.",
-        "Avoid contrasting details that dominate your garments such as bold colored stitching or large blocks of color or pattern.",
+        "Avoid contrasting details that dominate your garments such as bold coloured stitching or large blocks of colour or pattern.",
       ],
       fabric: [
         "Select lightweight, fine, sheer fabrics like merino wool, cotton, and chiffon.",
@@ -235,8 +235,8 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
         "Choose patterns that are small and relate to your bodyline, such as fine pinstripes and small polka dots.",
       ],
       colour: [
-        "Utilize the 'column of color' technique – dress in one color or tone from head to toe.",
-        "Follow the 25%, 75% rule (75% neutral, probably darker color and highlight with 25% lighter/brighter color).",
+        "Utilise the 'column of colour' technique – dress in one colour or tone from head to toe.",
+        "Follow the 25%, 75% rule (75% neutral, probably darker colour and highlight with 25% lighter/brighter colour).",
       ],
       accessories: {
         jewellery:
@@ -249,7 +249,7 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
           "Small to medium in size. A big bag will swamp you. Better to carry two smaller bags than one big one.",
         belts:
           "The buckle should be small and simple, and the buckle shape should relate to your bodyline.",
-        shoes: "Choose delicate heels, not too much color or detail.",
+        shoes: "Choose delicate heels, not too much colour or detail.",
       },
       hair: [
         "Simple, neat styles that open up your face.",
@@ -265,7 +265,7 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
   medium: {
     title: "Medium Scale",
     description:
-      "Your scale refers to your physical dimensions and proportions. Recognizing your scale is essential for selecting clothing and accessories that flatter your figure. These recommendations serve as guidelines to help you choose details, fabrics, colors, and accessories that complement your natural scale. Remember, these are guidelines—not strict rules. Your personal style and bodyline should also be considered. If you're a medium scale client (typically between 5'3\" and 5'8\" or 1.6-1.72m tall), you may or may not be overweight with an average shoe size and wrist measurement. However, you could also be shorter and overweight or taller and underweight.",
+      "Your scale refers to your physical dimensions and proportions. Recognizing your scale is essential for selecting clothing and accessories that flatter your figure. These recommendations serve as guidelines to help you choose details, fabrics, colours, and accessories that complement your natural scale. Remember, these are guidelines—not strict rules. Your personal style and bodyline should also be considered. If you're a medium scale client (typically between 5'3\" and 5'8\" or 1.6-1.72m tall), you may or may not be overweight with an average shoe size and wrist measurement. However, you could also be shorter and overweight or taller and underweight.",
     note: "Remember to consider your bodyline alongside your scale.",
     elements: {
       clothingDetails: [
@@ -277,12 +277,12 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
         "Avoid extremes with the weaves - try looser knits or something like silk dupion.",
         "Select patterns that are neither too big nor too small and relate to your bodyline, like stripes, swirls, and dots.",
       ],
-      colour: ["Depending on your body line, you can experiment with color."],
+      colour: ["Depending on your body line, you can experiment with colour."],
       accessories: {
         jewellery:
           "Medium sized pieces work best. Nothing too big or too tiny. If you want to wear a statement necklace, balance with smaller earrings. Bracelets and watches shouldn't be too big or small.",
         glasses:
-          "Choose frames that aren't too obvious or heavy. Some detail and/or color would be good - you could try rimless or 'half and half'.",
+          "Choose frames that aren't too obvious or heavy. Some detail and/or colour would be good - you could try rimless or 'half and half'.",
         hats: "Not too small - the rim needs to be within the width of your shoulders. You can experiment with some trims and decoration, but nothing too overwhelming.",
         scarves:
           "Medium weight silk or polyester, pashminas, and average sized patterns are ideal.",
@@ -290,7 +290,7 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
           "Medium to large in size. A massive bag could swamp you.",
         belts:
           "Not too wide or too narrow. Buckle shouldn't overpower your frame.",
-        shoes: "Medium heels, with some color or detail if desired.",
+        shoes: "Medium heels, with some colour or detail if desired.",
       },
       hair: ["You can experiment - just avoid anything too extreme."],
       necklines: ["Again, nothing too extreme."],
@@ -299,12 +299,12 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
   large: {
     title: "Large Scale",
     description:
-      "Your scale refers to your physical dimensions and proportions. Recognizing your scale is essential for selecting clothing and accessories that flatter your figure. These recommendations serve as guidelines to help you choose details, fabrics, colors, and accessories that complement your natural scale. Remember, these are guidelines—not strict rules. Your personal style and bodyline should also be considered. If you're a large scale client (typically 5'8\" or 1.72m tall and over), you may or may not be overweight, with a large shoe size and wrist measurement. However, you could also be shorter and overweight. You'll want to avoid insignificant details, patterns, accessories, or textures, as these can make you look bigger.",
+      "Your scale refers to your physical dimensions and proportions. Recognizing your scale is essential for selecting clothing and accessories that flatter your figure. These recommendations serve as guidelines to help you choose details, fabrics, colours, and accessories that complement your natural scale. Remember, these are guidelines—not strict rules. Your personal style and bodyline should also be considered. If you're a large scale client (typically 5'8\" or 1.72m tall and over), you may or may not be overweight, with a large shoe size and wrist measurement. However, you could also be shorter and overweight. You'll want to avoid insignificant details, patterns, accessories, or textures, as these can make you look bigger.",
     note: "Remember to consider your bodyline alongside your scale.",
     elements: {
       clothingDetails: [
         "Look for larger/obvious details such as bold buttons, prominent lapels, noticeable buckles and bows, distinctive pocket flaps, and zips.",
-        "Contrasting details can work well - different colored stitching, piping, blocks of color or pattern will add interest.",
+        "Contrasting details can work well - different coloured stitching, piping, blocks of colour or pattern will add interest.",
       ],
       fabric: [
         "Choose medium to heavy weight fabrics like knitwear, wool crepe, denim, and heavy weight linen. The fabric needs to have some structure and substance.",
@@ -313,14 +313,14 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
         "Select patterns that are medium to large in size and relate to your bodyline, like wide pinstripes, large dots, and swirls.",
       ],
       colour: [
-        "To slim the body, utilize the 'column of color' – dress in one color or tone from head to toe, and add a different colored jacket, jumper, or cardigan.",
-        "Avoid contrasting colors across a wide part of the body.",
+        "To slim the body, utilise the 'column of colour' – dress in one colour or tone from head to toe, and add a different coloured jacket, jumper, or cardigan.",
+        "Avoid contrasting colours across a wide part of the body.",
       ],
       accessories: {
         jewellery:
           "Large, striking pieces work best. Nothing too small or delicate. Wide, chunky bracelets and watches will complement your frame.",
         glasses:
-          "Strong, big, obvious or colored frames with some detail. You could try rimless but look for bigger lenses.",
+          "Strong, big, obvious or coloured frames with some detail. You could try rimless but look for bigger lenses.",
         hats: "Large, striking hats with some decoration.",
         scarves:
           "Heavyweight silk or polyester, heavy knit wooly scarf, pashmina, and large sized patterns.",
@@ -329,7 +329,7 @@ export const dominantScaleAdvice: Record<string, any> = { // Added type for bett
         belts:
           "If you want to wear a belt, look for wide ones with a large buckle.",
         shoes:
-          "Look for chunky heels and shoes with color or detail. Avoid ankle straps if you have thick ankles (as straps will break up the length of your legs), otherwise they could work well.",
+          "Look for chunky heels and shoes with colour or detail. Avoid ankle straps if you have thick ankles (as straps will break up the length of your legs), otherwise they could work well.",
       },
       hair: ["Fuller styles will balance your scale better."],
       necklines: ["Wide, open, large collars and necklines."],

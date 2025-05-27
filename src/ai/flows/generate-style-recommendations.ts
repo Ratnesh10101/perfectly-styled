@@ -12,7 +12,7 @@ import {ai, genkitServiceInitError} from '@/ai/genkit'; // ai can be null
 import {z} from 'genkit';
 
 const LineDetailSchema = z.object({
-  bodyPart: z.string().describe("The part of the body being analyzed (e.g., Shoulders, Waist)."),
+  bodyPart: z.string().describe("The part of the body being analysed (e.g., Shoulders, Waist)."),
   answer: z.string().describe("The user's selected answer for that body part (e.g., straight, Defined)."),
   classification: z.enum(['straight', 'curved']).describe("The derived classification of the answer (straight or curved)."),
 });
@@ -65,7 +65,7 @@ Use the following information about the user:
 
 **Instructions for your response:**
 -   Synthesize all the provided information to create a cohesive style profile.
--   Provide specific recommendations for types of clothing (e.g., tops, bottoms, dresses, outerwear) and accessories (e.g., jewelry, belts, scarves, bags) that would best suit the user.
+-   Provide specific recommendations for types of clothing (e.g., tops, bottoms, dresses, outerwear) and accessories (e.g., jewellery, belts, scarves, bags) that would best suit the user.
 -   Explain *why* certain styles are recommended, linking back to their line, scale, body shape, and preferences (if provided). For example, "Given your {{lineDetails.[0].classification}} shoulders and {{bodyShape}} body shape, A-line dresses would be particularly flattering because..."
 -   Consider elements like fabric, print, silhouette, and proportion in your recommendations.
 -   Offer advice on what to emphasize and what to balance to create a harmonious look.

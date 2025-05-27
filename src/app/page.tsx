@@ -30,7 +30,7 @@ export default function HomePage() {
             </div>
              <div className="p-4 border rounded-lg bg-background">
               <h3 className="font-semibold text-lg mb-1">AI-Powered Precision</h3>
-              <p className="text-sm text-muted-foreground">Leverage cutting-edge AI to analyze your style inputs effectively.</p>
+              <p className="text-sm text-muted-foreground">Leverage cutting-edge AI to analyse your style inputs effectively.</p>
             </div>
              <div className="p-4 border rounded-lg bg-background">
               <h3 className="font-semibold text-lg mb-1">Boost Confidence</h3>

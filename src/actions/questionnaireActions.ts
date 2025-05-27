@@ -167,7 +167,7 @@ function generateLogicBasedReport(questionnaireData: QuestionnaireData): string 
       recommendations += `- Recommended Fabrics: ${shapeAdviceData.styling.fabrics.recommended}\n`;
       if(shapeAdviceData.styling.fabrics.avoidIfLarger) recommendations += `- Avoid if Larger: ${shapeAdviceData.styling.fabrics.avoidIfLarger}\n`; // Check if exists
       recommendations += `- Patterns: ${shapeAdviceData.styling.fabrics.patterns}\n`;
-      recommendations += `- Colors: ${shapeAdviceData.styling.fabrics.colors}\n\n`;
+      recommendations += `- colours: ${shapeAdviceData.styling.fabrics.colours}\n\n`;
       
       recommendations += "**Clothing Specifics:**\n";
       if(shapeAdviceData.styling.clothing.general) recommendations += `- General: ${shapeAdviceData.styling.clothing.general}\n`;

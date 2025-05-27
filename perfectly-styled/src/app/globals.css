@@ -15,16 +15,16 @@ body {
     --popover: 220 14% 96%; /* zinc-100 */
     --popover-foreground: 215 28% 17%; /* zinc-800 */
     
-    --primary: 220 10% 40%; /* Neutral Gray (e.g., Zinc 600/700) - Primary color */
+    --primary: 220 10% 40%; /* Neutral Gray (e.g., Zinc 600/700) - Primary colour */
     --primary-foreground: 0 0% 98%; /* Almost White - Contrast for gray primary */
     
-    --secondary: 330 80% 92%; /* Soft pink/lavender pastel - Secondary color */
+    --secondary: 330 80% 92%; /* Soft pink/lavender pastel - Secondary colour */
     --secondary-foreground: 330 60% 35%; /* Darker pastel for contrast */
     
     --muted: 220 9% 88%; /* zinc-300 */
     --muted-foreground: 215 20% 45%; /* zinc-600 */
     
-    --accent: 180 100% 25%; /* Teal #008080 - Accent color */
+    --accent: 180 100% 25%; /* Teal #008080 - Accent colour */
     --accent-foreground: 0 0% 98%; /* Almost White - Contrast for teal accent */
     
     --destructive: 0 84.2% 60.2%;
@@ -42,7 +42,7 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Sidebar Specific Colors - Light Theme */
+    /* Sidebar Specific colours - Light Theme */
     --sidebar-background: 220 13% 88%; /* Slightly darker gray than card for some separation */
     --sidebar-foreground: 215 28% 17%; /* Dark gray text */
     --sidebar-primary: 220 10% 40%;    /* Same as main primary: Neutral Gray */
@@ -86,7 +86,7 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Sidebar Specific Colors - Dark Theme */
+    /* Sidebar Specific colours - Dark Theme */
     --sidebar-background: 222 47% 11%; /* Same as main dark background */
     --sidebar-foreground: 210 40% 98%; /* Light text */
     --sidebar-primary: 215 20% 65%;    /* Same as main dark primary: Lighter Neutral Gray */

@@ -126,7 +126,7 @@ const stepTitles = [
 ];
 
 const stepDescriptions = [
-  "Let's analyze the lines of your body structure (Shoulders, Waist, Hips).",
+  "Let's analyse the lines of your body structure (Shoulders, Waist, Hips).",
   "Continuing our line analysis (Face, Jawline).",
   "Let's determine your scale based on measurements.",
   "Try holding a meter stick against your shoulders (or ask a friend to help) and let it hang straight down. Observe where it aligns with your hips to get a better idea of your body shape.",
@@ -326,7 +326,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
                         className="space-y-4"
                       >
                         {bodyShapeOptions.map((option) => (
-                          <FormItem key={option.name} className="border p-4 rounded-lg hover:bg-muted/50 transition-colors">
+                          <FormItem key={option.name} className="border p-4 rounded-lg hover:bg-muted/50 transition-colours">
                             <div className="flex items-start space-x-3">
                                <FormControl>
                                 <RadioGroupItem value={option.name} id={option.name.replace(/\s+/g, '')} />

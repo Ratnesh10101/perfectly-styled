@@ -29,9 +29,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  themecolour: [
+    { media: '(prefers-colour-scheme: light)', colour: '#ffffff' },
+    { media: '(prefers-colour-scheme: dark)', colour: '#000000' },
   ],
 };
 
@@ -60,7 +60,7 @@ export default function RootLayout({
             <title>Critical Configuration Error</title>
             <meta charSet="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <style>{`body { font-family: sans-serif; padding: 20px; color: #333; background-color: #fef2f2; } h1 { color: #b91c1c; } pre { background-color: #fee2e2; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; overflow-x: auto; }`}</style>
+            <style>{`body { font-family: sans-serif; padding: 20px; colour: #333; background-colour: #fef2f2; } h1 { colour: #b91c1c; } pre { background-colour: #fee2e2; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; overflow-x: auto; }`}</style>
           </head>
           <body>
             <h1>Critical Server Configuration Error</h1>
