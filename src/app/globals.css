@@ -111,13 +111,15 @@ body {
     flex-grow: 1;
   }
 
-  /* Markdown/Prose styling (moved here for clarity if needed, or can be in tailwind.config.ts typography) */
+  /* Markdown/Prose styling */
   .prose {
     h2 {
-      @apply text-2xl font-bold mb-4 text-secondary-foreground;
+      @apply text-2xl font-bold mb-4; /* Keep non-color @apply directives */
+      color: hsl(var(--secondary-foreground)); /* Use CSS variable for color */
     }
     h3 {
-      @apply text-xl font-semibold mt-6 mb-2 text-primary;
+      @apply text-xl font-semibold mt-6 mb-2; /* Keep non-color @apply directives */
+      color: hsl(var(--primary)); /* Use CSS variable for color */
     }
     ul {
       @apply list-disc pl-5 space-y-1;
