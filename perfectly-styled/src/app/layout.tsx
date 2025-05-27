@@ -4,8 +4,8 @@ import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import Header from '@/components/Header';
-import { firebaseInitialized, firebaseInitError } from '@/config/firebase'; // For checking init status
-import { genkitServiceInitError } from '@/ai/genkit'; // For checking init status
+import { firebaseInitialized, firebaseInitError } from '@/config/firebase';
+import { genkitServiceInitError } from '@/ai/genkit';
 
 // Explicit check for critical environment variables and service initialization status on the server
 // This block runs when the module is loaded on the server.
