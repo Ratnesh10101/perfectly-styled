@@ -20,7 +20,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Send } from "lucide-react";
 import type { QuestionnaireData, LineAnswer, ScaleAnswer } from "@/types";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Image from "next/image";
 
 // Schemas for individual form fields
@@ -65,7 +65,7 @@ const stepSchemas: z.ZodObject<any, any, any, any, any>[] = [
 
 interface QuestionnaireFormProps {
   onSubmit: (data: QuestionnaireData) => Promise<void>;
-  initialData?: Partial<QuestionnaireData>; // Kept for potential future use
+  initialData?: Partial<QuestionnaireData>; 
 }
 
 const lineOptions = {
@@ -157,7 +157,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
   };
   
   const form = useForm<QuestionnaireFormValues>({
-    resolver: zodResolver(combinedSchema),
+    resolver: zodResolver(combinedSchema), 
     defaultValues: {
       shoulders_answer: transformInitialDataToFormValues(initialData).shoulders_answer || undefined,
       waist_answer: transformInitialDataToFormValues(initialData).waist_answer || undefined,
@@ -186,7 +186,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
 
   const getClassification = (bodyPartKey: keyof typeof lineOptions, answer: string): 'straight' | 'curved' => {
     const option = lineOptions[bodyPartKey].find(opt => opt.value === answer);
-    return option ? option.classification as 'straight' | 'curved' : 'straight';
+    return option ? option.classification as 'straight' | 'curved' : 'straight'; // Default to straight if not found
   };
 
   const onFinalSubmit = async (data: QuestionnaireFormValues) => {
@@ -208,6 +208,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
       lineAnswers,
       scaleAnswers,
       bodyShape: data.bodyShape as QuestionnaireData['bodyShape'],
+      // preferences field removed
     };
     await onSubmit(fullData);
     setIsLoading(false);
@@ -369,7 +370,7 @@ export default function QuestionnaireForm({ onSubmit, initialData }: Questionnai
         ) : ( 
           <Button type="button" onClick={handleNext} disabled={isLoading}>
             {isLoading ? <LoadingSpinner size={20} className="mr-2"/> : <Send className="mr-2 h-4 w-4" />}
-            Proceed to Payment
+            Proceed to Get Report
           </Button>
         )}
       </CardFooter>
