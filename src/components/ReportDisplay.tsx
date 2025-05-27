@@ -134,7 +134,6 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
               id="report-content-for-pdf"
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
               dangerouslySetInnerHTML={{ __html: marked(report.recommendations || "") }}
- dangerouslySetInnerHTML={{ __html: recommendationsHtml }}
             />
           </ScrollArea>
           <p className="text-xs text-muted-foreground mt-2 text-center">
