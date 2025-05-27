@@ -1,3 +1,4 @@
+
 // src/types/html2pdf.d.ts
 declare module 'html2pdf.js' {
   interface Html2PdfOptions {
@@ -17,7 +18,7 @@ declare module 'html2pdf.js' {
       [key: string]: any; // Allow other jsPDF options
     };
     pagebreak?: {
-      mode?: string | string[];
+      mode?: string | Array<'avoid-all' | 'css' | 'legacy' | 'whiteline' | 'smooth'>; // Made mode more specific
       before?: string | string[];
       after?: string | string[];
       avoid?: string | string[];
@@ -37,8 +38,7 @@ declare module 'html2pdf.js' {
     // Add other methods if needed based on library's API
   }
 
-  function html2pdf(): Html2PdfWorker;
-  function html2pdf(element: HTMLElement | string, options?: Html2PdfOptions): Html2PdfWorker;
+  function html2pdf(element?: HTMLElement | string, options?: Html2PdfOptions): Html2PdfWorker;
 
   export default html2pdf;
 }

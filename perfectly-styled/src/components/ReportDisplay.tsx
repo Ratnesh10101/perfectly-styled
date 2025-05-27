@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { UserReportData } from "@/types";
-import { Mail, Download } from "lucide-react";
+import { Mail, Download } from "lucide-react"; // Removed Printer, Added Download
 import { format } from "date-fns";
 import { marked } from "marked";
 import html2pdf from 'html2pdf.js';
@@ -24,12 +24,12 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
     const reportContentElement = document.getElementById('report-content-for-pdf');
     if (reportContentElement) {
       const opt = {
-        margin:       [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right
+        margin:       [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right in inches
         filename:     'PerfectlyStyled_Report.pdf',
         image:        { type: 'jpeg' as 'jpeg' | 'png' | 'webp', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false }, // Increased scale for better quality
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
         jsPDF:        { unit: 'in' as 'in' | 'pt' | 'mm' | 'cm', format: 'letter', orientation: 'portrait' as 'portrait' | 'p' | 'landscape' | 'l' },
-        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] as Array<'avoid-all' | 'css' | 'legacy' | 'whiteline' | 'smooth'> }
       };
       html2pdf().from(reportContentElement).set(opt).save().catch((err: any) => {
         console.error("PDF generation error:", err);
@@ -98,7 +98,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
           <h2 className="text-2xl font-bold text-secondary-foreground mb-2">Styling Recommendations</h2>
           <ScrollArea className="h-96 p-4 border rounded-lg bg-background">
             <div
-              id="report-content-for-pdf" // Added ID for PDF generation
+              id="report-content-for-pdf" // ID for PDF generation target
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
               dangerouslySetInnerHTML={{ __html: marked(report.recommendations || "") }}
             />
