@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea} from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { UserReportData } from "@/types";
@@ -17,6 +17,7 @@ import { Mail, Download } from "lucide-react";
 import { format } from "date-fns";
 import { marked } from "marked";
 import html2pdf from "html2pdf.js";
+import { useState, useEffect } from "react";
 
 interface ReportDisplayProps {
   report: UserReportData;
@@ -25,6 +26,7 @@ interface ReportDisplayProps {
 export default function ReportDisplay({ report }: ReportDisplayProps) {
   const { toast } = useToast();
 
+  const [recommendationsHtml, setRecommendationsHtml] = useState("");
   const handleDownloadPdf = () => {
     const reportContentElement = document.getElementById("report-content-for-pdf");
     if (reportContentElement) {
@@ -56,6 +58,14 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
       });
     }
   };
+
+  useEffect(() => {
+    const processMarkdown = async () => {
+      const html = await marked(report.recommendations || "");
+      setRecommendationsHtml(html as string); // Cast to string as marked can return Promise<string> or string
+    };
+    processMarkdown();
+  }, [report.recommendations]);
 
   const { questionnaireData, recipientEmail, generatedAtClient } = report;
 
@@ -124,6 +134,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
               id="report-content-for-pdf"
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
               dangerouslySetInnerHTML={{ __html: marked(report.recommendations || "") }}
+ dangerouslySetInnerHTML={{ __html: recommendationsHtml }}
             />
           </ScrollArea>
           <p className="text-xs text-muted-foreground mt-2 text-center">
