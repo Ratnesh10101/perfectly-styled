@@ -17,7 +17,6 @@ import { Mail, Download } from "lucide-react";
 import { format } from "date-fns";
 import { marked } from "marked";
 import html2pdf from "html2pdf.js";
-import { useState, useEffect } from "react";
 
 interface ReportDisplayProps {
   report: UserReportData;
@@ -26,8 +25,9 @@ interface ReportDisplayProps {
 export default function ReportDisplay({ report }: ReportDisplayProps) {
   const { toast } = useToast();
 
+  const [html2pdf, setHtml2pdf] = useState<any>(null); // State to hold dynamically imported html2pdf
   const [recommendationsHtml, setRecommendationsHtml] = useState("");
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = () => { // Check if html2pdf is loaded before using it
     const reportContentElement = document.getElementById("report-content-for-pdf");
     if (reportContentElement) {
       const opt = {
@@ -38,18 +38,19 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
         jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
         pagebreak: { mode: ["avoid-all", "css", "legacy"] }
       };
-      html2pdf()
-        .from(reportContentElement)
-        .set(opt)
-        .save()
-        .catch((err: any) => {
-          console.error("PDF generation error:", err);
-          toast({
-            title: "PDF Download Failed",
-            description: "Could not generate PDF. Please try again.",
-            variant: "destructive"
+ if (html2pdf) {
+ html2pdf()
+ .from(reportContentElement)
+ .set(opt)
+ .save()
+ .catch((err: any) => {
+ console.error("PDF generation error:", err);
+ toast({
+ title: "PDF Download Failed",
+ description: "Could not generate PDF. Please try again.",
+ variant: "destructive"
+ });
           });
-        });
     } else {
       toast({
         title: "Error",
@@ -65,6 +66,11 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
       setRecommendationsHtml(html as string); // Cast to string as marked can return Promise<string> or string
     };
     if (report.recommendations) processMarkdown();
+
+    // Dynamically import html2pdf.js
+    import('html2pdf.js').then(module => {
+ setHtml2pdf(() => module.default);
+    });
   }, [report.recommendations]);
 
   const { questionnaireData, recipientEmail, generatedAtClient } = report;
@@ -143,7 +149,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
       </CardContent>
 
       <CardFooter className="flex flex-col sm:flex-row justify-center gap-3">
-        <Button onClick={handleDownloadPdf} variant="outline">
+        <Button onClick={handleDownloadPdf} variant="outline" disabled={!html2pdf}> {/* Disable button until html2pdf is loaded */}
           <Download className="mr-2 h-4 w-4" /> Download as PDF
         </Button>
         {recipientEmail && (
