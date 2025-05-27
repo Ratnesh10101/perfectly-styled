@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,14 +10,13 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import { ScrollArea} from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { UserReportData } from "@/types";
 import { Mail, Download } from "lucide-react";
 import { format } from "date-fns";
 import { marked } from "marked";
-import html2pdf from "html2pdf.js";
 
 interface ReportDisplayProps {
   report: UserReportData;
@@ -24,10 +24,10 @@ interface ReportDisplayProps {
 
 export default function ReportDisplay({ report }: ReportDisplayProps) {
   const { toast } = useToast();
-
-  const [html2pdf, setHtml2pdf] = useState<any>(null); // State to hold dynamically imported html2pdf
+  const [html2pdf, setHtml2pdf] = useState<any>(null);
   const [recommendationsHtml, setRecommendationsHtml] = useState("");
-  const handleDownloadPdf = () => { // Check if html2pdf is loaded before using it
+
+  const handleDownloadPdf = () => {
     const reportContentElement = document.getElementById("report-content-for-pdf");
     if (reportContentElement) {
       const opt = {
@@ -38,19 +38,21 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
         jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
         pagebreak: { mode: ["avoid-all", "css", "legacy"] }
       };
- if (html2pdf) {
- html2pdf()
- .from(reportContentElement)
- .set(opt)
- .save()
- .catch((err: any) => {
- console.error("PDF generation error:", err);
- toast({
- title: "PDF Download Failed",
- description: "Could not generate PDF. Please try again.",
- variant: "destructive"
- });
+
+      if (html2pdf) {
+        html2pdf()
+          .from(reportContentElement)
+          .set(opt)
+          .save()
+          .catch((err: any) => {
+            console.error("PDF generation error:", err);
+            toast({
+              title: "PDF Download Failed",
+              description: "Could not generate PDF. Please try again.",
+              variant: "destructive"
+            });
           });
+      }
     } else {
       toast({
         title: "Error",
@@ -63,13 +65,12 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
   useEffect(() => {
     const processMarkdown = async () => {
       const html = await marked(report.recommendations || "");
-      setRecommendationsHtml(html as string); // Cast to string as marked can return Promise<string> or string
+      setRecommendationsHtml(html as string);
     };
     if (report.recommendations) processMarkdown();
 
-    // Dynamically import html2pdf.js
-    import('html2pdf.js').then(module => {
- setHtml2pdf(() => module.default);
+    import("html2pdf.js").then(module => {
+      setHtml2pdf(() => module.default);
     });
   }, [report.recommendations]);
 
@@ -149,7 +150,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
       </CardContent>
 
       <CardFooter className="flex flex-col sm:flex-row justify-center gap-3">
-        <Button onClick={handleDownloadPdf} variant="outline" disabled={!html2pdf}> {/* Disable button until html2pdf is loaded */}
+        <Button onClick={handleDownloadPdf} variant="outline" disabled={!html2pdf}>
           <Download className="mr-2 h-4 w-4" /> Download as PDF
         </Button>
         {recipientEmail && (
@@ -166,3 +167,4 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
       </CardFooter>
     </Card>
   );
+}
