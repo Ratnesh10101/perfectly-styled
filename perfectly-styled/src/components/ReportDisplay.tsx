@@ -90,7 +90,7 @@ export default function ReportDisplay({ report }: ReportDisplayProps) {
         <Separator />
 
         <div>
-          <h3 className="text-xl font-semibold mb-2 text-secondary-foreground">Styling Recommendations</h3>
+          <h3 className="text-xl font-semibold mb-2 text-secondary-foreground">Styling Recommendations</h3><h2>Please use the scroll bar within the report box to view your full report.</h2>
           <ScrollArea className="h-96 p-4 border rounded-lg bg-background">
             <div 
               className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none whitespace-pre-wrap leading-relaxed"
